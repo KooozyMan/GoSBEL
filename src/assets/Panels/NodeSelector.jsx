@@ -1,4 +1,4 @@
-export default function NodeSelector({ }) {
+export default function NodeSelector({ onCreate }) {
     return (
         <div
             style={{
@@ -11,7 +11,8 @@ export default function NodeSelector({ }) {
                 borderRadius: "14px",
             }}
         >
-            Entity Panel
+            <div style={{ textAlign: "center", marginBottom: "10px" }}>Entity Panel</div>
+            <div><button onClick={() => onCreate("entity")}>+ Add Entity</button></div>
         </div >
     );
 }
