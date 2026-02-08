@@ -12,10 +12,11 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 
-import Node from "./assets/Nodes/Node";
+import Entity from "./assets/Nodes/Entity";
+import EntityGenerator from "./assets/Nodes/EntityGenerator";
 import NodeSelector from "./assets/Panels/NodeSelector";
 
-const nodeTypes = { entity: Node };
+const nodeTypes = { entity: Entity };
 
 const initialNodes = [
   {
@@ -51,6 +52,22 @@ const initialEdges = [
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const createNode = (nodeType) => {
+    let newNode;
+
+    if (nodeType === "entity") newNode = EntityGenerator();
+
+    setNodes((nodes) => [...nodes, newNode]);
+  };
+
+  nodes.forEach(element => {
+    console.log(element.data.fields);
+  });
+
+  edges.forEach(element => {
+    console.log(element);
+  });
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge({ ...params, animated: true }, eds)),
@@ -107,7 +124,7 @@ export default function App() {
         nodeTypes={nodeTypes}
         fitView
       >
-        <Panel position="top-right"><NodeSelector /></Panel>
+        <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
         <MiniMap />
         <Controls />
         <Background />
