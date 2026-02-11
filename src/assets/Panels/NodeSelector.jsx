@@ -1,4 +1,16 @@
 export default function NodeSelector({ onCreate }) {
+    const list = [
+        'entity',
+        'repository',
+        'controller',
+    ];
+
+    const nodes = list.map((element) => (
+        <div key={element} style={{ width: "170px" }}>
+            <button onClick={() => onCreate(element)}>+ Add {element.charAt(0).toUpperCase() + element.slice(1)}</button>
+        </div>
+    ));
+
     return (
         <div
             style={{
@@ -12,7 +24,7 @@ export default function NodeSelector({ onCreate }) {
             }}
         >
             <div style={{ textAlign: "center", marginBottom: "10px" }}>Entity Panel</div>
-            <div><button onClick={() => onCreate("entity")}>+ Add Entity</button></div>
+            <div style={{ display: "flex", flexDirection: "row", gap: "10px", flexWrap: "wrap" }}>{nodes}</div>
         </div >
     );
 }
