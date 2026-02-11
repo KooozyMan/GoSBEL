@@ -57,6 +57,7 @@ export default function App() {
     let newNode;
 
     if (nodeType === "entity") newNode = EntityGenerator();
+    else { alert(`the node ${nodeType} does not exist`); return }; // fallback
 
     setNodes((nodes) => [...nodes, newNode]);
   };
