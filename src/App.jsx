@@ -70,7 +70,7 @@ export default function App() {
   });
 
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge({ ...params, animated: true }, eds)),
+    (params) => setEdges((eds) => addEdge({ ...params, type: 'smoothstep' }, eds)),
     []
   );
 
@@ -89,20 +89,21 @@ export default function App() {
   };
 
   const exportXML = () => {
-    let xml = `<diagram>\n`;
-
+    let xml = `<Application name="default">\n`;
     nodes.forEach((n) => {
-      xml += `  <node id="${n.id}" x="${n.position.x}" y="${n.position.y}">\n`;
-      xml += `    <label>${n.data.label}</label>\n`;
-      xml += `  </node>\n`;
+      if (n.type === 'entity') {
+        xml += `  <Entity name="${n.data.label}">\n`;
+
+        (n.data.fields).forEach((f) => {
+          xml += `    <Field name="${f.name}" type="${f.type}">\n`
+        });
+        xml += `  </Entity>\n`;
+      }
     });
 
-    edges.forEach((e) => {
-      xml += `  <edge id="${e.id}" from="${e.source}" to="${e.target}" />\n`;
-    });
-
-    xml += `</diagram>`;
-
+    // TODO: changed to be viewed properly
+    // TODO: apply validation to naming and missing inputs
+    xml += `</Application>`;
     console.log(xml);
     alert("XML exported to console");
   };
