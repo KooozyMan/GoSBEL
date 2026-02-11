@@ -15,6 +15,7 @@ import "reactflow/dist/style.css";
 import Entity from "./assets/Nodes/Entity";
 import EntityGenerator from "./assets/Nodes/EntityGenerator";
 import NodeSelector from "./assets/Panels/NodeSelector";
+import XMLView from "./assets/Popups/XMLView";
 
 const nodeTypes = { entity: Entity };
 
@@ -52,6 +53,7 @@ const initialEdges = [
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [XmlVisibility, setXmlVisibility] = useState(false);
 
   const createNode = (nodeType) => {
     let newNode;
@@ -107,6 +109,7 @@ export default function App() {
         <button onClick={saveDiagram}>Save</button>
         <button onClick={loadDiagram}>Load</button>
         <button onClick={exportXML}>Export XML</button>
+        <button onClick={() => setXmlVisibility(true)}>Load XML</button>
       </div>
 
       <ReactFlow
@@ -119,6 +122,7 @@ export default function App() {
         fitView
       >
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
+        {XmlVisibility && <XMLView onClose={() => setXmlVisibility(false)} />}
         <MiniMap />
         <Controls />
         <Background />
