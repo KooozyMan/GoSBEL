@@ -61,14 +61,6 @@ export default function App() {
     setNodes((nodes) => [...nodes, newNode]);
   };
 
-  nodes.forEach(element => {
-    console.log(element.data.fields);
-  });
-
-  edges.forEach(element => {
-    console.log(element);
-  });
-
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge({ ...params, type: 'smoothstep' }, eds)),
     []
