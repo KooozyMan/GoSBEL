@@ -87,7 +87,7 @@ export default function App() {
     let xml = `<Application name="default">\n`;
     nodes.forEach((n) => {
       if (n.type === 'entity') {
-        xml += `  <Entity name="${n.data.label}">\n`;
+        xml += `  <Entity name="${n.data.label}" x="${n.position.x}" y="${n.position.y}">\n`;
 
         (n.data.fields).forEach((f) => {
           xml += `    <Field name="${f.name}" type="${f.type}">\n`
