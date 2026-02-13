@@ -110,8 +110,8 @@ export default function App() {
     xmlDoc.querySelectorAll("Entity").forEach((e) => {
       const id = e.getAttribute("id");
       const name = e.getAttribute("name");
-      const x = parseInt(e.getAttribute("x"));
-      const y = parseInt(e.getAttribute("y"));
+      const x = parseInt(e.getAttribute("x")) || 200;
+      const y = parseInt(e.getAttribute("y")) || 200;
       const fields = Array.from(e.querySelectorAll("Field")).map((f) => {
         return {
           name: f.getAttribute("name"),
