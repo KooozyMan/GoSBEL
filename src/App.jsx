@@ -96,11 +96,9 @@ export default function App() {
       }
     });
 
-    // TODO: changed to be viewed properly
     // TODO: apply validation to naming and missing inputs
     xml += `</Application>`;
-    console.log(xml);
-    alert("XML exported to console");
+    return xml;
   };
 
   return (
@@ -108,7 +106,7 @@ export default function App() {
       <div style={{ position: "absolute", zIndex: 10, padding: 10 }}>
         <button onClick={saveDiagram}>Save</button>
         <button onClick={loadDiagram}>Load</button>
-        <button onClick={exportXML}>Export XML</button>
+        <button onClick={() => setXmlVisibility(true)}>Export XML</button>
         <button onClick={() => setXmlVisibility(true)}>Load XML</button>
       </div>
 
@@ -122,7 +120,7 @@ export default function App() {
         fitView
       >
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
-        {XmlVisibility && <XMLView onClose={() => setXmlVisibility(false)} />}
+        {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} />}
         <MiniMap />
         <Controls />
         <Background />

@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react"
 import { basicSetup, EditorView } from "codemirror"
 import { xml } from "@codemirror/lang-xml"
 
-export default function XMLView({ onClose }) {
+export default function XMLView({ onClose, xmlContent }) {
     const editorRef = useRef(null)
     const viewRef = useRef(null)
 
@@ -11,7 +11,7 @@ export default function XMLView({ onClose }) {
 
         // Create editor
         viewRef.current = new EditorView({
-            doc: "<Entity>\n</Entity>",
+            doc: xmlContent || "<Entity>\n</Entity>",
             extensions: [basicSetup, xml()],
             parent: editorRef.current
         })
