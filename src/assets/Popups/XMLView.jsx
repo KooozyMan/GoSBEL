@@ -56,8 +56,10 @@ export default function XMLView({ onClose, onLoad, xmlContent }) {
             gap: "10px"
         }}>
             <div ref={editorRef} style={{ height: "400px", width: "95%", color: "black", fontSize: "18px" }} />
-            <button onClick={onClose}>Close</button>
-            <button onClick={handleLoad}>Load</button>
+            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "320px" }}>
+                <button onClick={onClose}>Close</button>
+                <button onClick={handleLoad}>Load</button>
+            </div>
         </div>
     );
 }

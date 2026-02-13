@@ -140,8 +140,7 @@ export default function App() {
       <div style={{ position: "absolute", zIndex: 10, padding: 10 }}>
         <button onClick={saveDiagram}>Save</button>
         <button onClick={loadDiagram}>Load</button>
-        <button onClick={() => setXmlVisibility(true)}>Export XML</button>
-        <button onClick={() => setXmlVisibility(true)}>Load XML</button>
+        <button onClick={() => setXmlVisibility(true)}>Export/Load XML</button>
       </div>
 
       <ReactFlow
