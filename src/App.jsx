@@ -105,7 +105,10 @@ export default function App() {
     setXmlVisibility(false);
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
-    console.log(xmlDoc);
+
+    xmlDoc.querySelectorAll("Entity").forEach((e) => {
+      console.log(e.attributes.name);
+    });
   };
 
   return (
