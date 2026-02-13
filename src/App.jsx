@@ -90,7 +90,7 @@ export default function App() {
         xml += `  <Entity name="${n.data.label}" x="${n.position.x}" y="${n.position.y}">\n`;
 
         (n.data.fields).forEach((f) => {
-          xml += `    <Field name="${f.name}" type="${f.type}">\n`
+          xml += `    <Field name="${f.name}" type="${f.type}" />\n`
         });
         xml += `  </Entity>\n`;
       }
@@ -99,6 +99,13 @@ export default function App() {
     // TODO: apply validation to naming and missing inputs
     xml += `</Application>`;
     return xml;
+  };
+
+  const handleLoadedXml = (xml) => {
+    setXmlVisibility(false);
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xml, "text/xml");
+    console.log(xmlDoc);
   };
 
   return (
@@ -120,7 +127,7 @@ export default function App() {
         fitView
       >
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
-        {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} />}
+        {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
         <MiniMap />
         <Controls />
         <Background />
