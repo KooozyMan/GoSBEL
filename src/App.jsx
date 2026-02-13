@@ -87,7 +87,7 @@ export default function App() {
     let xml = `<Application name="default">\n`;
     nodes.forEach((n) => {
       if (n.type === 'entity') {
-        xml += `  <Entity name="${n.data.label}" x="${n.position.x}" y="${n.position.y}">\n`;
+        xml += `  <Entity id="${n.id}" name="${n.data.label}" x="${n.position.x}" y="${n.position.y}">\n`;
 
         (n.data.fields).forEach((f) => {
           xml += `    <Field name="${f.name}" type="${f.type}" />\n`
@@ -103,12 +103,36 @@ export default function App() {
 
   const handleLoadedXml = (xml) => {
     setXmlVisibility(false);
+    let loadedNodes = [];
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
 
     xmlDoc.querySelectorAll("Entity").forEach((e) => {
-      console.log(e.attributes.name);
+      const id = e.getAttribute("id");
+      const name = e.getAttribute("name");
+      const x = parseInt(e.getAttribute("x"));
+      const y = parseInt(e.getAttribute("y"));
+      const fields = Array.from(e.querySelectorAll("Field")).map((f) => {
+        return {
+          name: f.getAttribute("name"),
+          type: f.getAttribute("type")
+        };
+      });
+
+      loadedNodes.push({
+        id: id,
+        type: "entity",
+        position: { x: x, y: y },
+        data: {
+          label: name,
+          fields: fields,
+        }
+      });
     });
+
+    // xmlDoc.querySelectorAll("Repository").forEach((e) => {}); // Example
+
+    setNodes(loadedNodes);
   };
 
   return (
