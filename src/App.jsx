@@ -16,6 +16,7 @@ import Entity from "./assets/Nodes/Entity";
 import EntityGenerator from "./assets/Nodes/EntityGenerator";
 import NodeSelector from "./assets/Panels/NodeSelector";
 import XMLView from "./assets/Popups/XMLView";
+import Confirmation from "./assets/Popups/Confirmation";
 
 const nodeTypes = { entity: Entity };
 
@@ -54,6 +55,8 @@ export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [XmlVisibility, setXmlVisibility] = useState(false);
+  const [ConfirmationVisibility, setConfirmationVisibility] = useState(false);
+  const [confirmationData, setConfirmationData] = useState({ type: "", message: "" });
 
   const createNode = (nodeType) => {
     let newNode;
@@ -69,9 +72,18 @@ export default function App() {
     []
   );
 
+  const confirmationHelper = (type, message, time = 2000) => {
+    setConfirmationData({ type: type, message: message });
+    setConfirmationVisibility(true);
+    setTimeout(() => {
+      setConfirmationVisibility(false);
+    }, time
+    );
+  };
+
   const quickSave = () => {
     localStorage.setItem("quick-saved-diagram", exportXML());
-    alert("Diagram saved!");
+    confirmationHelper('confirmation', 'The diagram has been saved to your browser!');
   };
 
   const quickLoad = () => {
@@ -149,6 +161,7 @@ export default function App() {
       >
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
         {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
+        <Panel position="top-center">{ConfirmationVisibility && <Confirmation type={confirmationData.type} message={confirmationData.message} />}</Panel>
         <MiniMap />
         <Controls />
         <Background />
