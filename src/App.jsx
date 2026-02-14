@@ -87,7 +87,14 @@ export default function App() {
   };
 
   const quickLoad = () => {
-    handleLoadedXml(localStorage.getItem("quick-saved-diagram"));
+    const loadedXml = localStorage.getItem("quick-saved-diagram");
+    if (loadedXml === "" || loadedXml === null) {
+      confirmationHelper('error', 'No Diagram has been saved on this browser.');
+      return;
+    }
+
+    handleLoadedXml(loadedXml);
+    confirmationHelper('confirmation', 'The diagram has been loaded from your browser!');
   };
 
   const exportXML = () => {
