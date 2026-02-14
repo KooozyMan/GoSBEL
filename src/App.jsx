@@ -69,18 +69,13 @@ export default function App() {
     []
   );
 
-  const saveDiagram = () => {
-    const diagram = { nodes, edges };
-    localStorage.setItem("uml-diagram", JSON.stringify(diagram));
+  const quickSave = () => {
+    localStorage.setItem("quick-saved-diagram", exportXML());
     alert("Diagram saved!");
   };
 
-  const loadDiagram = () => {
-    const saved = JSON.parse(localStorage.getItem("uml-diagram"));
-    if (saved) {
-      setNodes(saved.nodes);
-      setEdges(saved.edges);
-    }
+  const quickLoad = () => {
+    handleLoadedXml(localStorage.getItem("quick-saved-diagram"));
   };
 
   const exportXML = () => {
@@ -138,8 +133,8 @@ export default function App() {
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
       <div style={{ position: "absolute", zIndex: 10, padding: 10 }}>
-        <button onClick={saveDiagram}>Save</button>
-        <button onClick={loadDiagram}>Load</button>
+        <button onClick={quickSave}>Quick Save</button>
+        <button onClick={quickLoad}>Quick Load</button>
         <button onClick={() => setXmlVisibility(true)}>Export/Load XML</button>
       </div>
 
