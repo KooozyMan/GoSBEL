@@ -1,29 +1,52 @@
 import { useEffect, useRef } from "react"
-import { basicSetup, EditorView } from "codemirror"
+import { EditorView } from "@codemirror/view"
+import { EditorState } from "@codemirror/state"
+import { basicSetup } from "codemirror"
 import { xml } from "@codemirror/lang-xml"
 
-export default function XMLView({ onClose }) {
+export default function XMLView({ onClose, onLoad, xmlContent }) {
     const editorRef = useRef(null)
     const viewRef = useRef(null)
 
+    // Create editor ONCE
     useEffect(() => {
         if (!editorRef.current) return
 
-        // Create editor
+        const state = EditorState.create({
+            doc: xmlContent || `<Application name="default">\n</Application>`,
+            extensions: [basicSetup, xml()]
+        })
+
         viewRef.current = new EditorView({
-            doc: "<Entity>\n</Entity>",
-            extensions: [basicSetup, xml()],
+            state,
             parent: editorRef.current
         })
 
-        // Cleanup when component unmounts
-        return () => {
-            if (viewRef.current) {
-                viewRef.current.destroy()
-            }
-        }
+        return () => viewRef.current?.destroy()
     }, [])
 
+    // Update document when xmlContent changes
+    useEffect(() => {
+        if (!viewRef.current) return
+
+        const currentDoc = viewRef.current.state.doc.toString()
+
+        if (currentDoc !== xmlContent) {
+            viewRef.current.dispatch({
+                changes: {
+                    from: 0,
+                    to: currentDoc.length,
+                    insert: xmlContent
+                }
+            })
+        }
+    }, [xmlContent])
+
+    const handleLoad = () => {
+        const currentXML = viewRef.current.state.doc.toString();
+        onLoad(currentXML);
+        onClose();
+    };
 
     return (
         <div style={{
@@ -33,7 +56,10 @@ export default function XMLView({ onClose }) {
             gap: "10px"
         }}>
             <div ref={editorRef} style={{ height: "400px", width: "95%", color: "black", fontSize: "18px" }} />
-            <button onClick={onClose}>Close</button>
+            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "320px" }}>
+                <button onClick={onClose}>Close</button>
+                <button onClick={handleLoad}>Load</button>
+            </div>
         </div>
     );
 }

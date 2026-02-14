@@ -87,20 +87,52 @@ export default function App() {
     let xml = `<Application name="default">\n`;
     nodes.forEach((n) => {
       if (n.type === 'entity') {
-        xml += `  <Entity name="${n.data.label}">\n`;
+        xml += `  <Entity id="${n.id}" name="${n.data.label}" x="${n.position.x}" y="${n.position.y}">\n`;
 
         (n.data.fields).forEach((f) => {
-          xml += `    <Field name="${f.name}" type="${f.type}">\n`
+          xml += `    <Field name="${f.name}" type="${f.type}" />\n`
         });
         xml += `  </Entity>\n`;
       }
     });
 
-    // TODO: changed to be viewed properly
     // TODO: apply validation to naming and missing inputs
     xml += `</Application>`;
-    console.log(xml);
-    alert("XML exported to console");
+    return xml;
+  };
+
+  const handleLoadedXml = (xml) => {
+    setXmlVisibility(false);
+    let loadedNodes = [];
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xml, "text/xml");
+
+    xmlDoc.querySelectorAll("Entity").forEach((e) => {
+      const id = e.getAttribute("id");
+      const name = e.getAttribute("name");
+      const x = parseInt(e.getAttribute("x")) || 200;
+      const y = parseInt(e.getAttribute("y")) || 200;
+      const fields = Array.from(e.querySelectorAll("Field")).map((f) => {
+        return {
+          name: f.getAttribute("name"),
+          type: f.getAttribute("type")
+        };
+      });
+
+      loadedNodes.push({
+        id: id,
+        type: "entity",
+        position: { x: x, y: y },
+        data: {
+          label: name,
+          fields: fields,
+        }
+      });
+    });
+
+    // xmlDoc.querySelectorAll("Repository").forEach((e) => {}); // Example
+
+    setNodes(loadedNodes);
   };
 
   return (
@@ -108,8 +140,7 @@ export default function App() {
       <div style={{ position: "absolute", zIndex: 10, padding: 10 }}>
         <button onClick={saveDiagram}>Save</button>
         <button onClick={loadDiagram}>Load</button>
-        <button onClick={exportXML}>Export XML</button>
-        <button onClick={() => setXmlVisibility(true)}>Load XML</button>
+        <button onClick={() => setXmlVisibility(true)}>Export/Load XML</button>
       </div>
 
       <ReactFlow
@@ -122,7 +153,7 @@ export default function App() {
         fitView
       >
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
-        {XmlVisibility && <XMLView onClose={() => setXmlVisibility(false)} />}
+        {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
         <MiniMap />
         <Controls />
         <Background />
