@@ -16,8 +16,12 @@ import Entity from "./assets/Nodes/Entity";
 import EntityGenerator from "./assets/Nodes/EntityGenerator";
 import NodeSelector from "./assets/Panels/NodeSelector";
 import XMLView from "./assets/Popups/XMLView";
+import Cardination from "./assets/Edges/Cardination";
 
 const nodeTypes = { entity: Entity };
+const edgeTypes = {
+  'custom-edge': Cardination,
+};
 
 const initialNodes = [
   {
@@ -47,7 +51,7 @@ const initialNodes = [
 ];
 
 const initialEdges = [
-  { id: "e1-2", source: "1", target: "2", type: "smoothstep", label: "label" }
+  { id: "e1-2", source: "1", target: "2", type: "custom-edge"}
 ];
 
 export default function App() {
@@ -65,8 +69,11 @@ export default function App() {
   };
 
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge({ ...params, type: 'smoothstep' }, eds)),
-    []
+    (connection) => {
+      const edge = { ...connection, type: 'custom-edge' };
+      setEdges((eds) => addEdge(edge, eds));
+    },
+    [setEdges],
   );
 
   const saveDiagram = () => {
@@ -95,6 +102,11 @@ export default function App() {
         xml += `  </Entity>\n`;
       }
     });
+    edges.forEach((e) => {
+      const edgeId = e.id
+      const relationship = document.getElementById(`edge-${edgeId}`).value
+      xml += `  <Edge id="${edgeId}" source="${e.source}" target="${e.target}" relationship="${relationship}">\n`
+    })
 
     // TODO: apply validation to naming and missing inputs
     xml += `</Application>`;
@@ -146,6 +158,7 @@ export default function App() {
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
