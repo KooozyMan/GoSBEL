@@ -1,5 +1,3 @@
-import { Background } from "reactflow";
-
 export default function Confirmation({ type, message }) {
     let style = "";
 

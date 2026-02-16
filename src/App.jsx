@@ -17,6 +17,7 @@ import EntityGenerator from "./assets/Nodes/EntityGenerator";
 import NodeSelector from "./assets/Panels/NodeSelector";
 import XMLView from "./assets/Popups/XMLView";
 import CrowsFoot from "./assets/Edges/CrowsFoot";
+import Confirmation from "./assets/Popups/Confirmation";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -56,6 +57,8 @@ export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [XmlVisibility, setXmlVisibility] = useState(false);
+  const [ConfirmationVisibility, setConfirmationVisibility] = useState(false);
+  const [confirmationData, setConfirmationData] = useState({ type: "", message: "" });
 
   const createNode = (nodeType) => {
     let newNode;
@@ -68,24 +71,35 @@ export default function App() {
 
   const onConnect = useCallback(
     (connection) => {
-      const edge = { ...connection, type: 'custom-edge' };
+      const edge = { ...connection, type: "crowsFoot" };
       setEdges((eds) => addEdge(edge, eds));
     },
     [setEdges],
   );
 
-  const saveDiagram = () => {
-    const diagram = { nodes, edges };
-    localStorage.setItem("uml-diagram", JSON.stringify(diagram));
-    alert("Diagram saved!");
+  const confirmationHelper = (type, message, time = 2000) => {
+    setConfirmationData({ type: type, message: message });
+    setConfirmationVisibility(true);
+    setTimeout(() => {
+      setConfirmationVisibility(false);
+    }, time
+    );
   };
 
-  const loadDiagram = () => {
-    const saved = JSON.parse(localStorage.getItem("uml-diagram"));
-    if (saved) {
-      setNodes(saved.nodes);
-      setEdges(saved.edges);
+  const quickSave = () => {
+    localStorage.setItem("quick-saved-diagram", exportXML());
+    confirmationHelper('confirmation', 'The diagram has been saved to your browser!');
+  };
+
+  const quickLoad = () => {
+    const loadedXml = localStorage.getItem("quick-saved-diagram");
+    if (loadedXml === "" || loadedXml === null) {
+      confirmationHelper('error', 'No Diagram has been saved on this browser.');
+      return;
     }
+
+    handleLoadedXml(loadedXml);
+    confirmationHelper('confirmation', 'The diagram has been loaded from your browser!');
   };
 
   const exportXML = () => {
@@ -115,6 +129,7 @@ export default function App() {
   const handleLoadedXml = (xml) => {
     setXmlVisibility(false);
     let loadedNodes = [];
+    let loadedEdges = [];
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
 
@@ -141,16 +156,33 @@ export default function App() {
       });
     });
 
+    xmlDoc.querySelectorAll("Edge").forEach((e) => {
+      const id = e.getAttribute("id");
+      const source = e.getAttribute("source");
+      const target = e.getAttribute("target");
+      const relationship = e.getAttribute("relationship");
+      const type = "crowsFoot";
+
+      loadedEdges.push({
+        id: id,
+        source: source,
+        target: target,
+        relationship: relationship,
+        type: type,
+      });
+    });
+
     // xmlDoc.querySelectorAll("Repository").forEach((e) => {}); // Example
 
     setNodes(loadedNodes);
+    setEdges(loadedEdges);
   };
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
       <div style={{ position: "absolute", zIndex: 10, padding: 10 }}>
-        <button onClick={saveDiagram}>Save</button>
-        <button onClick={loadDiagram}>Load</button>
+        <button onClick={quickSave}>Quick Save</button>
+        <button onClick={quickLoad}>Quick Load</button>
         <button onClick={() => setXmlVisibility(true)}>Export/Load XML</button>
       </div>
 
@@ -166,6 +198,7 @@ export default function App() {
       >
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
         {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
+        <Panel position="top-center">{ConfirmationVisibility && <Confirmation type={confirmationData.type} message={confirmationData.message} />}</Panel>
         <MiniMap />
         <Controls />
         <Background />
