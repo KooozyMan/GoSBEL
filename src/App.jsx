@@ -50,7 +50,7 @@ const initialNodes = [
 ];
 
 const initialEdges = [
-  { id: "e1-2", source: "1", target: "2", type: "crowsFoot" }
+  { id: "e1-2",relationship:'1-1', source: "1", target: "2", type: "crowsFoot" }
 ];
 
 export default function App() {
@@ -59,7 +59,6 @@ export default function App() {
   const [XmlVisibility, setXmlVisibility] = useState(false);
   const [ConfirmationVisibility, setConfirmationVisibility] = useState(false);
   const [confirmationData, setConfirmationData] = useState({ type: "", message: "" });
-  // test
 
   const createNode = (nodeType) => {
     let newNode;
@@ -168,8 +167,10 @@ export default function App() {
         id: id,
         source: source,
         target: target,
-        relationship: relationship,
         type: type,
+        data: {
+          relationship: relationship,
+        }
       });
     });
 
