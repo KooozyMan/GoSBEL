@@ -16,12 +16,10 @@ import Entity from "./assets/Nodes/Entity";
 import EntityGenerator from "./assets/Nodes/EntityGenerator";
 import NodeSelector from "./assets/Panels/NodeSelector";
 import XMLView from "./assets/Popups/XMLView";
-import Cardination from "./assets/Edges/Cardination";
+import CrowsFoot from "./assets/Edges/CrowsFoot";
 
 const nodeTypes = { entity: Entity };
-const edgeTypes = {
-  'custom-edge': Cardination,
-};
+const edgeTypes = { crowsFoot: CrowsFoot };
 
 const initialNodes = [
   {
@@ -51,7 +49,7 @@ const initialNodes = [
 ];
 
 const initialEdges = [
-  { id: "e1-2", source: "1", target: "2", type: "custom-edge"}
+  { id: "e1-2", source: "1", target: "2", type: "crowsFoot" }
 ];
 
 export default function App() {
@@ -102,6 +100,7 @@ export default function App() {
         xml += `  </Entity>\n`;
       }
     });
+
     edges.forEach((e) => {
       const edgeId = e.id
       const relationship = document.getElementById(`edge-${edgeId}`).value
