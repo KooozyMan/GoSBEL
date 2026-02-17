@@ -18,8 +18,8 @@ import NodeSelector from "./assets/Panels/NodeSelector";
 import XMLView from "./assets/Popups/XMLView";
 import CrowsFoot from "./assets/Edges/CrowsFoot";
 import Confirmation from "./assets/Popups/Confirmation";
-import ControllerGenerator from "./assets/CodeGenerator/ControllerGenerator";
-import EntityCodeGenerator from "./assets/CodeGenerator/EntityGenerator";
+import ControllerCodeGenerator from "./assets/CodeGenerator/ControllerCodeGenerator";
+import EntityCodeGenerator from "./assets/CodeGenerator/EntityCodeGenerator";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -114,7 +114,7 @@ export default function App() {
     const entities = document.querySelectorAll('input[placeholder="Entity Name"]')
     entities.forEach((e) => {
       console.log("Entity name:" + e.value)
-      const c = ControllerGenerator({
+      const c = ControllerCodeGenerator({
         entityName: e.value,
         basePackage: "com.example"
       })
