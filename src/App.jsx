@@ -18,6 +18,7 @@ import NodeSelector from "./assets/Panels/NodeSelector";
 import XMLView from "./assets/Popups/XMLView";
 import CrowsFoot from "./assets/Edges/CrowsFoot";
 import Confirmation from "./assets/Popups/Confirmation";
+import ControllerGenerator from "./assets/CodeGenerator/ControllerGenerator";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -102,6 +103,19 @@ export default function App() {
     confirmationHelper('confirmation', 'The diagram has been loaded from your browser!');
   };
 
+  const displayController = () => {
+    const entities = document.querySelectorAll('input[placeholder="Entity Name"]')
+    entities.forEach((e) => {
+      console.log("Entity name:" + e.value)
+      const c = ControllerGenerator({
+        entityName: e.value,
+        basePackage: "com.example"
+      })
+      console.log(`${e.value} controller code:\n${c}`)
+    })
+    confirmationHelper('confirmation', 'Controller for each entity has been printed to the console.');
+  }
+
   const exportXML = () => {
     let xml = `<Application name="default">\n`;
     nodes.forEach((n) => {
@@ -167,8 +181,10 @@ export default function App() {
         id: id,
         source: source,
         target: target,
-        relationship: relationship,
         type: type,
+        data: {
+          relationship: relationship,
+        }
       });
     });
 
@@ -183,6 +199,7 @@ export default function App() {
       <div style={{ position: "absolute", zIndex: 10, padding: 10 }}>
         <button onClick={quickSave}>Quick Save</button>
         <button onClick={quickLoad}>Quick Load</button>
+        <button onClick={displayController}>Print Controller</button>
         <button onClick={() => setXmlVisibility(true)}>Export/Load XML</button>
       </div>
 
