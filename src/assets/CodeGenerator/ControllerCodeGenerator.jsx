@@ -1,5 +1,6 @@
-export default function ControllerGenerator({ entityName, basePackage }) {
-    return (`package ${basePackage}.controller;
+function getController(entityName){
+    const basePackage = `com.example.${entityName}`
+    return `package ${basePackage}.controller;
 
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -24,5 +25,15 @@ public class ${entityName}Controller {
     public ${entityName} create(@RequestBody ${entityName} entity) {
         return service.save(entity);
     }
-}`);
+}`
+}
+
+export default function ControllerGenerator(xml){
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xml, "text/xml");
+    let controllers = [];
+    xmlDoc.querySelectorAll("Entity").forEach(e => {
+        controllers.push(getController(e.getAttribute('name')))
+    })
+    return controllers.join('\n');
 }

@@ -111,15 +111,8 @@ export default function App() {
   };
 
   const displayController = () => {
-    const entities = document.querySelectorAll('input[placeholder="Entity Name"]')
-    entities.forEach((e) => {
-      console.log("Entity name:" + e.value)
-      const c = ControllerCodeGenerator({
-        entityName: e.value,
-        basePackage: "com.example"
-      })
-      console.log(`${e.value} controller code:\n${c}`)
-    })
+    const generatedControllers = ControllerCodeGenerator(exportXML())
+    console.log(generatedControllers)
     confirmationHelper('confirmation', 'Controller for each entity has been printed to the console.');
   }
 
