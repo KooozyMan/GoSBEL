@@ -1,4 +1,4 @@
-export default function ControllerGenerator({entityName, basePackage}){
+export default function ControllerGenerator({ entityName, basePackage }) {
     return (`package ${basePackage}.controller;
 
 import org.springframework.web.bind.annotation.*;

@@ -19,6 +19,7 @@ import XMLView from "./assets/Popups/XMLView";
 import CrowsFoot from "./assets/Edges/CrowsFoot";
 import Confirmation from "./assets/Popups/Confirmation";
 import ControllerGenerator from "./assets/CodeGenerator/ControllerGenerator";
+import EntityCodeGenerator from "./assets/CodeGenerator/EntityGenerator";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -103,8 +104,15 @@ export default function App() {
     confirmationHelper('confirmation', 'The diagram has been loaded from your browser!');
   };
 
+  const displayEntity = () => {
+    const generatedEntities = EntityCodeGenerator(exportXML());
+    console.log(generatedEntities);
+    confirmationHelper('confirmation', 'Entity for each entity has been printed to the console.');
+  };
+
   const displayController = () => {
     const entities = document.querySelectorAll('input[placeholder="Entity Name"]')
+    console.log(entities)
     entities.forEach((e) => {
       console.log("Entity name:" + e.value)
       const c = ControllerGenerator({
@@ -199,6 +207,7 @@ export default function App() {
       <div style={{ position: "absolute", zIndex: 10, padding: 10 }}>
         <button onClick={quickSave}>Quick Save</button>
         <button onClick={quickLoad}>Quick Load</button>
+        <button onClick={displayEntity}>Print Entity</button>
         <button onClick={displayController}>Print Controller</button>
         <button onClick={() => setXmlVisibility(true)}>Export/Load XML</button>
       </div>
