@@ -112,7 +112,6 @@ export default function App() {
 
   const displayController = () => {
     const entities = document.querySelectorAll('input[placeholder="Entity Name"]')
-    console.log(entities)
     entities.forEach((e) => {
       console.log("Entity name:" + e.value)
       const c = ControllerGenerator({
