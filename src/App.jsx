@@ -20,7 +20,7 @@ import CrowsFoot from "./assets/Edges/CrowsFoot";
 import Confirmation from "./assets/Popups/Confirmation";
 import ControllerCodeGenerator from "./assets/CodeGenerator/ControllerCodeGenerator";
 import EntityCodeGenerator from "./assets/CodeGenerator/EntityCodeGenerator";
-import CodeReview from "./assets/CodeReview/CodeReview";
+import CodeViewer from "./assets/GeneratedCode/CodeViewer";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -62,6 +62,7 @@ export default function App() {
   const [XmlVisibility, setXmlVisibility] = useState(false);
   const [ConfirmationVisibility, setConfirmationVisibility] = useState(false);
   const [confirmationData, setConfirmationData] = useState({ type: "", message: "" });
+  const [CodeVisibility, setCodeVisibility] = useState(false);
 
   const createNode = (nodeType) => {
     let newNode;
@@ -105,17 +106,29 @@ export default function App() {
     confirmationHelper('confirmation', 'The diagram has been loaded from your browser!');
   };
 
-  const displayEntity = () => {
-    const generatedEntities = EntityCodeGenerator(exportXML());
-    console.log(generatedEntities);
-    confirmationHelper('confirmation', 'Entity for each entity has been printed to the console.');
-  };
+  const CodeViewerHandler = () => {
+    const generatedCode = {
+      Entities: EntityCodeGenerator(exportXML()),
+      Controllers: ControllerCodeGenerator(exportXML()),
+      // Repositories: RepositoryCodeGenerator(exportXML()),
+      // Services: ServiceCodeGenerator(exportXML()),
+    };
 
-  const displayController = () => {
-    const generatedControllers = ControllerCodeGenerator(exportXML())
-    console.log(generatedControllers)
-    confirmationHelper('confirmation', 'Controller for each entity has been printed to the console.');
-  }
+    setCodeVisibility(true);
+    return generatedCode;
+  };
+  // To Delete
+  // const displayEntity = () => {
+  //   const generatedEntities = EntityCodeGenerator(exportXML());
+  //   console.log(generatedEntities);
+  //   confirmationHelper('confirmation', 'Entity for each entity has been printed to the console.');
+  // };
+
+  // const displayController = () => {
+  //   const generatedControllers = ControllerCodeGenerator(exportXML())
+  //   console.log(generatedControllers)
+  //   confirmationHelper('confirmation', 'Controller for each entity has been printed to the console.');
+  // }
 
   const exportXML = () => {
     let xml = `<Application name="default">\n`;
@@ -200,10 +213,8 @@ export default function App() {
       <div style={{ position: "absolute", zIndex: 10, padding: 10 }}>
         <button onClick={quickSave}>Quick Save</button>
         <button onClick={quickLoad}>Quick Load</button>
-        <button onClick={displayEntity}>Print Entity</button>
-        <button onClick={displayController}>Print Controller</button>
+        <button onClick={CodeViewerHandler}>View Code</button>
         <button onClick={() => setXmlVisibility(true)}>Export/Load XML</button>
-        <CodeReview/>
       </div>
 
       <ReactFlow
@@ -223,6 +234,8 @@ export default function App() {
         <Controls />
         <Background />
       </ReactFlow>
+
+      {CodeVisibility && <CodeViewer generatedCode={CodeViewerHandler()} onClose={() => setCodeVisibility(false)} />}
     </div>
   );
 }

@@ -26,7 +26,7 @@ export default function EntityGenerator(xml) {
             entitySetters += `    public void set${capitalizedFieldName}(${fieldType} ${fieldName}) { this.${fieldName} = ${fieldName}; }\n`;
         });
 
-        EntityCode.push(`package ${basePackage};
+        const code = `package ${basePackage};
     
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -41,10 +41,9 @@ ${entityFields}
 ${entityGetters}
     // Setters
 ${entitySetters}
-}`);
+}`;
+        EntityCode.push({ fileName: `${capitalizedName}.java`, code: code });
     });
 
-    let EntireCode = ``;
-    EntityCode.forEach(c => { EntireCode += c + '\n'; });
-    return (EntireCode);
+    return EntityCode;
 }
