@@ -20,6 +20,7 @@ import CrowsFoot from "./assets/Edges/CrowsFoot";
 import Confirmation from "./assets/Popups/Confirmation";
 import ControllerCodeGenerator from "./assets/CodeGenerator/ControllerCodeGenerator";
 import EntityCodeGenerator from "./assets/CodeGenerator/EntityCodeGenerator";
+import CodeReview from "./assets/CodeReview/CodeReview";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -202,6 +203,7 @@ export default function App() {
         <button onClick={displayEntity}>Print Entity</button>
         <button onClick={displayController}>Print Controller</button>
         <button onClick={() => setXmlVisibility(true)}>Export/Load XML</button>
+        <CodeReview/>
       </div>
 
       <ReactFlow

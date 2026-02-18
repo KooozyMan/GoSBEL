@@ -33,7 +33,8 @@ export default function ControllerGenerator(xml){
     const xmlDoc = parser.parseFromString(xml, "text/xml");
     let controllers = [];
     xmlDoc.querySelectorAll("Entity").forEach(e => {
-        controllers.push(getController(e.getAttribute('name')))
+        const name = e.getAttribute('name');
+        controllers.push({'fileName':`${name}.java`,'code':getController(name)})
     })
-    return controllers.join('\n');
+    return controllers;
 }
