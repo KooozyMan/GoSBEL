@@ -117,18 +117,6 @@ export default function App() {
     setCodeVisibility(true);
     return generatedCode;
   };
-  // To Delete
-  // const displayEntity = () => {
-  //   const generatedEntities = EntityCodeGenerator(exportXML());
-  //   console.log(generatedEntities);
-  //   confirmationHelper('confirmation', 'Entity for each entity has been printed to the console.');
-  // };
-
-  // const displayController = () => {
-  //   const generatedControllers = ControllerCodeGenerator(exportXML())
-  //   console.log(generatedControllers)
-  //   confirmationHelper('confirmation', 'Controller for each entity has been printed to the console.');
-  // }
 
   const exportXML = () => {
     let xml = `<Application name="default">\n`;
@@ -228,13 +216,13 @@ export default function App() {
         fitView
       >
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
-        {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
         <Panel position="top-center">{ConfirmationVisibility && <Confirmation type={confirmationData.type} message={confirmationData.message} />}</Panel>
         <MiniMap />
         <Controls />
         <Background />
       </ReactFlow>
 
+      {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
       {CodeVisibility && <CodeViewer generatedCode={CodeViewerHandler()} onClose={() => setCodeVisibility(false)} />}
     </div>
   );
