@@ -107,6 +107,11 @@ export default function App() {
   };
 
   const CodeViewerHandler = () => {
+    if (nodes.length === 0) {
+      confirmationHelper('error', 'No Nodes to generate Code from.');
+      return;
+    }
+
     const generatedCode = {
       Entities: EntityCodeGenerator(exportXML()),
       Controllers: ControllerCodeGenerator(exportXML()),
