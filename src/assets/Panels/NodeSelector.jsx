@@ -6,25 +6,15 @@ export default function NodeSelector({ onCreate }) {
     ];
 
     const nodes = list.map((element) => (
-        <div key={element} style={{ width: "170px" }}>
+        <div key={element} className="node">
             <button onClick={() => onCreate(element)}>+ Add {element.charAt(0).toUpperCase() + element.slice(1)}</button>
         </div>
     ));
 
     return (
-        <div
-            style={{
-                height: "650px",
-                width: "400px",
-                background: "white",
-                color: "black",
-                padding: "10px",
-                fontWeight: "bold",
-                borderRadius: "14px",
-            }}
-        >
-            <div style={{ textAlign: "center", marginBottom: "10px" }}>Entity Panel</div>
-            <div style={{ display: "flex", flexDirection: "row", gap: "10px", flexWrap: "wrap" }}>{nodes}</div>
+        <div className="node-selector">
+            <div className="node-selector-title">Entity Panel</div>
+            <div className="nodes">{nodes}</div>
         </div >
     );
 }

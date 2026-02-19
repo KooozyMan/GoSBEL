@@ -1,0 +1,47 @@
+/* Code Viewer Page */
+.code-viewer {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    z-index: 11;
+    display: flex;
+}
+
+.files {
+    background-color: grey;
+    flex-direction: column;
+    width: 400px;
+    padding: 15px 30px;
+}
+
+.folder {}
+
+.file {
+    margin-left: 20px;
+}
+
+.file:hover {
+    cursor: pointer;
+}
+
+.file.selected {
+    background-color: #282c34;
+}
+
+.code {
+    background-color: #282c34;
+    width: 100%
+}
+
+.close-code-viewer-button {
+    position: absolute;
+    left: 96%;
+    top: 15px;
+    width: 60px;
+    height: 60px;
+    font-weight: bolder;
+    font-size: 20px;
+}

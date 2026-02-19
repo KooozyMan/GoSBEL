@@ -49,14 +49,9 @@ export default function XMLView({ onClose, onLoad, xmlContent }) {
     };
 
     return (
-        <div style={{
-            position: "absolute", top: "25%", left: "25%", padding: "20px 0", zIndex: "5",
-            width: "800px", minHeight: "450px", background: "grey", borderRadius: "8px",
-            display: "flex", flexDirection: "column", justifyContent: "left", alignItems: "center",
-            gap: "10px"
-        }}>
-            <div ref={editorRef} style={{ height: "400px", width: "95%", color: "black", fontSize: "18px" }} />
-            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "320px" }}>
+        <div className="xml-container">
+            <div ref={editorRef} className="xml-code" />
+            <div className="xml-buttons">
                 <button onClick={onClose}>Close</button>
                 <button onClick={handleLoad}>Load</button>
             </div>

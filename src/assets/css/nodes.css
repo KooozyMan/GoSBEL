@@ -1,0 +1,76 @@
+/* Entity Node */
+.entity-node {
+    border: 1px solid #4b5563;
+    border-radius: 8px;
+    background: #1f2937;
+    color: #e5e7eb;
+    width: 230px;
+    font-size: 13px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.25);
+    padding: 10px;
+}
+
+.entity-title {
+    background: #374151;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin-bottom: 10px;
+}
+
+.entity-title-input {
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    background: transparent;
+    color: #f9fafb;
+    border: none;
+    outline: none;
+}
+
+.entity-field-container {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.entity-field-delete {
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.entity-field-add {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 0;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+.entity-name-input {
+    width: 45%;
+    background: #374151;
+    color: #e5e7eb;
+    border: none;
+    padding: 4px 6px;
+    border-radius: 4px;
+}
+
+.entity-type-input {
+    width: 40%;
+    background: #374151;
+    color: #e5e7eb;
+    border: none;
+    padding: 4px 6px;
+    border-radius: 4px;
+}

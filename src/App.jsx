@@ -29,7 +29,7 @@ const initialNodes = [
   {
     id: "1",
     type: "entity",
-    position: { x: 100, y: 100 },
+    position: { x: 100, y: 70 },
     data: {
       label: "User",
       fields: [
@@ -41,7 +41,7 @@ const initialNodes = [
   {
     id: "2",
     type: "entity",
-    position: { x: 400, y: 250 },
+    position: { x: 360, y: 270 },
     data: {
       label: "Order",
       fields: [
