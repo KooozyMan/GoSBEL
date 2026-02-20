@@ -33,8 +33,8 @@ const initialNodes = [
     data: {
       label: "User",
       fields: [
-        { name: "id", type: "int", pk: "true" },
-        { name: "name", type: "string", pk: "false" },
+        { name: "id", type: "int", pk: true },
+        { name: "name", type: "string", pk: false },
       ]
     }
   },
@@ -45,8 +45,8 @@ const initialNodes = [
     data: {
       label: "Order",
       fields: [
-        { name: "orderId", type: "int", pk: "true" },
-        { name: "price", type: "double", pk: "false" },
+        { name: "orderId", type: "int", pk: true },
+        { name: "price", type: "double", pk: false },
       ],
     }
   }

@@ -6,7 +6,7 @@ export default function generateEntity(id) {
         data: {
             label: "default",
             fields: [
-                { name: "id", type: "int", pk: "true" }
+                { name: "id", type: "int", pk: true }
             ]
         }
     };
