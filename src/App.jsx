@@ -33,8 +33,8 @@ const initialNodes = [
     data: {
       label: "User",
       fields: [
-        { name: "id", type: "int" },
-        { name: "name", type: "string" },
+        { name: "id", type: "int", pk: "true" },
+        { name: "name", type: "string", pk: "false" },
       ]
     }
   },
@@ -45,8 +45,8 @@ const initialNodes = [
     data: {
       label: "Order",
       fields: [
-        { name: "orderId", type: "int" },
-        { name: "price", type: "double" },
+        { name: "orderId", type: "int", pk: "true" },
+        { name: "price", type: "double", pk: "false" },
       ],
     }
   }
@@ -63,12 +63,19 @@ export default function App() {
   const [ConfirmationVisibility, setConfirmationVisibility] = useState(false);
   const [confirmationData, setConfirmationData] = useState({ type: "", message: "" });
   const [CodeVisibility, setCodeVisibility] = useState(false);
+  const [entityId, setEntityId] = useState(3);
 
   const createNode = (nodeType) => {
     let newNode;
 
-    if (nodeType === "entity") newNode = EntityGenerator();
-    else { alert(`the node ${nodeType} does not exist`); return }; // fallback
+    if (nodeType === "entity") {
+      newNode = EntityGenerator(entityId.toString());
+      setEntityId(entityId + 1);
+
+    } else { // fallback
+      alert(`the node ${nodeType} does not exist`);
+      return
+    };
 
     setNodes((nodes) => [...nodes, newNode]);
   };
@@ -130,7 +137,7 @@ export default function App() {
         xml += `  <Entity id="${n.id}" name="${n.data.label}" x="${n.position.x}" y="${n.position.y}">\n`;
 
         (n.data.fields).forEach((f) => {
-          xml += `    <Field name="${f.name}" type="${f.type}" />\n`
+          xml += `    <Field name="${f.name}" type="${f.type}" pk="${f.pk}" />\n`
         });
         xml += `  </Entity>\n`;
       }

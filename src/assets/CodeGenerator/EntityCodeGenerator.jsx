@@ -6,7 +6,13 @@ export default function EntityGenerator(xml) {
     let entityFields = ``;
     let entityGetters = ``;
     let entitySetters = ``;
+    let relations = [];
 
+    // still underwork
+    xmlDoc.querySelectorAll("Edge").forEach(edge => {
+        relations.push({ source: edge.getAttribute("source"), target: edge.getAttribute("target"), field: null });
+    });
+    console.log(relations);
     xmlDoc.querySelectorAll("Entity").forEach(node => {
         entityFields = ``;
         entityGetters = ``;
