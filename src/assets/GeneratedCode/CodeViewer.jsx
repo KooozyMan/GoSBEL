@@ -27,12 +27,12 @@ export default function CodeViewer({ onClose, generatedCode }) {
                         onClick={() => setViewedCode(repository.code)}>{repository.fileName}</div>
                     ))}
                 </div>
-                {/* className="folder">Services
+                <div className="folder">Services
                     {generatedCode.Services.map((service, index) => (
                         <div key={index} className={`file ${ViewedCode === service.code ? 'selected' : ''}`}
                         onClick={() => setViewedCode(service.code)}>{service.fileName}</div>
                     ))}
-                </div> */}
+                </div>
             </div>
             <div className="code">
                 <CodeMirror

@@ -21,6 +21,7 @@ import Confirmation from "./assets/Popups/Confirmation";
 import ControllerCodeGenerator from "./assets/CodeGenerator/ControllerCodeGenerator";
 import EntityCodeGenerator from "./assets/CodeGenerator/EntityCodeGenerator";
 import RepositoryCodeGenerator from "./assets/CodeGenerator/RepositoryCodeGenerator";
+import ServiceCodeGenerator from "./assets/CodeGenerator/ServiceCodeGenerator";
 import CodeViewer from "./assets/GeneratedCode/CodeViewer";
 
 const nodeTypes = { entity: Entity };
@@ -124,7 +125,7 @@ export default function App() {
       Entities: EntityCodeGenerator(exportXML()),
       Controllers: ControllerCodeGenerator(exportXML()),
       Repositories: RepositoryCodeGenerator(exportXML()),
-      // Services: ServiceCodeGenerator(exportXML()),
+      Services: ServiceCodeGenerator(exportXML()),
     };
 
     setCodeVisibility(true);
