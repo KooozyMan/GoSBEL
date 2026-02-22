@@ -9,7 +9,7 @@ export default function CodeViewer({ onClose, generatedCode }) {
         <div className="code-viewer">
 
             <div className="files">
-                <div className="folder">Entities
+                <div className="folder">Entities 
                     {generatedCode.Entities.map((entity, index) => (
                         <div key={index} className={`file ${ViewedCode === entity.code ? 'selected' : ''}`}
                             onClick={() => setViewedCode(entity.code)}>{entity.fileName}</div>
@@ -21,13 +21,13 @@ export default function CodeViewer({ onClose, generatedCode }) {
                             onClick={() => setViewedCode(controller.code)}>{controller.fileName}</div>
                     ))}
                 </div>
-                {/* <div className="folder">Repositories
-                    {generatedCode.Repositories.map((repository, index) => (
+                <div className="folder">Repositories
+                    {generatedCode.Repositories?.map((repository, index) => (
                         <div key={index} className={`file ${ViewedCode === repository.code ? 'selected' : ''}`}
                         onClick={() => setViewedCode(repository.code)}>{repository.fileName}</div>
                     ))}
                 </div>
-                <div className="folder">Services
+                {/* className="folder">Services
                     {generatedCode.Services.map((service, index) => (
                         <div key={index} className={`file ${ViewedCode === service.code ? 'selected' : ''}`}
                         onClick={() => setViewedCode(service.code)}>{service.fileName}</div>

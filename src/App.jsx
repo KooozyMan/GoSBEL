@@ -20,6 +20,7 @@ import CrowsFoot from "./assets/Edges/CrowsFoot";
 import Confirmation from "./assets/Popups/Confirmation";
 import ControllerCodeGenerator from "./assets/CodeGenerator/ControllerCodeGenerator";
 import EntityCodeGenerator from "./assets/CodeGenerator/EntityCodeGenerator";
+import RepositoryCodeGenerator from "./assets/CodeGenerator/RepositoryCodeGenerator";
 import CodeViewer from "./assets/GeneratedCode/CodeViewer";
 
 const nodeTypes = { entity: Entity };
@@ -122,7 +123,7 @@ export default function App() {
     const generatedCode = {
       Entities: EntityCodeGenerator(exportXML()),
       Controllers: ControllerCodeGenerator(exportXML()),
-      // Repositories: RepositoryCodeGenerator(exportXML()),
+      Repositories: RepositoryCodeGenerator(exportXML()),
       // Services: ServiceCodeGenerator(exportXML()),
     };
 
