@@ -1,5 +1,5 @@
 function getController(entityName) {
-    const basePackage = `com.example.${entityName}`
+    const basePackage = `com.example`
     return `package ${basePackage}.controller;
 
 import org.springframework.web.bind.annotation.*;

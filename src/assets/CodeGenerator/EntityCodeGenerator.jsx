@@ -6,6 +6,33 @@ export default function EntityGenerator(xml) {
     let entityFields = ``;
     let entityGetters = ``;
     let entitySetters = ``;
+    let relations = [];
+
+    // still underwork
+    xmlDoc.querySelectorAll("Edge").forEach(edge => {
+        // relations.push({ source: edge.getAttribute("source"), target: edge.getAttribute("target"), field: null });
+        let relation = '';
+        if (edge.getAttribute("relationship") === '1-m') {
+            relation = '@OneToMany';
+        } else if (edge.getAttribute("relationship") === 'm-1') {
+            relation = '@ManyToOne';
+        } else if (edge.getAttribute("relationship") === '1-1') {
+            relation = '@OneToOne';
+        } else if (edge.getAttribute("relationship") === 'm-m') {
+            relation = '@ManyToMany';
+        }
+
+        xmlDoc.querySelectorAll("Entity").forEach(e => {
+            if (e.getAttribute("id") === edge.getAttribute("target")) {
+                e.querySelectorAll("Field").forEach(f => {
+                    if (f.pk === true) {
+                        relations.push({ code: `` })
+                    }
+                })
+            }
+        })
+    });
+    console.log(relations);
 
     xmlDoc.querySelectorAll("Entity").forEach(node => {
         entityFields = ``;
@@ -14,7 +41,7 @@ export default function EntityGenerator(xml) {
 
         const entityName = node.getAttribute("name");
         const capitalizedName = entityName.charAt(0).toUpperCase() + entityName.slice(1);
-        const basePackage = `com.example.${entityName}`;
+        const basePackage = `com.example.entity`;
 
         node.querySelectorAll("Field").forEach(field => {
             const fieldName = field.getAttribute("name");

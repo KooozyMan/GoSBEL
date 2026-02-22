@@ -1,5 +1,5 @@
 function getRepository(entityName, idType = "Long") {
-    const basePackage = `com.example.${entityName.toLowerCase()}`;
+    const basePackage = `com.example`;
     return `package ${basePackage}.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +19,7 @@ export default function RepositoryCodeGenerator(xml) {
 
     xmlDoc.querySelectorAll("Entity").forEach(e => {
         const name = e.getAttribute('name').charAt(0).toUpperCase() + e.getAttribute('name').slice(1);
-        
+
         // Find the PK type from the fields
         let idType = "Long"; // Default
         e.querySelectorAll("Field").forEach(f => {
@@ -32,9 +32,9 @@ export default function RepositoryCodeGenerator(xml) {
             }
         });
 
-        repositories.push({ 
-            'fileName': `${name}Repository.java`, 
-            'code': getRepository(name, idType) 
+        repositories.push({
+            'fileName': `${name}Repository.java`,
+            'code': getRepository(name, idType)
         });
     });
     return repositories;

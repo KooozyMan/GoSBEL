@@ -1,6 +1,6 @@
 function getService(entityName, idType = "Long") {
 
-    const basePackage = `com.example.${entityName.toLowerCase()}`;
+    const basePackage = `com.example`;
 
     return `package ${basePackage}.service;
 
