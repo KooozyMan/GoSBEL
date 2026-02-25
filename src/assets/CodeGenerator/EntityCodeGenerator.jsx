@@ -6,38 +6,34 @@ export default function EntityGenerator(xml) {
     let entityFields = ``;
     let entityGetters = ``;
     let entitySetters = ``;
+    let cardinality = ``;
     let relations = [];
 
-    // still underwork
     xmlDoc.querySelectorAll("Edge").forEach(edge => {
-        // relations.push({ source: edge.getAttribute("source"), target: edge.getAttribute("target"), field: null });
-        let relation = '';
-        if (edge.getAttribute("relationship") === '1-m') {
-            relation = '@OneToMany';
-        } else if (edge.getAttribute("relationship") === 'm-1') {
-            relation = '@ManyToOne';
-        } else if (edge.getAttribute("relationship") === '1-1') {
-            relation = '@OneToOne';
-        } else if (edge.getAttribute("relationship") === 'm-m') {
-            relation = '@ManyToMany';
-        }
+        const srcId = edge.getAttribute("source");
+        const targetId = edge.getAttribute("target");
+        const relationship = edge.getAttribute("relationship");
 
-        xmlDoc.querySelectorAll("Entity").forEach(e => {
-            if (e.getAttribute("id") === edge.getAttribute("target")) {
-                e.querySelectorAll("Field").forEach(f => {
-                    if (f.pk === true) {
-                        relations.push({ code: `` })
-                    }
-                })
-            }
-        })
+        if (relationship === '1-m') {
+            relations.push({ OwnerId: targetId, inverseId: srcId, relation: "@ManyToOne" });
+
+        } else if (relationship === 'm-1') {
+            relations.push({ OwnerId: srcId, inverseId: targetId, relation: "@ManyToOne" });
+
+        } else if (relationship === '1-1') {
+            relations.push({ OwnerId: srcId, inverseId: targetId, relation: "@OneToOne" });
+
+        } else if (relationship === 'm-m') {
+            relation = '@ManyToMany';
+            // bridge table TODO
+        }
     });
-    console.log(relations);
 
     xmlDoc.querySelectorAll("Entity").forEach(node => {
         entityFields = ``;
         entityGetters = ``;
         entitySetters = ``;
+        cardinality = ``;
 
         const entityName = node.getAttribute("name");
         const capitalizedName = entityName.charAt(0).toUpperCase() + entityName.slice(1);
@@ -53,6 +49,16 @@ export default function EntityGenerator(xml) {
             entitySetters += `    public void set${capitalizedFieldName}(${fieldType} ${fieldName}) { this.${fieldName} = ${fieldName}; }\n`;
         });
 
+        const ownedRelations = relations.filter(r => r.OwnerId === node.getAttribute("id"));
+
+        if (ownedRelations.length != 0) {
+            cardinality = ownedRelations.map(r => {
+                const inverseName = xmlDoc.querySelector(`Entity[id="${r.inverseId}"]`).getAttribute("name").toLowerCase();
+                const inverseNameCapitalized = inverseName.charAt(0).toUpperCase() + inverseName.slice(1);
+                return `\n\t${r.relation}\n\t@joinColumn(name = "${inverseName}_id")\n\tprivate ${inverseNameCapitalized} ${inverseName};\n`;
+            }).join("");
+        }
+
         const code = `package ${basePackage};
     
 import jakarta.persistence.*;
@@ -63,7 +69,7 @@ public class ${capitalizedName} {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-${entityFields}
+${entityFields}${cardinality}
     // Getters
 ${entityGetters}
     // Setters
