@@ -3,6 +3,7 @@ import { EditorView } from "@codemirror/view"
 import { EditorState } from "@codemirror/state"
 import { basicSetup } from "codemirror"
 import { xml } from "@codemirror/lang-xml"
+import { useHotkeys } from "react-hotkeys-hook"
 
 export default function XMLView({ onClose, onLoad, xmlContent }) {
     const editorRef = useRef(null)
@@ -49,12 +50,17 @@ export default function XMLView({ onClose, onLoad, xmlContent }) {
     };
 
     return (
-        <div className="xml-container">
-            <div ref={editorRef} className="xml-code" />
+<div>
+    <div className="xml-container">
+        <div ref={editorRef} className="xml-code" />
+        <footer className="xml-footer">
             <div className="xml-buttons">
                 <button onClick={onClose}>Close</button>
                 <button onClick={handleLoad}>Load</button>
             </div>
-        </div>
+        </footer>
+    </div>
+    <div className="overlay"/>
+</div>
     );
 }

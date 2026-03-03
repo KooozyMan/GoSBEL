@@ -55,7 +55,7 @@ export default function Entity({ id, data }) {
                     value={entityName}
                     onChange={handleNameChange}
                     placeholder="Entity Name"
-                    className="entity-title-input"
+                    className="entity-title-input nodrag"
                 />
             </div>
 
@@ -65,14 +65,14 @@ export default function Entity({ id, data }) {
                         value={field.name}
                         onChange={(e) => changeFieldName(index, e.target.value)}
                         placeholder="field name"
-                        className="entity-name-input"
+                        className="entity-name-input nodrag"
                     />
 
                     <input
                         value={field.type}
                         onChange={(e) => changeFieldType(index, e.target.value)}
                         placeholder="type"
-                        className="entity-type-input"
+                        className="entity-type-input nodrag"
                     />
 
                     <AiOutlineClose

@@ -11,13 +11,28 @@
 }
 
 .files {
-    background-color: grey;
+    background-color: rgba(128, 128, 128, 0.689);
     flex-direction: column;
     width: 400px;
     padding: 15px 30px;
 }
 
-.folder {}
+.folder_name {
+    display: block;
+    background-color: rgba(47, 47, 48, 0.185);
+    margin-bottom: 0.25rem;
+    margin-top: 0.25rem;
+}
+
+.folder_name:hover{
+    background-color: rgba(47, 47, 48, 0.769);
+}
+
+.download{
+    position: absolute;
+    bottom: 2.5%;
+    cursor: default;
+}
 
 .file {
     margin-left: 20px;
@@ -25,6 +40,7 @@
 
 .file:hover {
     cursor: pointer;
+    background-color: #505868;
 }
 
 .file.selected {
@@ -33,6 +49,8 @@
 
 .code {
     background-color: #282c34;
+    max-height: 100%;
+    overflow-y: auto;
     width: 100%
 }
 
@@ -42,6 +60,7 @@
     top: 15px;
     width: 60px;
     height: 60px;
+    z-index: 20;
     font-weight: bolder;
     font-size: 20px;
 }

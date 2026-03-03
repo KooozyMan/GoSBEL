@@ -23,6 +23,7 @@ import EntityCodeGenerator from "./assets/CodeGenerator/EntityCodeGenerator";
 import RepositoryCodeGenerator from "./assets/CodeGenerator/RepositoryCodeGenerator";
 import ServiceCodeGenerator from "./assets/CodeGenerator/ServiceCodeGenerator";
 import CodeViewer from "./assets/GeneratedCode/CodeViewer";
+import { useHotkeys } from "react-hotkeys-hook";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -81,7 +82,7 @@ export default function App() {
 
     setNodes((nodes) => [...nodes, newNode]);
   };
-
+ 
   const onConnect = useCallback(
     (connection) => {
       const edge = { ...connection, type: "crowsFoot" };
@@ -209,6 +210,13 @@ export default function App() {
     setNodes(loadedNodes);
     setEdges(loadedEdges);
   };
+
+  useHotkeys('ctrl+e',() => createNode("entity"),{preventDefault:true})
+  useHotkeys('ctrl+s',() => quickSave(),{preventDefault:true})
+  useHotkeys('ctrl+l',() => quickLoad(),{preventDefault:true})
+  useHotkeys('ctrl+c',() => CodeViewerHandler(),{preventDefault:true})
+  useHotkeys('ctrl+x',() => setXmlVisibility(true),{preventDefault:true})
+  useHotkeys('esc',() => {setCodeVisibility(false);setXmlVisibility(false)})
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
