@@ -24,6 +24,7 @@ import RepositoryCodeGenerator from "./assets/CodeGenerator/RepositoryCodeGenera
 import ServiceCodeGenerator from "./assets/CodeGenerator/ServiceCodeGenerator";
 import CodeViewer from "./assets/GeneratedCode/CodeViewer";
 import ExportWindow from './assets/Popups/ExportWindow';
+import Application from './assets/Panels/Application';
 import { useHotkeys } from "react-hotkeys-hook";
 
 const nodeTypes = { entity: Entity };
@@ -69,6 +70,7 @@ export default function App() {
   const [CodeVisibility, setCodeVisibility] = useState(false);
   const [entityId, setEntityId] = useState(3);
   const [ExportWindowVisibility, setExportWindowVisibility] = useState(false);
+  const [ApplicationName, setApplicationName] = useState('default');
 
   const createNode = (nodeType) => {
     let newNode;
@@ -136,7 +138,7 @@ export default function App() {
   };
 
   const exportXML = () => {
-    let xml = `<Application name="default">\n`;
+    let xml = `<Application name="${ApplicationName.charAt(0).toUpperCase() + ApplicationName.slice(1)}">\n`;
     nodes.forEach((n) => {
       if (n.type === 'entity') {
         xml += `  <Entity id="${n.id}" name="${n.data.label}" x="${n.position.x}" y="${n.position.y}">\n`;
@@ -246,6 +248,7 @@ export default function App() {
       >
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
         <Panel position="top-center">{ConfirmationVisibility && <Confirmation type={confirmationData.type} message={confirmationData.message} />}</Panel>
+        <Panel position="bottom-center"><Application name={ApplicationName} setName={setApplicationName} /></Panel>
         <MiniMap />
         <Controls />
         <Background />

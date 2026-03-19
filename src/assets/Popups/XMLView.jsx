@@ -14,7 +14,7 @@ export default function XMLView({ onClose, onLoad, xmlContent }) {
         if (!editorRef.current) return
 
         const state = EditorState.create({
-            doc: xmlContent || `<Application name="default">\n</Application>`,
+            doc: xmlContent || `Something went wrong`,
             extensions: [basicSetup, xml()]
         })
 
@@ -50,17 +50,17 @@ export default function XMLView({ onClose, onLoad, xmlContent }) {
     };
 
     return (
-<div>
-    <div className="xml-container">
-        <div ref={editorRef} className="xml-code" />
-        <footer className="xml-footer">
-            <div className="xml-buttons">
-                <button onClick={onClose}>Close</button>
-                <button onClick={handleLoad}>Load</button>
+        <div>
+            <div className="xml-container">
+                <div ref={editorRef} className="xml-code" />
+                <footer className="xml-footer">
+                    <div className="xml-buttons">
+                        <button onClick={onClose}>Close</button>
+                        <button onClick={handleLoad}>Load</button>
+                    </div>
+                </footer>
             </div>
-        </footer>
-    </div>
-    <div className="overlay"/>
-</div>
+            <div className="overlay" />
+        </div>
     );
 }
