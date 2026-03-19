@@ -1,7 +1,4 @@
-function getService(entityName, idType = "Long") {
-
-    const basePackage = `com.example`;
-
+function getService(entityName, idType = "Long", basePackage) {
     return `package ${basePackage}.service;
 
 import org.springframework.stereotype.Service;
@@ -39,7 +36,7 @@ public class ${entityName}Service {
 }
 
 
-export default function ServiceCodeGenerator(xml) {
+export default function ServiceCodeGenerator(xml, basePackage = `com.example`) {
 
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
@@ -65,7 +62,7 @@ export default function ServiceCodeGenerator(xml) {
 
         services.push({
             fileName: `${capitalizedName}Service.java`,
-            code: getService(capitalizedName, idType)
+            code: getService(capitalizedName, idType, basePackage)
         });
 
     });

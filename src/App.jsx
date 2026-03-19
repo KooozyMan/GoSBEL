@@ -23,6 +23,7 @@ import EntityCodeGenerator from "./assets/CodeGenerator/EntityCodeGenerator";
 import RepositoryCodeGenerator from "./assets/CodeGenerator/RepositoryCodeGenerator";
 import ServiceCodeGenerator from "./assets/CodeGenerator/ServiceCodeGenerator";
 import CodeViewer from "./assets/GeneratedCode/CodeViewer";
+import ExportWindow from './assets/Popups/ExportWindow';
 import { useHotkeys } from "react-hotkeys-hook";
 
 const nodeTypes = { entity: Entity };
@@ -67,6 +68,7 @@ export default function App() {
   const [confirmationData, setConfirmationData] = useState({ type: "", message: "" });
   const [CodeVisibility, setCodeVisibility] = useState(false);
   const [entityId, setEntityId] = useState(3);
+  const [ExportWindowVisibility, setExportWindowVisibility] = useState(false);
 
   const createNode = (nodeType) => {
     let newNode;
@@ -82,7 +84,7 @@ export default function App() {
 
     setNodes((nodes) => [...nodes, newNode]);
   };
- 
+
   const onConnect = useCallback(
     (connection) => {
       const edge = { ...connection, type: "crowsFoot" };
@@ -157,6 +159,11 @@ export default function App() {
     return xml;
   };
 
+  const exportCode = () => {
+    setCodeVisibility(false);
+    setExportWindowVisibility(true);
+  };
+
   const handleLoadedXml = (xml) => {
     setXmlVisibility(false);
     let loadedNodes = [];
@@ -211,12 +218,12 @@ export default function App() {
     setEdges(loadedEdges);
   };
 
-  useHotkeys('ctrl+e',() => createNode("entity"),{preventDefault:true})
-  useHotkeys('ctrl+s',() => quickSave(),{preventDefault:true})
-  useHotkeys('ctrl+l',() => quickLoad(),{preventDefault:true})
-  useHotkeys('ctrl+c',() => CodeViewerHandler(),{preventDefault:true})
-  useHotkeys('ctrl+x',() => setXmlVisibility(true),{preventDefault:true})
-  useHotkeys('esc',() => {setCodeVisibility(false);setXmlVisibility(false)})
+  useHotkeys('ctrl+e', () => createNode("entity"), { preventDefault: true })
+  useHotkeys('ctrl+s', () => quickSave(), { preventDefault: true })
+  useHotkeys('ctrl+l', () => quickLoad(), { preventDefault: true })
+  useHotkeys('ctrl+c', () => CodeViewerHandler(), { preventDefault: true })
+  useHotkeys('ctrl+x', () => setXmlVisibility(true), { preventDefault: true })
+  useHotkeys('esc', () => { setCodeVisibility(false); setXmlVisibility(false); setExportWindowVisibility(true); })
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
@@ -245,7 +252,8 @@ export default function App() {
       </ReactFlow>
 
       {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
-      {CodeVisibility && <CodeViewer generatedCode={CodeViewerHandler()} onClose={() => setCodeVisibility(false)} />}
+      {CodeVisibility && <CodeViewer generatedCode={CodeViewerHandler()} onExport={() => exportCode()} onClose={() => setCodeVisibility(false)} />}
+      {ExportWindowVisibility && <ExportWindow />}
     </div>
   );
 }

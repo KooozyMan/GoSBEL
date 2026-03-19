@@ -1,5 +1,4 @@
-function getRepository(entityName, idType = "Long") {
-    const basePackage = `com.example`;
+function getRepository(entityName, idType = "Long", basePackage) {
     return `package ${basePackage}.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +11,7 @@ public interface ${entityName}Repository extends JpaRepository<${entityName}, ${
 }`;
 }
 
-export default function RepositoryCodeGenerator(xml) {
+export default function RepositoryCodeGenerator(xml, basePackage = `com.example`) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
     let repositories = [];
@@ -34,7 +33,7 @@ export default function RepositoryCodeGenerator(xml) {
 
         repositories.push({
             'fileName': `${name}Repository.java`,
-            'code': getRepository(name, idType)
+            'code': getRepository(name, idType, basePackage)
         });
     });
     return repositories;

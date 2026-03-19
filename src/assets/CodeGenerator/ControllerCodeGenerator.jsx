@@ -1,7 +1,6 @@
-function getController(entityName) {
-    const basePackage = `com.example`
+function getController(entityName, basePackage) {
     const entityLower = entityName.toLowerCase();
-    
+
     return `package ${basePackage}.controller;
 
 import ${basePackage}.entity.${entityName};
@@ -158,15 +157,15 @@ public class ${entityName}Controller {
 }`
 }
 
-export default function ControllerCodeGenerator(xml) {
+export default function ControllerCodeGenerator(xml, basePackage = `com.example`) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
     let controllers = [];
-    
+
     xmlDoc.querySelectorAll("Entity").forEach(e => {
         const name = e.getAttribute('name').charAt(0).toUpperCase() + e.getAttribute('name').slice(1);
-        controllers.push({ 'fileName': `${name}Controller.java`, 'code': getController(name) })
+        controllers.push({ 'fileName': `${name}Controller.java`, 'code': getController(name, basePackage) })
     })
-    
+
     return controllers;
 }

@@ -1,4 +1,4 @@
-export default function EntityGenerator(xml) {
+export default function EntityGenerator(xml, basePackage = `com.example`) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
 
@@ -37,7 +37,6 @@ export default function EntityGenerator(xml) {
 
         const entityName = node.getAttribute("name");
         const capitalizedName = entityName.charAt(0).toUpperCase() + entityName.slice(1);
-        const basePackage = `com.example.entity`;
 
         node.querySelectorAll("Field").forEach(field => {
             const fieldName = field.getAttribute("name");
@@ -59,7 +58,7 @@ export default function EntityGenerator(xml) {
             }).join("");
         }
 
-        const code = `package ${basePackage};
+        const code = `package ${basePackage}.entity;
     
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;

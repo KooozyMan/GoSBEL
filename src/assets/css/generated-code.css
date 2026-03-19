@@ -17,20 +17,21 @@
     padding: 15px 30px;
 }
 
-.folder_name {
+.folder-name {
     display: block;
     background-color: rgba(47, 47, 48, 0.185);
     margin-bottom: 0.25rem;
     margin-top: 0.25rem;
 }
 
-.folder_name:hover{
+.folder-name:hover {
     background-color: rgba(47, 47, 48, 0.769);
 }
 
-.download{
+.export-code {
     position: absolute;
     bottom: 2.5%;
+    left: 2.5%;
     cursor: default;
 }
 
