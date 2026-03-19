@@ -2,11 +2,18 @@ import { useState } from "react";
 import { Editor } from "@monaco-editor/react";
 
 export default function CodeViewer({ onExport, onClose, generatedCode }) {
-    const [ViewedCode, setViewedCode] = useState(generatedCode.Entities[0].code);
+    const [ViewedCode, setViewedCode] = useState(generatedCode.Application[0].code);
     return (
         <div className="code-viewer">
 
             <div className="files">
+                <div className="folder">
+                    <span className="folder-name">Application</span>
+                    {generatedCode.Application.map((application, index) => (
+                        <div key={index} className={`file ${ViewedCode === application.code ? 'selected' : ''}`}
+                            onClick={() => setViewedCode(application.code)}>{application.fileName}</div>
+                    ))}
+                </div>
                 <div className="folder">
                     <span className="folder-name">Entities</span>
                     {generatedCode.Entities.map((entity, index) => (

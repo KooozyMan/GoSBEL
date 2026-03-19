@@ -25,6 +25,7 @@ import ServiceCodeGenerator from "./assets/CodeGenerator/ServiceCodeGenerator";
 import CodeViewer from "./assets/GeneratedCode/CodeViewer";
 import ExportWindow from './assets/Popups/ExportWindow';
 import Application from './assets/Panels/Application';
+import ApplicationCodeGenerator from './assets/CodeGenerator/ApplicationCodeGenerator';
 import { useHotkeys } from "react-hotkeys-hook";
 
 const nodeTypes = { entity: Entity };
@@ -127,6 +128,7 @@ export default function App() {
     }
 
     const generatedCode = {
+      Application: ApplicationCodeGenerator(ApplicationName.charAt(0).toUpperCase() + ApplicationName.slice(1)),
       Entities: EntityCodeGenerator(exportXML()),
       Controllers: ControllerCodeGenerator(exportXML()),
       Repositories: RepositoryCodeGenerator(exportXML()),
