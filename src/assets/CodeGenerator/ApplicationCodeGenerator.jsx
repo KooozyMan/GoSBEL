@@ -1,5 +1,9 @@
-export default function ApplicationCodeGenerator(baseArtifact = `Demo`, basePackage = `com.example`) {
-    const code = `package ${basePackage};
+export default function ApplicationCodeGenerator(xml, basePackage = `com.example`) {
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xml, "text/xml");
+
+  const baseArtifact = xmlDoc.querySelector("Application").getAttribute("name");
+  const code = `package ${basePackage};
     
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,5 +17,5 @@ public class ${baseArtifact}Application {
 
 }`;
 
-    return [{ fileName: `${baseArtifact}Application.java`, code: code }];
+  return [{ fileName: `${baseArtifact}Application.java`, code: code }];
 }

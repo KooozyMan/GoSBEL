@@ -34,12 +34,12 @@
 }
 
 /* XML View Page */
-/* XML View Page */
 .xml-container {
     position: absolute;
     top: 15%;
     left: 25%;
-    padding: 20px 0 0 0;  /* Remove bottom padding */
+    padding: 20px 0 0 0;
+    /* Remove bottom padding */
     z-index: 15;
     width: 800px;
     max-height: 70%;
@@ -56,14 +56,15 @@
     width: 95%;
     color: black;
     font-size: 18px;
-    margin: 0 auto;  /* Center the code content */
-    padding-bottom: 20px;  /* Add space before footer */
+    margin: 0 auto;
+    /* Center the code content */
+    padding-bottom: 20px;
+    /* Add space before footer */
 }
 
 .xml-footer {
     width: 100%;
     background: grey;
-    border-top: 1px solid #ccc;  /* Optional separator */
     padding: 15px 0;
     position: sticky;
     bottom: 0;
@@ -77,5 +78,6 @@
     flex-direction: row;
     justify-content: space-between;
     width: 320px;
-    margin: 0 auto;  /* Center the buttons */
+    margin: 0 auto;
+    /* Center the buttons */
 }

@@ -127,12 +127,13 @@ export default function App() {
       return;
     }
 
+    const exportedXML = exportXML();
     const generatedCode = {
-      Application: ApplicationCodeGenerator(ApplicationName.charAt(0).toUpperCase() + ApplicationName.slice(1)),
-      Entities: EntityCodeGenerator(exportXML()),
-      Controllers: ControllerCodeGenerator(exportXML()),
-      Repositories: RepositoryCodeGenerator(exportXML()),
-      Services: ServiceCodeGenerator(exportXML()),
+      Application: ApplicationCodeGenerator(exportedXML),
+      Entities: EntityCodeGenerator(exportedXML),
+      Controllers: ControllerCodeGenerator(exportedXML),
+      Repositories: RepositoryCodeGenerator(exportedXML),
+      Services: ServiceCodeGenerator(exportedXML),
     };
 
     setCodeVisibility(true);
@@ -217,7 +218,7 @@ export default function App() {
     });
 
     // xmlDoc.querySelectorAll("Repository").forEach((e) => {}); // Example
-
+    setApplicationName(xmlDoc.querySelector("Application").getAttribute("name"));
     setNodes(loadedNodes);
     setEdges(loadedEdges);
   };
