@@ -1,6 +1,7 @@
 export default function EntityGenerator(xml, basePackage = `com.example`) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
+    const smallBaseArtifact = xmlDoc.querySelector("Application").getAttribute("name").toLowerCase();
 
     let EntityCode = [];
     let entityFields = ``;
@@ -58,7 +59,7 @@ export default function EntityGenerator(xml, basePackage = `com.example`) {
             }).join("");
         }
 
-        const code = `package ${basePackage}.entity;
+        const code = `package ${basePackage}.${smallBaseArtifact}.entity;
     
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;

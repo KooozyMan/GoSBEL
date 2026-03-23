@@ -3,7 +3,8 @@ export default function ApplicationCodeGenerator(xml, basePackage = `com.example
   const xmlDoc = parser.parseFromString(xml, "text/xml");
 
   const baseArtifact = xmlDoc.querySelector("Application").getAttribute("name");
-  const code = `package ${basePackage};
+  const smallBaseArtifact = baseArtifact.toLowerCase();
+  const code = `package ${basePackage}.${smallBaseArtifact};
     
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

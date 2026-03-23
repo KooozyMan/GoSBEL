@@ -1,5 +1,5 @@
-function getService(entityName, idType = "Long", basePackage) {
-    return `package ${basePackage}.service;
+function getService(entityName, idType = "Long", basePackage, smallBaseArtifact) {
+    return `package ${basePackage}.${smallBaseArtifact}.service;
 
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -40,6 +40,7 @@ export default function ServiceCodeGenerator(xml, basePackage = `com.example`) {
 
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
+    const smallBaseArtifact = xmlDoc.querySelector("Application").getAttribute("name").toLowerCase();
     let services = [];
 
     xmlDoc.querySelectorAll("Entity").forEach(e => {
@@ -62,7 +63,7 @@ export default function ServiceCodeGenerator(xml, basePackage = `com.example`) {
 
         services.push({
             fileName: `${capitalizedName}Service.java`,
-            code: getService(capitalizedName, idType, basePackage)
+            code: getService(capitalizedName, idType, basePackage, smallBaseArtifact)
         });
 
     });

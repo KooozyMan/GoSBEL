@@ -27,6 +27,7 @@ import ExportWindow from './assets/Popups/ExportWindow';
 import Application from './assets/Panels/Application';
 import ApplicationCodeGenerator from './assets/CodeGenerator/ApplicationCodeGenerator';
 import { useHotkeys } from "react-hotkeys-hook";
+import TestCodeGenerator from "./assets/CodeGenerator/TestCodeGenerator";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -71,7 +72,7 @@ export default function App() {
   const [CodeVisibility, setCodeVisibility] = useState(false);
   const [entityId, setEntityId] = useState(3);
   const [ExportWindowVisibility, setExportWindowVisibility] = useState(false);
-  const [ApplicationName, setApplicationName] = useState('default');
+  const [ApplicationName, setApplicationName] = useState('app');
 
   const createNode = (nodeType) => {
     let newNode;
@@ -134,6 +135,7 @@ export default function App() {
       Controllers: ControllerCodeGenerator(exportedXML),
       Repositories: RepositoryCodeGenerator(exportedXML),
       Services: ServiceCodeGenerator(exportedXML),
+      Test: TestCodeGenerator(exportedXML),
     };
 
     setCodeVisibility(flag);

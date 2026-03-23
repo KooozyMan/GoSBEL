@@ -68,15 +68,15 @@ export default function ExportWindow({ onClose, xml }) {
         const test = src.folder('test');
         const testJava = test.folder('java');
 
-        // let currentTestFolder = testJava;
-        // for (let i = 0; i < basePackage.length; i++) {
-        //     const packageName = basePackage[i];
-        //     currentTestFolder = currentTestFolder.folder(packageName);
+        let currentTestFolder = testJava;
+        for (let i = 0; i < basePackage.length; i++) {
+            const packageName = basePackage[i];
+            currentTestFolder = currentTestFolder.folder(packageName);
 
-        //     if (i === basePackage.length - 1) {
-        //         currentTestFolder.file(xml.Test[0].fileName, xml.Test[0].code);
-        //     }
-        // }
+            if (i === basePackage.length - 1) {
+                currentTestFolder.file(xml.Test[0].fileName, xml.Test[0].code);
+            }
+        }
 
         // creating pom.xml
         application.file('pom.xml', 'dependency');

@@ -42,6 +42,13 @@ export default function CodeViewer({ onExport, onClose, generatedCode }) {
                             onClick={() => setViewedCode(service.code)}>{service.fileName}</div>
                     ))}
                 </div>
+                <div className="folder">
+                    <span className="folder-name">Test</span>
+                    {generatedCode.Test.map((test, index) => (
+                        <div key={index} className={`file ${ViewedCode === test.code ? 'selected' : ''}`}
+                            onClick={() => setViewedCode(test.code)}>{test.fileName}</div>
+                    ))}
+                </div>
             </div>
             <div className="code">
                 <Editor

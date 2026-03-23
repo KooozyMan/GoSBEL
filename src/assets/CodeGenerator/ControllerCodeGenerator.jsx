@@ -1,7 +1,7 @@
-function getController(entityName, basePackage) {
+function getController(entityName, basePackage, smallBaseArtifact) {
     const entityLower = entityName.toLowerCase();
 
-    return `package ${basePackage}.controller;
+    return `package ${basePackage}.${smallBaseArtifact}.controller;
 
 import ${basePackage}.entity.${entityName};
 import ${basePackage}.service.${entityName}Service;
@@ -160,11 +160,12 @@ public class ${entityName}Controller {
 export default function ControllerCodeGenerator(xml, basePackage = `com.example`) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
+    const smallBaseArtifact = xmlDoc.querySelector("Application").getAttribute("name").toLowerCase();
     let controllers = [];
 
     xmlDoc.querySelectorAll("Entity").forEach(e => {
         const name = e.getAttribute('name').charAt(0).toUpperCase() + e.getAttribute('name').slice(1);
-        controllers.push({ 'fileName': `${name}Controller.java`, 'code': getController(name, basePackage) })
+        controllers.push({ 'fileName': `${name}Controller.java`, 'code': getController(name, basePackage, smallBaseArtifact) })
     })
 
     return controllers;
