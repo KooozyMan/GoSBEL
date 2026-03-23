@@ -81,3 +81,53 @@
     margin: 0 auto;
     /* Center the buttons */
 }
+
+/* Export Code Page */
+.export-window {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    top: 15%;
+    left: 25%;
+    padding: 20px;
+    z-index: 15;
+    width: 800px;
+    max-height: 300px;
+    color: black;
+    background: white;
+    border-radius: 8px;
+}
+
+.export-project-config {
+    color: #6db33f;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.export-project-download {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.downloadable {
+    display: flex;
+    align-items: center;
+    color: #2D527C;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    gap: 20px;
+    border: solid 3px #2D527C;
+    border-radius: 6px;
+}
+
+.downloadable:hover {
+    cursor: pointer;
+}
+
+.file-img {
+    width: 64px;
+    height: 64px;
+}

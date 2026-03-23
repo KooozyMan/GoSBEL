@@ -121,7 +121,7 @@ export default function App() {
     confirmationHelper('confirmation', 'The diagram has been loaded from your browser!');
   };
 
-  const CodeViewerHandler = () => {
+  const CodeViewerHandler = (flag = true) => {
     if (nodes.length === 0) {
       confirmationHelper('error', 'No Nodes to generate Code from.');
       return;
@@ -136,7 +136,7 @@ export default function App() {
       Services: ServiceCodeGenerator(exportedXML),
     };
 
-    setCodeVisibility(true);
+    setCodeVisibility(flag);
     return generatedCode;
   };
 
@@ -228,7 +228,7 @@ export default function App() {
   useHotkeys('ctrl+l', () => quickLoad(), { preventDefault: true })
   useHotkeys('ctrl+c', () => CodeViewerHandler(), { preventDefault: true })
   useHotkeys('ctrl+x', () => setXmlVisibility(true), { preventDefault: true })
-  useHotkeys('esc', () => { setCodeVisibility(false); setXmlVisibility(false); setExportWindowVisibility(true); })
+  useHotkeys('esc', () => { setCodeVisibility(false); setXmlVisibility(false); setExportWindowVisibility(false); })
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
@@ -259,7 +259,7 @@ export default function App() {
 
       {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
       {CodeVisibility && <CodeViewer generatedCode={CodeViewerHandler()} onExport={() => exportCode()} onClose={() => setCodeVisibility(false)} />}
-      {ExportWindowVisibility && <ExportWindow />}
+      {ExportWindowVisibility && <ExportWindow onClose={() => setExportWindowVisibility(false)} xml={CodeViewerHandler(false)} />}
     </div>
   );
 }
