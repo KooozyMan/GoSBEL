@@ -1,20 +1,23 @@
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
-export default function ExportWindow({ onClose, xml }) {
+export default function ExportWindow({ onClose, generatedCode, onConfirmation }) {
     async function fetchFile(path) {
         const res = await fetch(path);
         return await res.blob();
     }
 
     const getZipFile = async () => {
-        const capAppName = xml.Application[0].fileName.slice(0, -16);
-        const minAppName = capAppName.toLowerCase();
-        const basePackage = ['com', 'example', minAppName]; // TODO: make dynamic from user maybe
+        const capAppName = generatedCode.Application[0].fileName.slice(0, -16);
+        const smlAppName = capAppName.toLowerCase();
+        const basePackage = ['com', 'example', smlAppName]; // TODO: make dynamic from user maybe
 
         const zip = JSZip();
         const application = zip.folder(capAppName);
 
+        // -----------------------------------------------------
+        // --------------- Copying static files ---------------
+        // -----------------------------------------------------
         // installing local maven
         application.file('mvnw', await fetchFile('/templates/mvnw'));
         application.file('mvnw.cmd', await fetchFile('/templates/mvnw.cmd'));
@@ -22,12 +25,17 @@ export default function ExportWindow({ onClose, xml }) {
         const wrapper = mvn.folder('wrapper');
         wrapper.file('maven-wrapper.properties', await fetchFile('/templates/maven-wrapper.properties'));
 
+        // installing git files
+        application.file('.gitignore', await fetchFile('/templates/.gitignore'));
+        application.file('.gitattributes', await fetchFile('/templates/.gitattributes'));
+
+        // ------------------------------------------------------
+        // --------------- Creating File Strcture ---------------
+        // ------------------------------------------------------
         const src = application.folder('src');
 
-        // creating main
+        // Main Structure
         const main = src.folder('main');
-        const resources = main.folder('resources');
-        resources.file('application.properties', `spring.application.name=${minAppName}`);
         const java = main.folder('java');
 
         let currentFolder = java;
@@ -36,35 +44,41 @@ export default function ExportWindow({ onClose, xml }) {
             currentFolder = currentFolder.folder(packageName);
 
             if (i === basePackage.length - 1) {
-                currentFolder.file(xml.Application[0].fileName, xml.Application[0].code);
+                currentFolder.file(generatedCode.Application[0].fileName, generatedCode.Application[0].code);
             }
         }
 
         // entities
         const entities = currentFolder.folder('entity');
-        xml.Entities.forEach(entity => {
+        generatedCode.Entities.forEach(entity => {
             entities.file(entity.fileName, entity.code);
         });
 
         // Controllers
         const controllers = currentFolder.folder('controller');
-        xml.Entities.forEach(controller => {
+        generatedCode.Entities.forEach(controller => {
             controllers.file(controller.fileName, controller.code);
         });
 
         // Repositories
         const repositories = currentFolder.folder('repository');
-        xml.Entities.forEach(repository => {
+        generatedCode.Entities.forEach(repository => {
             repositories.file(repository.fileName, repository.code);
         });
 
         // Services
         const services = currentFolder.folder('service');
-        xml.Entities.forEach(service => {
+        generatedCode.Entities.forEach(service => {
             services.file(service.fileName, service.code);
         });
 
-        // creating test
+        // Creating Resources
+        const resources = main.folder('resources');
+        resources.file('application.properties', `spring.application.name=${smlAppName}`);
+        resources.folder('templates');
+        resources.folder('static');
+
+        // Test Structure
         const test = src.folder('test');
         const testJava = test.folder('java');
 
@@ -74,20 +88,29 @@ export default function ExportWindow({ onClose, xml }) {
             currentTestFolder = currentTestFolder.folder(packageName);
 
             if (i === basePackage.length - 1) {
-                currentTestFolder.file(xml.Test[0].fileName, xml.Test[0].code);
+                currentTestFolder.file(generatedCode.Test[0].fileName, generatedCode.Test[0].code);
             }
         }
 
+        // -----------------------------------------------------
+        // --------------- Managing dependencies ---------------
+        // -----------------------------------------------------
         // creating pom.xml
-        application.file('pom.xml', 'dependency');
+        // this list is hardcoded but can be dynamic with spring api however needs a backend to be runnable
+        application.file(generatedCode.Pom[0].fileName, generatedCode.Pom[0].code);
 
-        // download the generated zip file
-        saveAs(await zip.generateAsync({ type: 'blob' }), minAppName + '.zip');
+        // ---------------------------------------------------------
+        // --------------- Downloading the Generated ---------------
+        // ---------------------------------------------------------
+        // download the zip file
+        saveAs(await zip.generateAsync({ type: 'blob' }), smlAppName + '.zip');
+        onConfirmation('confirmation', 'Zip file was generated successfully');
         onClose();
     }
 
     const getJarFile = () => {
-        alert('Jar file');
+        // This feature requires either a backend or an application to run
+        onConfirmation('error', 'Cannot be implemented in browser');
         onClose();
     }
 
@@ -95,7 +118,7 @@ export default function ExportWindow({ onClose, xml }) {
         <div>
             <div className="export-window">
                 <div className="export-project-config">
-                    <span>Project Settings: <br></br>java 17</span>
+                    <span>Project Settings: Maven Java 17 <br></br>Spring Boot 4.0.4 <br></br>Packaging: Jar <br></br>Configuration: Properties</span>
                 </div>
                 <div className="export-project-download">
                     <div className="downloadable" onClick={getZipFile}>
@@ -104,6 +127,7 @@ export default function ExportWindow({ onClose, xml }) {
                     <div className="downloadable" onClick={getJarFile}>
                         <img className="file-img" src="/src/assets/img/jar.svg"></img><span>Download code as a jar file.</span>
                     </div>
+                    <button className="close-export-project-window" onClick={onClose}>Close</button>
                 </div>
             </div>
             <div className="overlay" />

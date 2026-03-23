@@ -93,7 +93,7 @@
     padding: 20px;
     z-index: 15;
     width: 800px;
-    max-height: 300px;
+    max-height: 600px;
     color: black;
     background: white;
     border-radius: 8px;
@@ -121,10 +121,13 @@
     gap: 20px;
     border: solid 3px #2D527C;
     border-radius: 6px;
+    transition: all 0.2s ease-in;
 }
 
 .downloadable:hover {
     cursor: pointer;
+    background-color: #2d527c74;
+    color: white;
 }
 
 .file-img {

@@ -28,6 +28,7 @@ import Application from './assets/Panels/Application';
 import ApplicationCodeGenerator from './assets/CodeGenerator/ApplicationCodeGenerator';
 import { useHotkeys } from "react-hotkeys-hook";
 import TestCodeGenerator from "./assets/CodeGenerator/TestCodeGenerator";
+import PomCodeGenerator from "./assets/CodeGenerator/PomCodeGenerator";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -136,6 +137,7 @@ export default function App() {
       Repositories: RepositoryCodeGenerator(exportedXML),
       Services: ServiceCodeGenerator(exportedXML),
       Test: TestCodeGenerator(exportedXML),
+      Pom: PomCodeGenerator(exportedXML),
     };
 
     setCodeVisibility(flag);
@@ -261,7 +263,7 @@ export default function App() {
 
       {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
       {CodeVisibility && <CodeViewer generatedCode={CodeViewerHandler()} onExport={() => exportCode()} onClose={() => setCodeVisibility(false)} />}
-      {ExportWindowVisibility && <ExportWindow onClose={() => setExportWindowVisibility(false)} xml={CodeViewerHandler(false)} />}
+      {ExportWindowVisibility && <ExportWindow onClose={() => setExportWindowVisibility(false)} generatedCode={CodeViewerHandler(false)} onConfirmation={confirmationHelper} />}
     </div>
   );
 }
