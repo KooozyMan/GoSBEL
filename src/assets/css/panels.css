@@ -32,11 +32,11 @@
     gap: 20px;
     width: 500px;
     height: 60px;
-    color: black;
+    color: #f3f3f3;
     font-size: 20px;
     font-weight: bold;
     border-radius: 10px;
-    background-color: rgb(228, 87, 59);
+    background-color: #2d527c;
     align-items: center;
     justify-content: center;
 }

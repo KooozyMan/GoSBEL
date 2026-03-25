@@ -43,7 +43,7 @@ const initialNodes = [
       label: "User",
       fields: [
         { name: "id", type: "int", pk: true },
-        { name: "name", type: "string", pk: false },
+        { name: "name", type: "String", pk: false },
       ]
     }
   },
