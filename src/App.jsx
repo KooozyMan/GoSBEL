@@ -29,6 +29,7 @@ import ApplicationCodeGenerator from './assets/CodeGenerator/ApplicationCodeGene
 import { useHotkeys } from "react-hotkeys-hook";
 import TestCodeGenerator from "./assets/CodeGenerator/TestCodeGenerator";
 import PomCodeGenerator from "./assets/CodeGenerator/PomCodeGenerator";
+import ActionButtons from "./assets/Panels/ActionButtons";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -236,13 +237,6 @@ export default function App() {
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
-      <div style={{ position: "absolute", zIndex: 10, padding: 10 }}>
-        <button onClick={quickSave}>Quick Save</button>
-        <button onClick={quickLoad}>Quick Load</button>
-        <button onClick={CodeViewerHandler}>View Code</button>
-        <button onClick={() => setXmlVisibility(true)}>Export/Load XML</button>
-      </div>
-
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -253,6 +247,7 @@ export default function App() {
         nodeTypes={nodeTypes}
         fitView
       >
+        <Panel position="top-left"><ActionButtons onQuickSave={quickSave} onQuickLoad={quickLoad} onCodeView={CodeViewerHandler} onXmlView={() => setXmlVisibility(true)} /></Panel>
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
         <Panel position="top-center">{ConfirmationVisibility && <Confirmation type={confirmationData.type} message={confirmationData.message} />}</Panel>
         <Panel position="bottom-center"><Application name={ApplicationName} setName={setApplicationName} /></Panel>
