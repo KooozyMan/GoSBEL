@@ -55,7 +55,7 @@ export default function EntityGenerator(xml, basePackage = `com.example`) {
             cardinality = ownedRelations.map(r => {
                 const inverseName = xmlDoc.querySelector(`Entity[id="${r.inverseId}"]`).getAttribute("name").toLowerCase();
                 const inverseNameCapitalized = inverseName.charAt(0).toUpperCase() + inverseName.slice(1);
-                return `\n\t${r.relation}\n\t@joinColumn(name = "${inverseName}_id")\n\tprivate ${inverseNameCapitalized} ${inverseName};\n`;
+                return `\n\t\t${r.relation}\n\t\t@JoinColumn(name = "${inverseName}_id")\n\t\tprivate ${inverseNameCapitalized} ${inverseName};\n`;
             }).join("");
         }
 

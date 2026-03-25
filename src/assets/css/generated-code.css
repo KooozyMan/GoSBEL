@@ -11,21 +11,51 @@
 }
 
 .files {
-    background-color: rgba(128, 128, 128, 0.689);
+    background: #f3f3f3;
     flex-direction: column;
     width: 400px;
-    padding: 15px 30px;
+    padding: 15px 20px 0 0;
+    box-shadow: inset;
+}
+
+.folder {
+    display: flex;
+    flex-direction: column;
+    color: #2d527c;
+    font-weight: bold;
+    margin: 0 0 10px 10px;
+    border-left: solid 1px #2d527c74;
+    border-radius: 6px;
+    gap: 4px;
+    transition: all 0.1s ease;
+}
+
+.folder:hover:not(:has(.folder:hover)) {
+    border-color: #234061;
+}
+
+.folder-img {
+    width: 20px;
+    height: 20px;
 }
 
 .folder-name {
-    display: block;
-    background-color: rgba(47, 47, 48, 0.185);
-    margin-bottom: 0.25rem;
-    margin-top: 0.25rem;
+    display: flex;
+    background-color: #f3f3f3;
+    padding-left: 8px;
+    align-items: center;
+    border-radius: 6px;
+    gap: 4px;
 }
 
 .folder-name:hover {
-    background-color: rgba(47, 47, 48, 0.769);
+    color: #f3f3f3;
+    background-color: #2d527c74;
+}
+
+.folder-name.selected {
+    color: black;
+    background-color: #2d527c74;
 }
 
 .export-code {
@@ -36,15 +66,19 @@
 }
 
 .file {
+    border-radius: 4px;
     margin-left: 20px;
+    padding-left: 4px;
 }
 
 .file:hover {
     cursor: pointer;
-    background-color: #505868;
+    color: #f3f3f3;
+    background-color: #2d527c74;
 }
 
 .file.selected {
+    color: #f3f3f3;
     background-color: #282c34;
 }
 

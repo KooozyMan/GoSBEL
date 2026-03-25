@@ -73,7 +73,7 @@ export default function App() {
   const [CodeVisibility, setCodeVisibility] = useState(false);
   const [entityId, setEntityId] = useState(3);
   const [ExportWindowVisibility, setExportWindowVisibility] = useState(false);
-  const [ApplicationName, setApplicationName] = useState('app');
+  const [ApplicationName, setApplicationName] = useState('demo');
 
   const createNode = (nodeType) => {
     let newNode;
