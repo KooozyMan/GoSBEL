@@ -18,6 +18,19 @@ import NodeSelector from "./assets/Panels/NodeSelector";
 import XMLView from "./assets/Popups/XMLView";
 import CrowsFoot from "./assets/Edges/CrowsFoot";
 import Confirmation from "./assets/Popups/Confirmation";
+import ControllerCodeGenerator from "./assets/CodeGenerator/ControllerCodeGenerator";
+import EntityCodeGenerator from "./assets/CodeGenerator/EntityCodeGenerator";
+import RepositoryCodeGenerator from "./assets/CodeGenerator/RepositoryCodeGenerator";
+import ServiceCodeGenerator from "./assets/CodeGenerator/ServiceCodeGenerator";
+import CodeViewer from "./assets/GeneratedCode/CodeViewer";
+import ExportWindow from './assets/Popups/ExportWindow';
+import Application from './assets/Panels/Application';
+import ApplicationCodeGenerator from './assets/CodeGenerator/ApplicationCodeGenerator';
+import { useHotkeys } from "react-hotkeys-hook";
+import TestCodeGenerator from "./assets/CodeGenerator/TestCodeGenerator";
+import PomCodeGenerator from "./assets/CodeGenerator/PomCodeGenerator";
+import ActionButtons from "./assets/Panels/ActionButtons";
+import Info from "./assets/Popups/Info";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -26,24 +39,24 @@ const initialNodes = [
   {
     id: "1",
     type: "entity",
-    position: { x: 100, y: 100 },
+    position: { x: 100, y: 70 },
     data: {
       label: "User",
       fields: [
-        { name: "id", type: "int" },
-        { name: "name", type: "string" },
+        { name: "id", type: "int", pk: true },
+        { name: "name", type: "String", pk: false },
       ]
     }
   },
   {
     id: "2",
     type: "entity",
-    position: { x: 400, y: 250 },
+    position: { x: 360, y: 270 },
     data: {
       label: "Order",
       fields: [
-        { name: "orderId", type: "int" },
-        { name: "price", type: "double" },
+        { name: "orderId", type: "int", pk: true },
+        { name: "price", type: "double", pk: false },
       ],
     }
   }
@@ -57,14 +70,25 @@ export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [XmlVisibility, setXmlVisibility] = useState(false);
+  const [InfoVisibility, setInfoVisibility] = useState(false);
   const [ConfirmationVisibility, setConfirmationVisibility] = useState(false);
   const [confirmationData, setConfirmationData] = useState({ type: "", message: "" });
+  const [CodeVisibility, setCodeVisibility] = useState(false);
+  const [entityId, setEntityId] = useState(3);
+  const [ExportWindowVisibility, setExportWindowVisibility] = useState(false);
+  const [ApplicationName, setApplicationName] = useState('demo');
 
   const createNode = (nodeType) => {
     let newNode;
 
-    if (nodeType === "entity") newNode = EntityGenerator();
-    else { alert(`the node ${nodeType} does not exist`); return }; // fallback
+    if (nodeType === "entity") {
+      newNode = EntityGenerator(entityId.toString());
+      setEntityId(entityId + 1);
+
+    } else { // fallback
+      alert(`the node ${nodeType} does not exist`);
+      return
+    };
 
     setNodes((nodes) => [...nodes, newNode]);
   };
@@ -102,14 +126,35 @@ export default function App() {
     confirmationHelper('confirmation', 'The diagram has been loaded from your browser!');
   };
 
+  const CodeViewerHandler = (flag = true) => {
+    if (nodes.length === 0) {
+      confirmationHelper('error', 'No Nodes to generate Code from.');
+      return;
+    }
+
+    const exportedXML = exportXML();
+    const generatedCode = {
+      Application: ApplicationCodeGenerator(exportedXML),
+      Entities: EntityCodeGenerator(exportedXML),
+      Controllers: ControllerCodeGenerator(exportedXML),
+      Repositories: RepositoryCodeGenerator(exportedXML),
+      Services: ServiceCodeGenerator(exportedXML),
+      Test: TestCodeGenerator(exportedXML),
+      Pom: PomCodeGenerator(exportedXML),
+    };
+
+    setCodeVisibility(flag);
+    return generatedCode;
+  };
+
   const exportXML = () => {
-    let xml = `<Application name="default">\n`;
+    let xml = `<Application name="${ApplicationName.charAt(0).toUpperCase() + ApplicationName.slice(1)}">\n`;
     nodes.forEach((n) => {
       if (n.type === 'entity') {
         xml += `  <Entity id="${n.id}" name="${n.data.label}" x="${n.position.x}" y="${n.position.y}">\n`;
 
         (n.data.fields).forEach((f) => {
-          xml += `    <Field name="${f.name}" type="${f.type}" />\n`
+          xml += `    <Field name="${f.name}" type="${f.type}" pk="${f.pk}" />\n`
         });
         xml += `  </Entity>\n`;
       }
@@ -124,6 +169,11 @@ export default function App() {
     // TODO: apply validation to naming and missing inputs
     xml += `</Application>`;
     return xml;
+  };
+
+  const exportCode = () => {
+    setCodeVisibility(false);
+    setExportWindowVisibility(true);
   };
 
   const handleLoadedXml = (xml) => {
@@ -167,25 +217,28 @@ export default function App() {
         id: id,
         source: source,
         target: target,
-        relationship: relationship,
         type: type,
+        data: {
+          relationship: relationship,
+        }
       });
     });
 
     // xmlDoc.querySelectorAll("Repository").forEach((e) => {}); // Example
-
+    setApplicationName(xmlDoc.querySelector("Application").getAttribute("name"));
     setNodes(loadedNodes);
     setEdges(loadedEdges);
   };
 
+  useHotkeys('ctrl+e', () => createNode("entity"), { preventDefault: true })
+  useHotkeys('ctrl+s', () => quickSave(), { preventDefault: true })
+  useHotkeys('ctrl+l', () => quickLoad(), { preventDefault: true })
+  useHotkeys('ctrl+c', () => CodeViewerHandler(), { preventDefault: true })
+  useHotkeys('ctrl+x', () => setXmlVisibility(true), { preventDefault: true })
+  useHotkeys('esc', () => { setCodeVisibility(false); setXmlVisibility(false); setExportWindowVisibility(false); setInfoVisibility(false); })
+
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
-      <div style={{ position: "absolute", zIndex: 10, padding: 10 }}>
-        <button onClick={quickSave}>Quick Save</button>
-        <button onClick={quickLoad}>Quick Load</button>
-        <button onClick={() => setXmlVisibility(true)}>Export/Load XML</button>
-      </div>
-
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -196,13 +249,19 @@ export default function App() {
         nodeTypes={nodeTypes}
         fitView
       >
+        <Panel position="top-left"><ActionButtons onQuickSave={quickSave} onQuickLoad={quickLoad} onCodeView={CodeViewerHandler} onXmlView={() => setXmlVisibility(true)} onInfo={() => setInfoVisibility(true)} /></Panel>
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
-        {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
         <Panel position="top-center">{ConfirmationVisibility && <Confirmation type={confirmationData.type} message={confirmationData.message} />}</Panel>
+        <Panel position="bottom-center"><Application name={ApplicationName} setName={setApplicationName} /></Panel>
         <MiniMap />
         <Controls />
         <Background />
       </ReactFlow>
+
+      {InfoVisibility && <Info onClose={() => setInfoVisibility(false)} />}
+      {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
+      {CodeVisibility && <CodeViewer generatedCode={CodeViewerHandler()} onExport={() => exportCode()} onClose={() => setCodeVisibility(false)} />}
+      {ExportWindowVisibility && <ExportWindow onClose={() => setExportWindowVisibility(false)} generatedCode={CodeViewerHandler(false)} onConfirmation={confirmationHelper} />}
     </div>
   );
 }

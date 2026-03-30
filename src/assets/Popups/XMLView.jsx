@@ -3,6 +3,7 @@ import { EditorView } from "@codemirror/view"
 import { EditorState } from "@codemirror/state"
 import { basicSetup } from "codemirror"
 import { xml } from "@codemirror/lang-xml"
+import { useHotkeys } from "react-hotkeys-hook"
 
 export default function XMLView({ onClose, onLoad, xmlContent }) {
     const editorRef = useRef(null)
@@ -13,7 +14,7 @@ export default function XMLView({ onClose, onLoad, xmlContent }) {
         if (!editorRef.current) return
 
         const state = EditorState.create({
-            doc: xmlContent || `<Application name="default">\n</Application>`,
+            doc: xmlContent || `Something went wrong`,
             extensions: [basicSetup, xml()]
         })
 
@@ -49,17 +50,17 @@ export default function XMLView({ onClose, onLoad, xmlContent }) {
     };
 
     return (
-        <div style={{
-            position: "absolute", top: "25%", left: "25%", padding: "20px 0", zIndex: "5",
-            width: "800px", minHeight: "450px", background: "grey", borderRadius: "8px",
-            display: "flex", flexDirection: "column", justifyContent: "left", alignItems: "center",
-            gap: "10px"
-        }}>
-            <div ref={editorRef} style={{ height: "400px", width: "95%", color: "black", fontSize: "18px" }} />
-            <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "320px" }}>
-                <button onClick={onClose}>Close</button>
-                <button onClick={handleLoad}>Load</button>
+        <div>
+            <div className="xml-container">
+                <div ref={editorRef} className="xml-code" />
+                <footer className="xml-footer">
+                    <div className="xml-buttons">
+                        <button onClick={onClose}>Close</button>
+                        <button onClick={handleLoad}>Load</button>
+                    </div>
+                </footer>
             </div>
+            <div className="overlay" />
         </div>
     );
 }

@@ -1,0 +1,174 @@
+/* Confirmation Page */
+.error {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border-radius: 4px;
+    border: 1px solid #f5c6cb;
+    overflow: hidden;
+    opacity: 1;
+    max-height: 200px;
+}
+
+.confirmation {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #d4edda;
+    color: #155724;
+    border-radius: 4px;
+    border: 1px solid #c3e6cb;
+    overflow: hidden;
+    opacity: 1;
+    max-height: 200px;
+}
+
+.overlay {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(30, 30, 30, 0.850);
+    z-index: 10;
+}
+
+/* XML View Page */
+.xml-container {
+    position: absolute;
+    top: 15%;
+    left: 25%;
+    padding: 20px 0 0 0;
+    /* Remove bottom padding */
+    z-index: 15;
+    width: 800px;
+    max-height: 70%;
+    overflow-y: auto;
+    background: grey;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    /* Remove justify-content: left and align-items: center */
+}
+
+.xml-code {
+    height: fit-content;
+    width: 95%;
+    color: black;
+    font-size: 18px;
+    margin: 0 auto;
+    /* Center the code content */
+    padding-bottom: 20px;
+    /* Add space before footer */
+}
+
+.xml-footer {
+    width: 100%;
+    background: grey;
+    padding: 15px 0;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    /* Ensure footer stays within container */
+    flex-shrink: 0;
+}
+
+.xml-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 320px;
+    margin: 0 auto;
+    /* Center the buttons */
+}
+
+/* Export Code Page */
+.export-window {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    top: 15%;
+    left: 25%;
+    padding: 20px;
+    z-index: 15;
+    width: 800px;
+    max-height: 600px;
+    color: black;
+    background: #f3f3f3;
+    border-radius: 8px;
+}
+
+.export-project-config {
+    color: #6db33f;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.export-project-download {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.downloadable {
+    display: flex;
+    align-items: center;
+    color: #2D527C;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    gap: 20px;
+    border: solid 3px #2D527C;
+    border-radius: 6px;
+    transition: all 0.2s ease-in;
+}
+
+.downloadable:hover {
+    cursor: pointer;
+    background-color: #2d527c74;
+    color: white;
+}
+
+.export-img {
+    width: 64px;
+    height: 64px;
+}
+
+/* Info Page */
+.info-popup-container {
+    position: absolute;
+    top: 15%;
+    left: 25%;
+    padding: 20px;
+    z-index: 15;
+    width: 800px;
+    background: #f3f3f3;
+    border-radius: 8px;
+}
+
+.info-container {
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+.content-container {
+    color: #2D527C;
+    margin-bottom: 20px;
+}
+
+.content-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 30px;
+}
+
+.close-button {
+    display: block;
+    margin: 0 auto;
+}

@@ -1,0 +1,100 @@
+/* Node Selector Panel */
+.node-selector {
+    height: 250px;
+    width: 400px;
+    background: white;
+    color: black;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 14px;
+}
+
+.node-selector-title {
+    text-align: center;
+    margin-bottom: 10px
+}
+
+.nodes {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex-wrap: wrap
+}
+
+.node {
+    width: 170px;
+}
+
+/* Application Panel */
+.application-container {
+    display: flex;
+    padding: 6px;
+    gap: 20px;
+    width: 500px;
+    height: 60px;
+    color: #f3f3f3;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 10px;
+    background-color: #2d527c;
+    align-items: center;
+    justify-content: center;
+}
+
+.application-input {
+    width: 60%;
+    height: 35px;
+    font-size: 18px;
+    font-weight: bold;
+    padding-left: 8px;
+    border-radius: 4px;
+}
+
+/* Action buttons */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.action-div {
+    position: relative;
+}
+
+.info-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 15px;
+    left: 70px;
+    height: 50px;
+    padding-left: 20px;
+    width: 140px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    background-color: #2d527c;
+    z-index: -1;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.info-div.hovered {
+    opacity: 1;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    width: 85px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+.action-button-img {
+    width: 64px;
+    height: 64px;
+}
