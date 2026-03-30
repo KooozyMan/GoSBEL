@@ -30,6 +30,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import TestCodeGenerator from "./assets/CodeGenerator/TestCodeGenerator";
 import PomCodeGenerator from "./assets/CodeGenerator/PomCodeGenerator";
 import ActionButtons from "./assets/Panels/ActionButtons";
+import Info from "./assets/Popups/Info";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -69,6 +70,7 @@ export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [XmlVisibility, setXmlVisibility] = useState(false);
+  const [InfoVisibility, setInfoVisibility] = useState(false);
   const [ConfirmationVisibility, setConfirmationVisibility] = useState(false);
   const [confirmationData, setConfirmationData] = useState({ type: "", message: "" });
   const [CodeVisibility, setCodeVisibility] = useState(false);
@@ -233,7 +235,7 @@ export default function App() {
   useHotkeys('ctrl+l', () => quickLoad(), { preventDefault: true })
   useHotkeys('ctrl+c', () => CodeViewerHandler(), { preventDefault: true })
   useHotkeys('ctrl+x', () => setXmlVisibility(true), { preventDefault: true })
-  useHotkeys('esc', () => { setCodeVisibility(false); setXmlVisibility(false); setExportWindowVisibility(false); })
+  useHotkeys('esc', () => { setCodeVisibility(false); setXmlVisibility(false); setExportWindowVisibility(false); setInfoVisibility(false); })
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
@@ -247,7 +249,7 @@ export default function App() {
         nodeTypes={nodeTypes}
         fitView
       >
-        <Panel position="top-left"><ActionButtons onQuickSave={quickSave} onQuickLoad={quickLoad} onCodeView={CodeViewerHandler} onXmlView={() => setXmlVisibility(true)} /></Panel>
+        <Panel position="top-left"><ActionButtons onQuickSave={quickSave} onQuickLoad={quickLoad} onCodeView={CodeViewerHandler} onXmlView={() => setXmlVisibility(true)} onInfo={() => setInfoVisibility(true)} /></Panel>
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
         <Panel position="top-center">{ConfirmationVisibility && <Confirmation type={confirmationData.type} message={confirmationData.message} />}</Panel>
         <Panel position="bottom-center"><Application name={ApplicationName} setName={setApplicationName} /></Panel>
@@ -256,6 +258,7 @@ export default function App() {
         <Background />
       </ReactFlow>
 
+      {InfoVisibility && <Info onClose={() => setInfoVisibility(false)} />}
       {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
       {CodeVisibility && <CodeViewer generatedCode={CodeViewerHandler()} onExport={() => exportCode()} onClose={() => setCodeVisibility(false)} />}
       {ExportWindowVisibility && <ExportWindow onClose={() => setExportWindowVisibility(false)} generatedCode={CodeViewerHandler(false)} onConfirmation={confirmationHelper} />}
