@@ -4,8 +4,8 @@ function getService(entityName, idType = "Long", basePackage, smallBaseArtifact)
 import org.springframework.stereotype.Service;
 import java.util.List;
 
-import ${basePackage}.repository.${entityName}Repository;
-import ${basePackage}.entity.${entityName};
+import ${basePackage}.${smallBaseArtifact}.repository.${entityName}Repository;
+import ${basePackage}.${smallBaseArtifact}.entity.${entityName};
 
 @Service
 public class ${entityName}Service {

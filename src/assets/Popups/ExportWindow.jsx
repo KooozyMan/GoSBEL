@@ -56,19 +56,19 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
 
         // Controllers
         const controllers = currentFolder.folder('controller');
-        generatedCode.Entities.forEach(controller => {
+        generatedCode.Controllers.forEach(controller => {
             controllers.file(controller.fileName, controller.code);
         });
 
         // Repositories
         const repositories = currentFolder.folder('repository');
-        generatedCode.Entities.forEach(repository => {
+        generatedCode.Repositories.forEach(repository => {
             repositories.file(repository.fileName, repository.code);
         });
 
         // Services
         const services = currentFolder.folder('service');
-        generatedCode.Entities.forEach(service => {
+        generatedCode.Services.forEach(service => {
             services.file(service.fileName, service.code);
         });
 

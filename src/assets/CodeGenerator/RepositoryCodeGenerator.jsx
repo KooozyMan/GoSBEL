@@ -3,7 +3,7 @@ function getRepository(entityName, idType = "Long", basePackage, smallBaseArtifa
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ${basePackage}.entity.${entityName};
+import ${basePackage}.${smallBaseArtifact}.entity.${entityName};
 
 @Repository
 public interface ${entityName}Repository extends JpaRepository<${entityName}, ${idType}> {

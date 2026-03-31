@@ -62,7 +62,6 @@ export default function EntityGenerator(xml, basePackage = `com.example`) {
         const code = `package ${basePackage}.${smallBaseArtifact}.entity;
     
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 
 @Entity
 public class ${capitalizedName} {

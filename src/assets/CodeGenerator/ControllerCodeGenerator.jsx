@@ -3,8 +3,8 @@ function getController(entityName, basePackage, smallBaseArtifact) {
 
     return `package ${basePackage}.${smallBaseArtifact}.controller;
 
-import ${basePackage}.entity.${entityName};
-import ${basePackage}.service.${entityName}Service;
+import ${basePackage}.${smallBaseArtifact}.entity.${entityName};
+import ${basePackage}.${smallBaseArtifact}.service.${entityName}Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -27,14 +26,14 @@ public class ${entityName}Controller {
 
     // Create
     @PostMapping
-    public ResponseEntity<${entityName}> create(@Valid @RequestBody ${entityName} entity) {
+    public ResponseEntity<${entityName}> create(@RequestBody ${entityName} entity) {
         ${entityName} savedEntity = service.save(entity);
         return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
     }
 
     // Create multiple
     @PostMapping("/batch")
-    public ResponseEntity<List<${entityName}>> createAll(@Valid @RequestBody List<${entityName}> entities) {
+    public ResponseEntity<List<${entityName}>> createAll(@RequestBody List<${entityName}> entities) {
         List<${entityName}> savedEntities = service.saveAll(entities);
         return new ResponseEntity<>(savedEntities, HttpStatus.CREATED);
     }
@@ -70,7 +69,7 @@ public class ${entityName}Controller {
 
     // Update
     @PutMapping("/{id}")
-    public ResponseEntity<${entityName}> update(@PathVariable Long id, @Valid @RequestBody ${entityName} entity) {
+    public ResponseEntity<${entityName}> update(@PathVariable Long id, @RequestBody ${entityName} entity) {
         return service.findById(id)
                 .map(existingEntity -> {
                     entity.setId(id);
