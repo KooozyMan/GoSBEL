@@ -111,6 +111,13 @@ export default function App() {
   };
 
   const quickSave = () => {
+    let history = JSON.parse(localStorage.getItem('history')) || []
+    localStorage.setItem("quick-saved-diagram", exportXML());
+    history.push({
+      Date: new Date().toISOString(),
+      xml: exportXML()
+    });
+
     localStorage.setItem("quick-saved-diagram", exportXML());
     confirmationHelper('confirmation', 'The diagram has been saved to your browser!');
   };
@@ -262,6 +269,9 @@ export default function App() {
       {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
       {CodeVisibility && <CodeViewer generatedCode={CodeViewerHandler()} onExport={() => exportCode()} onClose={() => setCodeVisibility(false)} />}
       {ExportWindowVisibility && <ExportWindow onClose={() => setExportWindowVisibility(false)} generatedCode={CodeViewerHandler(false)} onConfirmation={confirmationHelper} />}
+        
+      //TODO
+
     </div>
   );
 }
