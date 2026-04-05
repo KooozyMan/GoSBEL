@@ -55,7 +55,8 @@ const initialNodes = [
     data: {
       label: "Order",
       fields: [
-        { name: "orderId", type: "int", pk: true },
+        // setOrderId caused a bug in the output's controller.
+        { name: "id", type: "int", pk: true },
         { name: "price", type: "double", pk: false },
       ],
     }

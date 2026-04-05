@@ -6,152 +6,88 @@ function getController(entityName, basePackage, smallBaseArtifact) {
 import ${basePackage}.${smallBaseArtifact}.entity.${entityName};
 import ${basePackage}.${smallBaseArtifact}.service.${entityName}Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Optional;
 
-@RestController
-@RequestMapping("/api/${entityLower}")
-@CrossOrigin(origins = "*")
+@Controller
 public class ${entityName}Controller {
 
     @Autowired
-    private ${entityName}Service service;
+    private ${entityName}Service ${entityLower}Service;
 
-    // Create
-    @PostMapping
-    public ResponseEntity<${entityName}> create(@RequestBody ${entityName} entity) {
-        ${entityName} savedEntity = service.save(entity);
-        return new ResponseEntity<>(savedEntity, HttpStatus.CREATED);
+    // Show all ${entityLower}
+    @GetMapping("/${entityLower}")
+    public String list${entityName}(Model m){
+        List<${entityName}> ${entityLower} = ${entityLower}Service.findAll();
+        m.addAttribute("${entityLower}",${entityLower});
+        return "${entityLower}-list";
     }
 
-    // Create multiple
-    @PostMapping("/batch")
-    public ResponseEntity<List<${entityName}>> createAll(@RequestBody List<${entityName}> entities) {
-        List<${entityName}> savedEntities = service.saveAll(entities);
-        return new ResponseEntity<>(savedEntities, HttpStatus.CREATED);
+    // Show form to add a new ${entityLower}
+    @GetMapping("/${entityLower}/add")
+    public String showAddForm(Model model) {
+        model.addAttribute("${entityLower}", new ${entityName}());
+        return "${entityLower}-form";
     }
 
-    // Read all
-    @GetMapping
-    public ResponseEntity<List<${entityName}>> getAll() {
-        List<${entityName}> entities = service.findAll();
-        if (entities.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(entities, HttpStatus.OK);
-    }
-
-    // Read all with pagination and sorting
-    @GetMapping("/paged")
-    public ResponseEntity<Page<${entityName}>> getAllPaged(
-            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<${entityName}> page = service.findAllPaged(pageable);
-        if (page.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(page, HttpStatus.OK);
-    }
-
-    // Read by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<${entityName}> getById(@PathVariable Long id) {
-        return service.findById(id)
-                .map(entity -> new ResponseEntity<>(entity, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    // Update
-    @PutMapping("/{id}")
-    public ResponseEntity<${entityName}> update(@PathVariable Long id, @RequestBody ${entityName} entity) {
-        return service.findById(id)
-                .map(existingEntity -> {
-                    entity.setId(id);
-                    ${entityName} updatedEntity = service.save(entity);
-                    return new ResponseEntity<>(updatedEntity, HttpStatus.OK);
-                })
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    // Partial update
-    @PatchMapping("/{id}")
-    public ResponseEntity<${entityName}> partialUpdate(@PathVariable Long id, @RequestBody ${entityName} entity) {
-        return service.findById(id)
-                .map(existingEntity -> {
-                    // Update only non-null fields
-                    if (entity.getField1() != null) existingEntity.setField1(entity.getField1());
-                    if (entity.getField2() != null) existingEntity.setField2(entity.getField2());
-                    // Add more fields as needed
-                    
-                    ${entityName} updatedEntity = service.save(existingEntity);
-                    return new ResponseEntity<>(updatedEntity, HttpStatus.OK);
-                })
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    // Delete by ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id) {
+    // Save a new ${entityLower}
+    @PostMapping("/${entityLower}/save")
+    public String save${entityName}(@ModelAttribute ${entityName} ${entityLower}, RedirectAttributes redirectAttributes) {
         try {
-            service.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            ${entityLower}Service.save(${entityLower});
+            redirectAttributes.addFlashAttribute("message", "${entityName} saved successfully.");
+        } catch (Exception e){
+            redirectAttributes.addFlashAttribute("error","Error saving ${entityLower}" + e.getMessage());
+        }
+        return "redirect:/${entityLower}";
+    }
+
+
+    // Show form to edit a ${entityLower}
+    @GetMapping("/${entityLower}/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        Optional<${entityName}> ${entityLower} = ${entityLower}Service.findById(id);
+        if (${entityLower}.isPresent()) {
+            model.addAttribute("${entityLower}", ${entityLower}.get());
+            return "${entityLower}-form";
+        } else {
+            redirectAttributes.addFlashAttribute("error", "${entityName} not found!");
+            return "redirect:/${entityLower}";
         }
     }
 
-    // Delete all
-    @DeleteMapping
-    public ResponseEntity<HttpStatus> deleteAll() {
+    // Update an existing ${entityLower}
+    @PostMapping("/${entityLower}/update/{id}")
+    public String update${entityName}(@PathVariable Long id, @ModelAttribute ${entityName} ${entityLower}, RedirectAttributes redirectAttributes) {
         try {
-            service.deleteAll();
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            ${entityLower}.setId(Math.toIntExact(id));
+            ${entityLower}Service.save(${entityLower});
+            redirectAttributes.addFlashAttribute("message", "${entityName} updated successfully!");
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            redirectAttributes.addFlashAttribute("error", "Error updating ${entityLower}: " + e.getMessage());
         }
+        return "redirect:/${entityLower}";
     }
 
-    // Count
-    @GetMapping("/count")
-    public ResponseEntity<Long> getCount() {
-        long count = service.count();
-        return new ResponseEntity<>(count, HttpStatus.OK);
-    }
-
-    // Check if exists
-    @GetMapping("/{id}/exists")
-    public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
-        boolean exists = service.existsById(id);
-        return new ResponseEntity<>(exists, HttpStatus.OK);
-    }
-
-    // Find by field (example - you can customize based on your entity fields)
-    @GetMapping("/search")
-    public ResponseEntity<List<${entityName}>> findByField(@RequestParam String field, @RequestParam String value) {
-        // This is a generic example - implement specific search methods in service
-        List<${entityName}> entities = service.findByField(field, value);
-        if (entities.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    // Delete a ${entityLower}
+    @GetMapping("/${entityLower}/delete/{id}")
+    public String delete${entityName}(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            if (${entityLower}Service.existsById(id)) {
+                ${entityLower}Service.deleteById(id);
+                redirectAttributes.addFlashAttribute("message", "${entityName} deleted successfully!");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "${entityName} not found!");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error deleting ${entityLower}: " + e.getMessage());
         }
-        return new ResponseEntity<>(entities, HttpStatus.OK);
-    }
-
-    // Find with custom query example
-    @GetMapping("/search/custom")
-    public ResponseEntity<List<${entityName}>> customSearch(
-            @RequestParam(required = false) String param1,
-            @RequestParam(required = false) String param2) {
-        List<${entityName}> entities = service.customSearch(param1, param2);
-        if (entities.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(entities, HttpStatus.OK);
+        return "redirect:/${entityLower}";
     }
 }`
 }

@@ -1,6 +1,35 @@
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
+const GenerateIndexHtml = (code,appName) => {
+    return `<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${appName} - Home</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body>
+    <h1>${appName}</h1>
+</body>
+`
+}
+
+const DirectToIndexJava = () => {
+    return `package com.example.restaurant.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+
+public class RedirectToIndexHTML {
+    // Home page
+    @GetMapping("/")
+    public String home() {
+        return "index";
+    }
+}`
+}
+
 export default function ExportWindow({ onClose, generatedCode, onConfirmation }) {
     async function fetchFile(path) {
         const res = await fetch(path);
@@ -11,6 +40,8 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         const capAppName = generatedCode.Application[0].fileName.slice(0, -16);
         const smlAppName = capAppName.toLowerCase();
         const basePackage = ['com', 'example', smlAppName]; // TODO: make dynamic from user maybe
+        console.log("Generated code:")
+        console.log(generatedCode)
 
         const zip = JSZip();
         const application = zip.folder(capAppName);
@@ -59,6 +90,8 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         generatedCode.Controllers.forEach(controller => {
             controllers.file(controller.fileName, controller.code);
         });
+        // To prevent multiple controllers from having the same @GetMapping('/')
+        controllers.file('RedirectToIndexHTML.java',DirectToIndexJava())
 
         // Repositories
         const repositories = currentFolder.folder('repository');
@@ -76,6 +109,8 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         const resources = main.folder('resources');
         resources.file('application.properties', `spring.application.name=${smlAppName}`);
         resources.folder('templates');
+        const templates = resources.folder('templates')
+        templates.file('index.html',GenerateIndexHtml(generatedCode,capAppName))
         resources.folder('static');
 
         // Test Structure
