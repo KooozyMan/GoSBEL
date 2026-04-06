@@ -63,9 +63,9 @@ public class ${entityName}Controller {
 
     // Update an existing ${entityLower}
     @PostMapping("/${entityLower}/update/{id}")
-    public String update${entityName}(@PathVariable Long id, @ModelAttribute ${entityName} ${entityLower}, RedirectAttributes redirectAttributes) {
+    public String update${entityName}(@PathVariable int id, @ModelAttribute ${entityName} ${entityLower}, RedirectAttributes redirectAttributes) {
         try {
-            ${entityLower}.setId(Math.toIntExact(id));
+            ${entityLower}.setId(id);
             ${entityLower}Service.save(${entityLower});
             redirectAttributes.addFlashAttribute("message", "${entityName} updated successfully!");
         } catch (Exception e) {

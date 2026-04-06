@@ -16,8 +16,8 @@ const GenerateIndexHtml = (code,appName) => {
 `
 }
 
-const DirectToIndexJava = () => {
-    return `package com.example.restaurant.controller;
+const DirectToIndexJava = (basePackage) => {
+    return `package com.example.${basePackage}.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -91,7 +91,7 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
             controllers.file(controller.fileName, controller.code);
         });
         // To prevent multiple controllers from having the same @GetMapping('/')
-        controllers.file('RedirectToIndexHTML.java',DirectToIndexJava())
+        controllers.file('RedirectToIndexHTML.java',DirectToIndexJava(smlAppName))
 
         // Repositories
         const repositories = currentFolder.folder('repository');
