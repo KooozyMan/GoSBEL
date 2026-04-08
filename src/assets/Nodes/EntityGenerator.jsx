@@ -4,9 +4,9 @@ export default function generateEntity(id) {
         type: "entity",
         position: { x: 200, y: 200 },
         data: {
-            label: "default",
+            label: "defaultNode",
             fields: [
-                { name: "id", type: "int", pk: true }
+                { name: "id", type: "Integer", pk: true }
             ]
         }
     };

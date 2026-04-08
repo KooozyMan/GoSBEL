@@ -41,9 +41,9 @@ const initialNodes = [
     type: "entity",
     position: { x: 100, y: 70 },
     data: {
-      label: "User",
+      label: "Consumer",
       fields: [
-        { name: "id", type: "int", pk: true },
+        { name: "id", type: "Integer", pk: true },
         { name: "name", type: "String", pk: false },
       ]
     }
@@ -56,8 +56,8 @@ const initialNodes = [
       label: "Order",
       fields: [
         // setOrderId caused a bug in the output's controller.
-        { name: "id", type: "int", pk: true },
-        { name: "price", type: "double", pk: false },
+        { name: "id", type: "Integer", pk: true },
+        { name: "price", type: "Double", pk: false },
       ],
     }
   }

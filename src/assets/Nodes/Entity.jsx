@@ -23,7 +23,7 @@ export default function Entity({ id, data }) {
     };
 
     const addField = () => {
-        const newFields = [...fields, { name: "newField", type: "String" }];
+        const newFields = [...fields, { name: "newField", type: "String", pk: false }];
         setFields(newFields);
         updateNodeData(entityName, newFields);
     };
@@ -48,6 +48,21 @@ export default function Entity({ id, data }) {
         updateNodeData(entityName, newFields);
     };
 
+    const changePrimaryKey = (index, value) => {
+        const newFields = [...fields];
+
+        if (value) {
+            newFields.forEach((f, i) => {
+                if (i !== index) f.pk = false;
+            });
+        }
+
+        newFields[index].pk = value;
+
+        setFields(newFields);
+        updateNodeData(entityName, newFields);
+    };
+
     return (
         <div className="entity-node">
             <div className="entity-title">
@@ -68,12 +83,28 @@ export default function Entity({ id, data }) {
                         className="entity-name-input nodrag"
                     />
 
-                    <input
+                    <select
                         value={field.type}
                         onChange={(e) => changeFieldType(index, e.target.value)}
                         placeholder="type"
-                        className="entity-type-input nodrag"
+                        className="entity-type-select nodrag"
+                    >
+                        <option value="Integer">Integer</option>
+                        <option value="String">String</option>
+                        <option value="Long">Long</option>
+                        <option value="Double">Double</option>
+                        <option value="Boolean">Boolean</option>
+                        {/* <option value="Date">Date</option> */}
+                    </select>
+
+                    <input
+                        id={`entity-pk-checkbox-${id}-${index}`}
+                        type="checkbox"
+                        checked={field.pk || false}
+                        onChange={(e) => changePrimaryKey(index, e.target.checked)}
+                        className="entity-pk-checkbox nodrag"
                     />
+                    <label htmlFor={`entity-pk-checkbox-${id}-${index}`} className="nodrag" />
 
                     <AiOutlineClose
                         onClick={() => deleteField(index)}
