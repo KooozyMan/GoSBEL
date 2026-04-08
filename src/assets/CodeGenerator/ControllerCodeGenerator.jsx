@@ -1,4 +1,4 @@
-function getController(entityName, basePackage, smallBaseArtifact) {
+function getController(entityName, type, basePackage, smallBaseArtifact) {
     const entityLower = entityName.toLowerCase();
 
     return `package ${basePackage}.${smallBaseArtifact}.controller;
@@ -50,7 +50,7 @@ public class ${entityName}Controller {
 
     // Show form to edit a ${entityLower}
     @GetMapping("/${entityLower}/edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String showEditForm(@PathVariable ${type} id, Model model, RedirectAttributes redirectAttributes) {
         Optional<${entityName}> ${entityLower} = ${entityLower}Service.findById(id);
         if (${entityLower}.isPresent()) {
             model.addAttribute("${entityLower}", ${entityLower}.get());
@@ -63,7 +63,7 @@ public class ${entityName}Controller {
 
     // Update an existing ${entityLower}
     @PostMapping("/${entityLower}/update/{id}")
-    public String update${entityName}(@PathVariable int id, @ModelAttribute ${entityName} ${entityLower}, RedirectAttributes redirectAttributes) {
+    public String update${entityName}(@PathVariable ${type} id, @ModelAttribute ${entityName} ${entityLower}, RedirectAttributes redirectAttributes) {
         try {
             ${entityLower}.setId(id);
             ${entityLower}Service.save(${entityLower});
@@ -76,7 +76,7 @@ public class ${entityName}Controller {
 
     // Delete a ${entityLower}
     @GetMapping("/${entityLower}/delete/{id}")
-    public String delete${entityName}(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete${entityName}(@PathVariable ${type} id, RedirectAttributes redirectAttributes) {
         try {
             if (${entityLower}Service.existsById(id)) {
                 ${entityLower}Service.deleteById(id);
@@ -100,7 +100,8 @@ export default function ControllerCodeGenerator(xml, basePackage = `com.example`
 
     xmlDoc.querySelectorAll("Entity").forEach(e => {
         const name = e.getAttribute('name').charAt(0).toUpperCase() + e.getAttribute('name').slice(1);
-        controllers.push({ 'fileName': `${name}Controller.java`, 'code': getController(name, basePackage, smallBaseArtifact) })
+        const type = e.querySelector('Field[pk="true"]').getAttribute('type');
+        controllers.push({ 'fileName': `${name}Controller.java`, 'code': getController(name, type, basePackage, smallBaseArtifact) })
     })
 
     return controllers;
