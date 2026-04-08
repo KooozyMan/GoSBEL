@@ -273,7 +273,8 @@ export default function App() {
       const fields = Array.from(e.querySelectorAll("Field")).map((f) => {
         return {
           name: f.getAttribute("name"),
-          type: f.getAttribute("type")
+          type: f.getAttribute("type"),
+          pk: f.getAttribute("pk")
         };
       });
 

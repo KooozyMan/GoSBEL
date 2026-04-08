@@ -39,37 +39,29 @@
     top: 15%;
     left: 25%;
     padding: 20px 0 0 0;
-    /* Remove bottom padding */
     z-index: 15;
     width: 800px;
     max-height: 70%;
     overflow-y: auto;
-    background: grey;
+    background: #2e3440;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
-    /* Remove justify-content: left and align-items: center */
 }
 
 .xml-code {
-    height: fit-content;
+    height: 450px;
     width: 95%;
-    color: black;
-    font-size: 18px;
     margin: 0 auto;
-    /* Center the code content */
     padding-bottom: 20px;
-    /* Add space before footer */
 }
 
 .xml-footer {
     width: 100%;
-    background: grey;
     padding: 15px 0;
     position: sticky;
     bottom: 0;
     left: 0;
-    /* Ensure footer stays within container */
     flex-shrink: 0;
 }
 
