@@ -31,6 +31,9 @@ import TestCodeGenerator from "./assets/CodeGenerator/TestCodeGenerator";
 import PomCodeGenerator from "./assets/CodeGenerator/PomCodeGenerator";
 import ActionButtons from "./assets/Panels/ActionButtons";
 import Info from "./assets/Popups/Info";
+import { javaReservedKeywords } from './assets/Lists/JavaReservedKeywords';
+import { h2ReservedKeywords } from './assets/Lists/H2ReservedKeywords';
+import { allowedDataTypes } from "./assets/Lists/AllowedDataTypes";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -53,7 +56,7 @@ const initialNodes = [
     type: "entity",
     position: { x: 360, y: 270 },
     data: {
-      label: "Order",
+      label: "Item",
       fields: [
         // setOrderId caused a bug in the output's controller.
         { name: "id", type: "Integer", pk: true },
@@ -140,6 +143,7 @@ export default function App() {
     }
 
     const exportedXML = exportXML();
+    if (exportedXML === undefined) return;
     const generatedCode = {
       Application: ApplicationCodeGenerator(exportedXML),
       Entities: EntityCodeGenerator(exportedXML),
@@ -155,6 +159,77 @@ export default function App() {
   };
 
   const exportXML = () => {
+    // User Input Validation
+    const regex = /^[a-zA-Z][a-zA-Z0-9]*$/;
+    if (!regex.test(ApplicationName)) {
+      confirmationHelper('error', `Application name "${ApplicationName}" must be english characters, no spaces, and cannot start with a number.`, 5000);
+      setXmlVisibility(false);
+      setCodeVisibility(false);
+      return;
+    }
+    if (javaReservedKeywords.includes(ApplicationName)) {
+      confirmationHelper('error', `Application name "${ApplicationName}" is a java reserved keyword.`, 5000);
+      setXmlVisibility(false);
+      setCodeVisibility(false);
+      return;
+    }
+    if (h2ReservedKeywords.includes(ApplicationName.toUpperCase())) {
+      confirmationHelper('error', `Application name "${ApplicationName}" is an h2 reserved keyword.`, 5000);
+      setXmlVisibility(false);
+      setCodeVisibility(false);
+      return;
+    }
+
+    for (const node of nodes) {
+      if (!regex.test(node.data.label)) {
+        confirmationHelper('error', `Node name "${node.data.label}" must be english characters, no spaces, and cannot start with a number.`, 5000);
+        setXmlVisibility(false);
+        setCodeVisibility(false);
+        return;
+      }
+      if (javaReservedKeywords.includes(node.data.label)) {
+        confirmationHelper('error', `Node name "${node.data.label}" is a java reserved keyword.`, 5000);
+        setXmlVisibility(false);
+        setCodeVisibility(false);
+        return;
+      }
+      if (h2ReservedKeywords.includes(node.data.label.toUpperCase())) {
+        confirmationHelper('error', `Node name "${node.data.label}" is an h2 reserved keyword.`, 5000);
+        setXmlVisibility(false);
+        setCodeVisibility(false);
+        return;
+      }
+
+      for (const field of node.data.fields) {
+        if (!regex.test(field.name)) {
+          confirmationHelper('error', `Field name "${field.name}" must be english characters, no spaces, and cannot start with a number.`, 5000);
+          setXmlVisibility(false);
+          setCodeVisibility(false);
+          return;
+        }
+        if (javaReservedKeywords.includes(field.name)) {
+          confirmationHelper('error', `Field name "${field.name}" is a java reserved keyword.`, 5000);
+          setXmlVisibility(false);
+          setCodeVisibility(false);
+          return;
+        }
+
+        if (h2ReservedKeywords.includes(field.name.toUpperCase())) {
+          confirmationHelper('error', `Field name "${field.name}" is an h2 reserved keyword.`, 5000);
+          setXmlVisibility(false);
+          setCodeVisibility(false);
+          return;
+        }
+
+        if (!allowedDataTypes.includes(field.type)) {
+          confirmationHelper('error', `Field type "${field.type}" is not supported.`, 5000);
+          setXmlVisibility(false);
+          setCodeVisibility(false);
+          return;
+        }
+      }
+    }
+
     let xml = `<Application name="${ApplicationName.charAt(0).toUpperCase() + ApplicationName.slice(1)}">\n`;
     nodes.forEach((n) => {
       if (n.type === 'entity') {

@@ -1,6 +1,7 @@
 import { Handle, Position, useReactFlow } from "reactflow";
 import { useState } from "react";
 import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
+import { allowedDataTypes } from "../Lists/AllowedDataTypes";
 
 export default function Entity({ id, data }) {
     const { setNodes } = useReactFlow();
@@ -89,12 +90,9 @@ export default function Entity({ id, data }) {
                         placeholder="type"
                         className="entity-type-select nodrag"
                     >
-                        <option value="Integer">Integer</option>
-                        <option value="String">String</option>
-                        <option value="Long">Long</option>
-                        <option value="Double">Double</option>
-                        <option value="Boolean">Boolean</option>
-                        {/* <option value="Date">Date</option> */}
+                        {allowedDataTypes.map((dataType, index) => (
+                            <option key={index} value={dataType}>{dataType}</option>
+                        ))}
                     </select>
 
                     <input
