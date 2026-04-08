@@ -160,6 +160,7 @@ export default function App() {
 
   const exportXML = () => {
     // User Input Validation
+    let nodeNames = [];
     const regex = /^[a-zA-Z][a-zA-Z0-9]*$/;
     if (!regex.test(ApplicationName)) {
       confirmationHelper('error', `Application name "${ApplicationName}" must be english characters, no spaces, and cannot start with a number.`, 5000);
@@ -198,6 +199,14 @@ export default function App() {
         setXmlVisibility(false);
         setCodeVisibility(false);
         return;
+      }
+      if (nodeNames.includes(node.data.label)) {
+        confirmationHelper('error', `Node name "${node.data.label}" is duplicated.`, 5000);
+        setXmlVisibility(false);
+        setCodeVisibility(false);
+        return;
+      } else {
+        nodeNames.push(node.data.label);
       }
 
       for (const field of node.data.fields) {
