@@ -283,7 +283,7 @@ export default function App() {
         return {
           name: f.getAttribute("name"),
           type: f.getAttribute("type"),
-          pk: f.getAttribute("pk")
+          pk: f.getAttribute("pk") === 'true' ? true : false,
         };
       });
 
