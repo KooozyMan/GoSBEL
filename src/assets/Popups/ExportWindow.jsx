@@ -1,6 +1,8 @@
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import IndexForThymeleaf from "../CodeGenerator/IndexForThymeleaf";
+import ListForThymeleaf from "../CodeGenerator/ListForThymeleaf";
+import FormForThymeleaf from "../CodeGenerator/FormForThymeleaf";
 
 const DirectToIndexJava = (basePackage) => {
     return `package com.example.${basePackage}.controller;
@@ -26,8 +28,6 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         const capAppName = generatedCode.Application[0].fileName.slice(0, -16);
         const smlAppName = capAppName.toLowerCase();
         const basePackage = ['com', 'example', smlAppName]; // TODO: make dynamic from user maybe
-        console.log("Generated code:")
-        console.log(generatedCode)
 
         const zip = JSZip();
         const application = zip.folder(capAppName);
@@ -97,6 +97,23 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         resources.folder('templates');
         const templates = resources.folder('templates')
         templates.file('index.html',IndexForThymeleaf())
+        
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(localStorage.getItem('quick-saved-diagram'), "text/xml");
+        const appName = xmlDoc.querySelector("Application").getAttribute('name')
+        const entitiesObject = Object.fromEntries(
+            Array.from(xmlDoc.querySelectorAll("Entity")).map(entity => [
+                entity.getAttribute('name'),
+                Array.from(entity.querySelectorAll("Field")).map(field => ({
+                    fieldName: field.getAttribute('name'),
+                    fieldType: field.getAttribute('type').toLowerCase()
+                }))
+            ])
+        );
+        Object.keys(entitiesObject).forEach(e => {
+            templates.file(`${e}-list.html`,ListForThymeleaf(e,entitiesObject[e],appName,Object.keys(entitiesObject)))
+            templates.file(`${e}-form.html`,FormForThymeleaf(e,entitiesObject[e],appName))
+        })
         resources.folder('static');
 
         // Test Structure
