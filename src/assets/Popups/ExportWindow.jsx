@@ -1,20 +1,6 @@
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-
-const GenerateIndexHtml = (code,appName) => {
-    return `<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${appName} - Home</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-<body>
-    <h1>${appName}</h1>
-</body>
-`
-}
+import IndexForThymeleaf from "../CodeGenerator/IndexForThymeleaf";
 
 const DirectToIndexJava = (basePackage) => {
     return `package com.example.${basePackage}.controller;
@@ -110,7 +96,7 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         resources.file('application.properties', `spring.application.name=${smlAppName}`);
         resources.folder('templates');
         const templates = resources.folder('templates')
-        templates.file('index.html',GenerateIndexHtml(generatedCode,capAppName))
+        templates.file('index.html',IndexForThymeleaf())
         resources.folder('static');
 
         // Test Structure
