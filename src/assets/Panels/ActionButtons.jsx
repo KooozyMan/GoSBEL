@@ -11,19 +11,19 @@ export default function ActionButtons({ onQuickSave, onQuickLoad, onCodeView, on
         <div className="action-buttons">
             <div className="action-div">
                 <button className="action-button" onClick={onQuickSave} onMouseEnter={() => setHovered('save')} onMouseLeave={() => setHovered()}><img className="action-button-img" src={saveSvg} /></button>
-                <div className={`info-div  ${Hovered === 'save' ? 'hovered' : ''}`}>Quick Save</div>
+                <div className={`info-div  ${Hovered === 'save' ? 'hovered' : ''}`}>Save</div>
             </div>
             <div className="action-div">
                 <button className="action-button" onClick={onQuickLoad} onMouseEnter={() => setHovered('load')} onMouseLeave={() => setHovered()}><img className="action-button-img" src={loadSvg} /></button>
-                <div className={`info-div  ${Hovered === 'load' ? 'hovered' : ''}`}>Quick Load</div>
+                <div className={`info-div  ${Hovered === 'load' ? 'hovered' : ''}`}>History</div>
             </div>
             <div className="action-div">
                 <button className="action-button" onClick={onCodeView} onMouseEnter={() => setHovered('code')} onMouseLeave={() => setHovered()}><img className="action-button-img" src={codeViewerSvg} /></button>
-                <div className={`info-div  ${Hovered === 'code' ? 'hovered' : ''}`}>View Code</div>
+                <div className={`info-div  ${Hovered === 'code' ? 'hovered' : ''}`}>Generate Code</div>
             </div>
             <div className="action-div">
                 <button className="action-button" onClick={onXmlView} onMouseEnter={() => setHovered('xml')} onMouseLeave={() => setHovered()}><img className="action-button-img" src={xmlViewerSvg} /></button>
-                <div className={`info-div  ${Hovered === 'xml' ? 'hovered' : ''}`}>View Xml</div>
+                <div className={`info-div  ${Hovered === 'xml' ? 'hovered' : ''}`}>Generate Xml</div>
             </div>
             <div className="action-div">
                 <button className="action-button" onClick={onInfo} onMouseEnter={() => setHovered('info')} onMouseLeave={() => setHovered()}><img className="action-button-img" src={inforSvg} /></button>
