@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Editor } from "@monaco-editor/react";
 import { loader } from "@monaco-editor/react";
 import nord from '../Themes/Nord.json';
+import closedFolderImg from '../img/closed-folder.svg';
+import openedFolderImg from '/src/assets/img/opened-folder.svg'; // TODO
 
 export default function CodeViewer({ onExport, onClose, generatedCode }) {
     const [ViewedCode, setViewedCode] = useState(generatedCode.Application[0].code);
@@ -9,8 +11,6 @@ export default function CodeViewer({ onExport, onClose, generatedCode }) {
     const [monacoLanguage, setMonacoLanguage] = useState('java')
     const capArtifactName = generatedCode.Application[0].fileName.slice(0, -16);
     const smlArtifactName = capArtifactName.toLowerCase();
-    const closedFolderImg = '/src/assets/img/closed-folder.svg';
-    const openedFolderImg = '/src/assets/img/opened-folder.svg'; // TODO
 
     // Nord theme, for visual purposes only.
     const defineNordTheme = () => {

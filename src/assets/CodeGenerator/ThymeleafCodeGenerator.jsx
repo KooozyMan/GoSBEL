@@ -151,7 +151,7 @@ function indexGenerator(capAppName, entitiesList) {
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     </head>
     <body>
-        <!-- App name generated from gosbil -->
+        <!-- App name generated from gosbel -->
         <h1 class="bg-cyan-500 p-4 font-bold text-2xl text-white font-mono">${capAppName}</h1>
 
         <div class="flex h-screen w-full bg-cyan-950">

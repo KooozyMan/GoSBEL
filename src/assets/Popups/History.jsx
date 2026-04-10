@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import binSvg from '../img/bin.svg';
-import { color } from "@codemirror/theme-one-dark";
 
 export default function History({ onClose, onLoad }) {
     const [History, setHistory] = useState(JSON.parse(localStorage.getItem('history')) || []);
