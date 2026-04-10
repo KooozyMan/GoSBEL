@@ -1,22 +1,5 @@
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import IndexForThymeleaf from "../CodeGenerator/IndexForThymeleaf";
-import ListForThymeleaf from "../CodeGenerator/ListForThymeleaf";
-import FormForThymeleaf from "../CodeGenerator/FormForThymeleaf";
-
-const DirectToIndexJava = (basePackage) => {
-    return `package com.example.${basePackage}.controller;
-
-import org.springframework.web.bind.annotation.GetMapping;
-
-public class RedirectToIndexHTML {
-    // Home page
-    @GetMapping("/")
-    public String home() {
-        return "index";
-    }
-}`
-}
 
 export default function ExportWindow({ onClose, generatedCode, onConfirmation }) {
     async function fetchFile(path) {
@@ -76,8 +59,6 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         generatedCode.Controllers.forEach(controller => {
             controllers.file(controller.fileName, controller.code);
         });
-        // To prevent multiple controllers from having the same @GetMapping('/')
-        controllers.file('RedirectToIndexHTML.java',DirectToIndexJava(smlAppName))
 
         // Repositories
         const repositories = currentFolder.folder('repository');
@@ -94,26 +75,13 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         // Creating Resources
         const resources = main.folder('resources');
         resources.file('application.properties', `spring.application.name=${smlAppName}`);
-        resources.folder('templates');
-        const templates = resources.folder('templates')
-        templates.file('index.html',IndexForThymeleaf())
-        
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(localStorage.getItem('quick-saved-diagram'), "text/xml");
-        const appName = xmlDoc.querySelector("Application").getAttribute('name')
-        const entitiesObject = Object.fromEntries(
-            Array.from(xmlDoc.querySelectorAll("Entity")).map(entity => [
-                entity.getAttribute('name'),
-                Array.from(entity.querySelectorAll("Field")).map(field => ({
-                    fieldName: field.getAttribute('name'),
-                    fieldType: field.getAttribute('type').toLowerCase()
-                }))
-            ])
-        );
-        Object.keys(entitiesObject).forEach(e => {
-            templates.file(`${e}-list.html`,ListForThymeleaf(e,entitiesObject[e],appName,Object.keys(entitiesObject)))
-            templates.file(`${e}-form.html`,FormForThymeleaf(e,entitiesObject[e],appName))
-        })
+
+        // Creating View
+        const templates = resources.folder('templates');
+        generatedCode.Views.forEach(views => {
+            templates.file(views.fileName, views.code);
+        });
+
         resources.folder('static');
 
         // Test Structure

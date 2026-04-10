@@ -34,6 +34,7 @@ import Info from "./assets/Popups/Info";
 import { javaReservedKeywords } from './assets/Lists/JavaReservedKeywords';
 import { h2ReservedKeywords } from './assets/Lists/H2ReservedKeywords';
 import { allowedDataTypes } from "./assets/Lists/AllowedDataTypes";
+import ThymeleafCodeGenerator from "./assets/CodeGenerator/ThymeleafCodeGenerator";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -152,6 +153,7 @@ export default function App() {
       Services: ServiceCodeGenerator(exportedXML),
       Test: TestCodeGenerator(exportedXML),
       Pom: PomCodeGenerator(exportedXML),
+      Views: ThymeleafCodeGenerator(exportedXML),
     };
 
     setCodeVisibility(flag);

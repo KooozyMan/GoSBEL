@@ -92,6 +92,20 @@ public class ${entityName}Controller {
 }`
 }
 
+function indexController(basePackage, smallBaseArtifact) {
+    return `package ${basePackage}.${smallBaseArtifact}.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+
+public class RedirectToIndexHTML {
+    // Home page
+    @GetMapping("/")
+    public String home() {
+        return "index";
+    }
+}`
+}
+
 export default function ControllerCodeGenerator(xml, basePackage = `com.example`) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
@@ -103,6 +117,7 @@ export default function ControllerCodeGenerator(xml, basePackage = `com.example`
         const type = e.querySelector('Field[pk="true"]').getAttribute('type');
         controllers.push({ 'fileName': `${name}Controller.java`, 'code': getController(name, type, basePackage, smallBaseArtifact) })
     })
+    controllers.push({ fileName: 'RedirectToIndexHTML.java', code: indexController(basePackage, smallBaseArtifact) })
 
     return controllers;
 }
