@@ -28,7 +28,7 @@ function formGenerator(entityName, capAppName, entityFields) {
             ${entityFields.map(field => {
         if (field.name === 'id') return;
         let t = field.type;
-        switch (t) {
+        switch (t.toLowerCase()) {
             case 'string': t = 'text'; break;
             case 'integer':
             case 'long':
@@ -181,7 +181,7 @@ export default function ThymeleafCodeGenerator(xml) {
 
     xmlDoc.querySelectorAll("Entity").forEach((entity) => {
         const entityName = entity.getAttribute("name").toLowerCase();
-        const entityFields = Array.from(xmlDoc.querySelectorAll("Field")).map(field => ({ name: field.getAttribute("name"), type: field.getAttribute("type") }));
+        const entityFields = Array.from(entity.querySelectorAll("Field")).map(field => ({ name: field.getAttribute("name"), type: field.getAttribute("type") }));
 
         Views.push({ fileName: `${entityName}-form.html`, code: formGenerator(entityName, capAppName, entityFields) });
         Views.push({ fileName: `${entityName}-list.html`, code: listGenerator(entityName, entityFields, capAppName, entitiesList) });
