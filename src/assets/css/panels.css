@@ -63,6 +63,8 @@
 
 .info-div {
     display: flex;
+    visibility: hidden;
+    transform: translateY(10px);
     align-items: center;
     justify-content: center;
     position: absolute;
@@ -81,7 +83,9 @@
 }
 
 .info-div.hovered {
+    visibility: visible;
     opacity: 1;
+    transform: translateY(0);
 }
 
 .action-button {

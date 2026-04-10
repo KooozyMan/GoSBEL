@@ -44,9 +44,16 @@ export default function EntityGenerator(xml, basePackage = `com.example`) {
             const capitalizedFieldName = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
             const fieldType = field.getAttribute("type");
 
-            entityFields += `    private ${fieldType} ${fieldName};\n`;
-            entityGetters += `    public ${fieldType} get${capitalizedFieldName}() { return ${fieldName}; }\n`;
-            entitySetters += `    public void set${capitalizedFieldName}(${fieldType} ${fieldName}) { this.${fieldName} = ${fieldName}; }\n`;
+            if (field.getAttribute('pk') === "true") {
+                entityFields = `    private ${fieldType} ${fieldName};\n` + entityFields;
+                entityGetters = `    public ${fieldType} get${capitalizedFieldName}() { return ${fieldName}; }\n` + entityGetters;
+                entitySetters = `    public void set${capitalizedFieldName}(${fieldType} ${fieldName}) { this.${fieldName} = ${fieldName}; }\n` + entitySetters;
+
+            } else {
+                entityFields += `    private ${fieldType} ${fieldName};\n`;
+                entityGetters += `    public ${fieldType} get${capitalizedFieldName}() { return ${fieldName}; }\n`;
+                entitySetters += `    public void set${capitalizedFieldName}(${fieldType} ${fieldName}) { this.${fieldName} = ${fieldName}; }\n`;
+            }
         });
 
         const ownedRelations = relations.filter(r => r.OwnerId === node.getAttribute("id"));
@@ -62,7 +69,6 @@ export default function EntityGenerator(xml, basePackage = `com.example`) {
         const code = `package ${basePackage}.${smallBaseArtifact}.entity;
     
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 
 @Entity
 public class ${capitalizedName} {

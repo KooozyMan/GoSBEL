@@ -66,11 +66,29 @@
     border-radius: 4px;
 }
 
-.entity-type-input {
+.entity-type-select {
     width: 40%;
     background: #374151;
     color: #e5e7eb;
     border: none;
     padding: 4px 6px;
     border-radius: 4px;
+}
+
+.entity-pk-checkbox {
+    display: none;
+}
+
+.entity-pk-checkbox+label,
+.entity-pk-checkbox:checked+label {
+    display: inline-block;
+    background: url('../img/pk-disabled.png') no-repeat;
+    height: 16px;
+    width: 21px;
+    padding: 0 0 0 0px;
+    cursor: pointer;
+}
+
+.entity-pk-checkbox:checked+label {
+    background: url('../img/pk-enabled.png') no-repeat;
 }

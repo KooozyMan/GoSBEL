@@ -39,37 +39,29 @@
     top: 15%;
     left: 25%;
     padding: 20px 0 0 0;
-    /* Remove bottom padding */
     z-index: 15;
     width: 800px;
     max-height: 70%;
     overflow-y: auto;
-    background: grey;
+    background: #2e3440;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
-    /* Remove justify-content: left and align-items: center */
 }
 
 .xml-code {
-    height: fit-content;
+    height: 450px;
     width: 95%;
-    color: black;
-    font-size: 18px;
     margin: 0 auto;
-    /* Center the code content */
     padding-bottom: 20px;
-    /* Add space before footer */
 }
 
 .xml-footer {
     width: 100%;
-    background: grey;
     padding: 15px 0;
     position: sticky;
     bottom: 0;
     left: 0;
-    /* Ensure footer stays within container */
     flex-shrink: 0;
 }
 
@@ -136,7 +128,8 @@
 }
 
 /* Info Page */
-.info-popup-container {
+.info-popup-container,
+.history-popup-container {
     position: absolute;
     top: 15%;
     left: 25%;
@@ -147,7 +140,8 @@
     border-radius: 8px;
 }
 
-.info-container {
+.info-container,
+.history-container {
     overflow-y: auto;
     max-height: 500px;
 }
@@ -171,4 +165,55 @@
 .close-button {
     display: block;
     margin: 0 auto;
+}
+
+.history-content-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    color: #2D527C;
+    background-color: #f3f3f3;
+    border: #2D527C 2px solid;
+    border-radius: 8px;
+    height: 80px;
+    margin: 10px;
+    transition: all 0.3s ease;
+}
+
+.history-content-container:hover {
+    color: #f3f3f3;
+    background-color: #2D527C74;
+    cursor: pointer;
+}
+
+.history-empty-container {
+    display: flex;
+    justify-content: center;
+    color: #2D527C;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.history-app-name,
+.history-date {
+    height: 30px;
+    margin: 5px 0 0 10px;
+    width: 685px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.history-del {
+    background-color: #cc0000;
+    border: 0px;
+    border-radius: 0;
+    padding: 0px;
+    margin: 0 0 0 auto;
+    width: 60px;
+    height: 80px;
+}
+
+.history-del:hover {
+    cursor: pointer;
 }

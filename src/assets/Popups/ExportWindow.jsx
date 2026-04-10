@@ -1,5 +1,7 @@
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import zipSvg from '../img/zip.svg';
+import jarSvg from '../img/jar.svg';
 
 export default function ExportWindow({ onClose, generatedCode, onConfirmation }) {
     async function fetchFile(path) {
@@ -56,26 +58,32 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
 
         // Controllers
         const controllers = currentFolder.folder('controller');
-        generatedCode.Entities.forEach(controller => {
+        generatedCode.Controllers.forEach(controller => {
             controllers.file(controller.fileName, controller.code);
         });
 
         // Repositories
         const repositories = currentFolder.folder('repository');
-        generatedCode.Entities.forEach(repository => {
+        generatedCode.Repositories.forEach(repository => {
             repositories.file(repository.fileName, repository.code);
         });
 
         // Services
         const services = currentFolder.folder('service');
-        generatedCode.Entities.forEach(service => {
+        generatedCode.Services.forEach(service => {
             services.file(service.fileName, service.code);
         });
 
         // Creating Resources
         const resources = main.folder('resources');
         resources.file('application.properties', `spring.application.name=${smlAppName}`);
-        resources.folder('templates');
+
+        // Creating View
+        const templates = resources.folder('templates');
+        generatedCode.Views.forEach(views => {
+            templates.file(views.fileName, views.code);
+        });
+
         resources.folder('static');
 
         // Test Structure
@@ -122,10 +130,10 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
                 </div>
                 <div className="export-project-download">
                     <div className="downloadable" onClick={getZipFile}>
-                        <img className="export-img" src="/src/assets/img/zip.svg"></img><span>Download code as a zip file.</span>
+                        <img className="export-img" src={zipSvg}></img><span>Download code as a zip file.</span>
                     </div>
                     <div className="downloadable" onClick={getJarFile}>
-                        <img className="export-img" src="/src/assets/img/jar.svg"></img><span>Download code as a jar file.</span>
+                        <img className="export-img" src={jarSvg}></img><span>Download code as a jar file.</span>
                     </div>
                     <button className="close-export-project-window" onClick={onClose}>Close</button>
                 </div>

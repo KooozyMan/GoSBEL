@@ -1,58 +1,51 @@
 import { useEffect, useRef } from "react"
-import { EditorView } from "@codemirror/view"
-import { EditorState } from "@codemirror/state"
-import { basicSetup } from "codemirror"
-import { xml } from "@codemirror/lang-xml"
-import { useHotkeys } from "react-hotkeys-hook"
+import { Editor } from "@monaco-editor/react";
+import { loader } from "@monaco-editor/react";
+import nord from '../Themes/Nord.json';
+
 
 export default function XMLView({ onClose, onLoad, xmlContent }) {
-    const editorRef = useRef(null)
-    const viewRef = useRef(null)
+    const editorRef = useRef(null);
 
-    // Create editor ONCE
-    useEffect(() => {
-        if (!editorRef.current) return
-
-        const state = EditorState.create({
-            doc: xmlContent || `Something went wrong`,
-            extensions: [basicSetup, xml()]
-        })
-
-        viewRef.current = new EditorView({
-            state,
-            parent: editorRef.current
-        })
-
-        return () => viewRef.current?.destroy()
-    }, [])
-
-    // Update document when xmlContent changes
-    useEffect(() => {
-        if (!viewRef.current) return
-
-        const currentDoc = viewRef.current.state.doc.toString()
-
-        if (currentDoc !== xmlContent) {
-            viewRef.current.dispatch({
-                changes: {
-                    from: 0,
-                    to: currentDoc.length,
-                    insert: xmlContent
-                }
-            })
-        }
-    }, [xmlContent])
+    function handleEditorDidMount(editor, monaco) {
+        editorRef.current = editor;
+    }
 
     const handleLoad = () => {
-        const currentXML = viewRef.current.state.doc.toString();
+        const currentXML = editorRef.current.getValue();
         onLoad(currentXML);
         onClose();
     };
 
+    const defineNordTheme = () => {
+        loader.init().then(monaco => {
+            monaco.editor.defineTheme('nord', nord);
+        });
+    };
+    useEffect(() => {
+        defineNordTheme();
+    }, [])
+
+
     return (
         <div>
             <div className="xml-container">
-                <div ref={editorRef} className="xml-code" />
+                <div className="xml-code" >
+                    <Editor
+                        height="100%"
+                        language="java"
+                        value={xmlContent}
+                        theme="nord"
+                        onMount={handleEditorDidMount}
+                        options={{
+                            readOnly: false,
+                            minimap: { enabled: false },
+                            fontSize: 14,
+                            lineNumbers: 'on',
+                            scrollBeyondLastLine: false,
+                        }}
+                    />
+                </div>
                 <footer className="xml-footer">
                     <div className="xml-buttons">
                         <button onClick={onClose}>Close</button>
