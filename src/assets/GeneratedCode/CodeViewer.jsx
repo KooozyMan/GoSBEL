@@ -28,6 +28,10 @@ export default function CodeViewer({ onExport, onClose, generatedCode }) {
         else setMonacoLanguage('java')
     },[ViewedFile])
 
+    const copyCode = () => {
+        navigator.clipboard.writeText(ViewedCode)
+    }
+
     return (
         <div className="code-viewer">
             <div className="files-container">
@@ -101,6 +105,7 @@ export default function CodeViewer({ onExport, onClose, generatedCode }) {
                 />
             </div>
             <button onClick={onClose} className="close-code-viewer-button">X</button>
+            <button onClick={copyCode} className="copy-code-button">copy</button>
             <button onClick={onExport} className="export-code">Export Code</button>
         </div >
     );
