@@ -20,31 +20,31 @@ function formGenerator(entityName, capAppName, entityFields) {
         th:action="\${${entityName}.id != null} ? @{/${entityName}/update/{id}(id=\${${entityName}.id})} : @{/${entityName}/save}">
             <!-- Form header -->
             <header class="h-fit bg-cyan-500 pl-2 sticky top-0 rounded-tr-2xl font-mono font-bold rounded-tl-2xl">
-            <!-- if there's a url mapping id, display Edit in the header -->
-            <span th:if="\${${entityName}.id != null}">Edit ${entityName}<span th:text="\${${entityName}.id}"></span></span>
+                <!-- if there's a url mapping id, display Edit in the header -->
+                <span th:if="\${${entityName}.id != null}">Edit ${entityName}<span th:text="\${${entityName}.id}"></span></span>
             
-            <!-- if there's no url mapping id, display New in the header -->
-            <span th:unless="\${${entityName}.id != null}">New ${entityName} Form</span>
+                <!-- if there's no url mapping id, display New in the header -->
+                <span th:unless="\${${entityName}.id != null}">New ${entityName} Form</span>
             </header>
 
             <!-- Form inputs -->
             <div class="grid grid-cols-2 gap-1 p-2 my-4">
-            <!-- Display input forms depending on entities field names and field types -->${entityFields.map(field => {
-                if (field.name === 'id') return;
-                let t = field.type;
-                switch (t.toLowerCase()) {
-                    case 'string': t = 'text'; break;
-                    case 'integer':
-                        case 'long':
-                            case 'double':
-                                t = 'number';
-                                break;
-                                case 'boolean': t = 'checkbox'; break;
-                            }
-            return `                <label class="w-full flex" for="${field.name}-input">${field.name}:
+                <!-- Display input forms depending on entities field names and field types -->${entityFields.map(field => {
+        if (field.name === 'id') return;
+        let t = field.type;
+        switch (t.toLowerCase()) {
+            case 'string': t = 'text'; break;
+            case 'integer':
+            case 'long':
+            case 'double':
+                t = 'number';
+                break;
+            case 'boolean': t = 'checkbox'; break;
+        }
+        return `                <label class="w-full flex" for="${field.name}-input">${field.name}:
                 <input type="${t}" id="${field.name}-input" class="border rounded ml-auto mr-0" th:field="*{${field.name}}">
                 </label>`
-            }).join('\n')}
+    }).join('\n')}
             </div>
         
             <!-- Form footer -->
@@ -81,7 +81,7 @@ function listGenerator(entityName, entityFields, capAppName, entitiesList) {
             <div id="entities" class="w-60 bg-cyan-700 text-white *:w-full *:block space-y-2 p-4">
 
                 <!-- Navigation to other entities -->
-${entitiesList.map(e => (`\t\t\t\t\t\t\t\t<a${e === entityName ? '\n\t\t\t\t\t\t\t\tdisabled' : `\n\t\t\t\t\t\t\t\tth:href="@{/${e}}"`}
+${entitiesList.map(e => (`\t\t\t\t<a${e === entityName ? '\n\t\t\t\tdisabled' : `\n\t\t\t\tth:href="@{/${e}}"`}
                 class="w-full border-2 ${e === entityName ? 'bg-cyan-500' : 'focus:bg-cyan-500'} text-center h-fit hover:bg-cyan-600 cursor-pointer transition-colors duration-300 rounded border-cyan-900">
                 ${e}
                 </a>\n`)).join('\n')}
@@ -97,7 +97,7 @@ ${entitiesList.map(e => (`\t\t\t\t\t\t\t\t<a${e === entityName ? '\n\t\t\t\t\t\t
                             <!-- fields row -->
                             <tr>
 ${entityFields.map(field =>
-`\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<th class="px-6 py-3 text-center font-bold tracking-wider">${field.name}</th>`).join("\n")}
+        `\t\t\t\t\t\t\t\t<th class="px-6 py-3 text-center font-bold tracking-wider">${field.name}</th>`).join("\n")}
                                 <th class="px-6 py-3 text-center font-bold tracking-wider">Actions</th>
                             </tr>
                         </thead>
@@ -111,7 +111,7 @@ ${entityFields.map(field =>
                             <!-- Loop through ${entityName}s -->
                             <tr th:each="${entityName} : \${${entityName}}" class="hover:bg-cyan-50 text-black">
 ${entityFields.map(field =>
-`\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class="px-6 py-4 whitespace-nowrap text-center" th:text="\${${entityName}.${field.name}}"></td>`).join("\n")}
+            `\t\t\t\t\t\t\t\t<td class="px-6 py-4 whitespace-nowrap text-center" th:text="\${${entityName}.${field.name}}"></td>`).join("\n")}
                                 <td class="px-6 py-4 whitespace-nowrap space-x-2">
                                     <!-- Redirect to edit form -->
                                     <a th:href="@{/${entityName}/edit/{id}(id=\${${entityName}.id})}" class="text-blue-600 text-center hover:underline hover:text-blue-900">

@@ -31,6 +31,7 @@ import TestCodeGenerator from "./assets/CodeGenerator/TestCodeGenerator";
 import PomCodeGenerator from "./assets/CodeGenerator/PomCodeGenerator";
 import ActionButtons from "./assets/Panels/ActionButtons";
 import Info from "./assets/Popups/Info";
+import History from "./assets/Popups/History";
 import { javaReservedKeywords } from './assets/Lists/JavaReservedKeywords';
 import { h2ReservedKeywords } from './assets/Lists/H2ReservedKeywords';
 import { allowedDataTypes } from "./assets/Lists/AllowedDataTypes";
@@ -82,6 +83,7 @@ export default function App() {
   const [entityId, setEntityId] = useState(3);
   const [ExportWindowVisibility, setExportWindowVisibility] = useState(false);
   const [ApplicationName, setApplicationName] = useState('demo');
+  const [HistoryVisibility, setHistoryVisibility] = useState(false);
 
   const createNode = (nodeType) => {
     let newNode;
@@ -116,13 +118,22 @@ export default function App() {
   };
 
   const quickSave = () => {
-    let history = JSON.parse(localStorage.getItem('history')) || []
-    history.push({
-      Date: new Date().toISOString(),
-      xml: exportXML()
+    let history = JSON.parse(localStorage.getItem('history')) || [];
+    history.unshift({
+      appName: ApplicationName.charAt(0).toUpperCase() + ApplicationName.slice(1),
+      xml: exportXML(),
+      date: new Intl.DateTimeFormat('en-ZA', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      }).format(new Date()),
     });
 
-    localStorage.setItem("quick-saved-diagram", exportXML());
+    localStorage.setItem("history", JSON.stringify(history));
     confirmationHelper('confirmation', 'The diagram has been saved to your browser!');
   };
 
@@ -244,7 +255,7 @@ export default function App() {
     let xml = `<Application name="${ApplicationName.charAt(0).toUpperCase() + ApplicationName.slice(1)}">\n`;
     nodes.forEach((n) => {
       if (n.type === 'entity') {
-        xml += `  <Entity id="${n.id}" name="${n.data.label}" x="${n.position.x}" y="${n.position.y}">\n`;
+        xml += `  <Entity id="${n.id}" name="${n.data.label.charAt(0).toUpperCase() + n.data.label.slice(1)}" x="${n.position.x}" y="${n.position.y}">\n`;
 
         (n.data.fields).forEach((f) => {
           xml += `    <Field name="${f.name}" type="${f.type}" pk="${f.pk}" />\n`
@@ -278,7 +289,7 @@ export default function App() {
 
     xmlDoc.querySelectorAll("Entity").forEach((e) => {
       const id = e.getAttribute("id");
-      const name = e.getAttribute("name").charAt(0).toUpperCase() + e.getAttribute("name").slice(1);
+      const name = e.getAttribute("name");
       const x = parseInt(e.getAttribute("x")) || 200;
       const y = parseInt(e.getAttribute("y")) || 200;
       const fields = Array.from(e.querySelectorAll("Field")).map((f) => {
@@ -347,7 +358,7 @@ export default function App() {
         nodeTypes={nodeTypes}
         fitView
       >
-        <Panel position="top-left"><ActionButtons onQuickSave={quickSave} onQuickLoad={quickLoad} onCodeView={CodeViewerHandler} onXmlView={() => setXmlVisibility(true)} onInfo={() => setInfoVisibility(true)} /></Panel>
+        <Panel position="top-left"><ActionButtons onQuickSave={quickSave} onHistory={() => setHistoryVisibility(true)} onCodeView={CodeViewerHandler} onXmlView={() => setXmlVisibility(true)} onInfo={() => setInfoVisibility(true)} /></Panel>
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
         <Panel position="top-center">{ConfirmationVisibility && <Confirmation type={confirmationData.type} message={confirmationData.message} />}</Panel>
         <Panel position="bottom-center"><Application name={ApplicationName} setName={setApplicationName} /></Panel>
@@ -360,7 +371,7 @@ export default function App() {
       {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
       {CodeVisibility && <CodeViewer generatedCode={CodeViewerHandler()} onExport={() => exportCode()} onClose={() => setCodeVisibility(false)} />}
       {ExportWindowVisibility && <ExportWindow onClose={() => setExportWindowVisibility(false)} generatedCode={CodeViewerHandler(false)} onConfirmation={confirmationHelper} />}
-      {/* TODO load page instead of quick load */}
+      {HistoryVisibility && <History onClose={() => setHistoryVisibility(false)} onLoad={handleLoadedXml} />}
     </div>
   );
 }

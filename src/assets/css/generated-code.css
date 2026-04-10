@@ -95,17 +95,6 @@
     width: 100%
 }
 
-.copy-code-button{
-    position: fixed;
-    top: 15px;
-    right: 5%;
-    width: fit-content;
-    height: 60px;
-    z-index: 20;
-    font-weight: bolder;
-    font-size: 20px;
-}
-
 .close-code-viewer-button {
     position: absolute;
     left: 96%;

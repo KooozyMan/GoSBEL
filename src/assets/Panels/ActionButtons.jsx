@@ -1,11 +1,11 @@
 import { useState } from "react";
 import saveSvg from '../img/save.svg';
-import loadSvg from '../img/load.svg';
+import historySvg from '../img/history.svg';
 import codeViewerSvg from '../img/code-viewer.svg';
 import xmlViewerSvg from '../img/xml-viewer.svg';
 import inforSvg from '../img/info.svg';
 
-export default function ActionButtons({ onQuickSave, onQuickLoad, onCodeView, onXmlView, onInfo }) {
+export default function ActionButtons({ onQuickSave, onHistory, onCodeView, onXmlView, onInfo }) {
     const [Hovered, setHovered] = useState('');
     return (
         <div className="action-buttons">
@@ -14,7 +14,7 @@ export default function ActionButtons({ onQuickSave, onQuickLoad, onCodeView, on
                 <div className={`info-div  ${Hovered === 'save' ? 'hovered' : ''}`}>Save</div>
             </div>
             <div className="action-div">
-                <button className="action-button" onClick={onQuickLoad} onMouseEnter={() => setHovered('load')} onMouseLeave={() => setHovered()}><img className="action-button-img" src={loadSvg} /></button>
+                <button className="action-button" onClick={onHistory} onMouseEnter={() => setHovered('load')} onMouseLeave={() => setHovered()}><img className="action-button-img" src={historySvg} /></button>
                 <div className={`info-div  ${Hovered === 'load' ? 'hovered' : ''}`}>History</div>
             </div>
             <div className="action-div">

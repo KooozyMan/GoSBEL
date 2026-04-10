@@ -23,14 +23,10 @@ export default function CodeViewer({ onExport, onClose, generatedCode }) {
     }, [])
     useEffect(() => {
         if (ViewedFile === 'view') {
-            setMonacoLanguage('html')
+            setMonacoLanguage('html');
         }
-        else setMonacoLanguage('java')
+        else setMonacoLanguage('java');
     }, [ViewedFile])
-
-    const copyCode = () => {
-        navigator.clipboard.writeText(ViewedCode)
-    }
 
     return (
         <div className="code-viewer">
@@ -99,13 +95,14 @@ export default function CodeViewer({ onExport, onClose, generatedCode }) {
                         minimap: { enabled: false },
                         fontSize: 14,
                         tabSize: 4,
+                        insertSpaces: true,
+                        detectIndentation: false,
                         lineNumbers: 'on',
                         scrollBeyondLastLine: false,
                     }}
                 />
             </div>
             <button onClick={onClose} className="close-code-viewer-button">X</button>
-            <button onClick={copyCode} className="copy-code-button">copy</button>
             <button onClick={onExport} className="export-code">Export Code</button>
         </div >
     );
