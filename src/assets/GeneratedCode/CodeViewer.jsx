@@ -6,7 +6,7 @@ import nord from '../Themes/Nord.json';
 export default function CodeViewer({ onExport, onClose, generatedCode }) {
     const [ViewedCode, setViewedCode] = useState(generatedCode.Application[0].code);
     const [ViewedFile, setViewedFile] = useState('application');
-    const [monacoLanguage,setMonacoLanguage] = useState('java')
+    const [monacoLanguage, setMonacoLanguage] = useState('java')
     const capArtifactName = generatedCode.Application[0].fileName.slice(0, -16);
     const smlArtifactName = capArtifactName.toLowerCase();
     const closedFolderImg = '/src/assets/img/closed-folder.svg';
@@ -22,11 +22,11 @@ export default function CodeViewer({ onExport, onClose, generatedCode }) {
         defineNordTheme();
     }, [])
     useEffect(() => {
-        if (ViewedFile === 'view'){
+        if (ViewedFile === 'view') {
             setMonacoLanguage('html')
         }
         else setMonacoLanguage('java')
-    },[ViewedFile])
+    }, [ViewedFile])
 
     const copyCode = () => {
         navigator.clipboard.writeText(ViewedCode)
@@ -73,17 +73,17 @@ export default function CodeViewer({ onExport, onClose, generatedCode }) {
                         </div>
                     </div>
                     <div className="folder">
-                        <span className={`folder-name  ${ViewedFile === 'test' ? 'selected' : ''}`}><img className="folder-img" src={closedFolderImg}></img>test/java/com.exmaple.{smlArtifactName}</span>
-                        {generatedCode.Test.map((test, index) => (
-                            <div key={index} className={`file ${ViewedCode === test.code ? 'selected' : ''}`}
-                                onClick={() => { setViewedCode(test.code); setViewedFile('test') }}>{test.fileName}</div>
-                        ))}
-                    </div>
-                    <div className="folder">
                         <span className={`folder-name  ${ViewedFile === 'view' ? 'selected' : ''}`}><img className="folder-img" src={closedFolderImg}></img>main/resources/templates</span>
                         {generatedCode.Views.map((view, index) => (
                             <div key={index} className={`file ${ViewedCode === view.code ? 'selected' : ''}`}
                                 onClick={() => { setViewedCode(view.code); setViewedFile('view') }}>{view.fileName}</div>
+                        ))}
+                    </div>
+                    <div className="folder">
+                        <span className={`folder-name  ${ViewedFile === 'test' ? 'selected' : ''}`}><img className="folder-img" src={closedFolderImg}></img>test/java/com.exmaple.{smlArtifactName}</span>
+                        {generatedCode.Test.map((test, index) => (
+                            <div key={index} className={`file ${ViewedCode === test.code ? 'selected' : ''}`}
+                                onClick={() => { setViewedCode(test.code); setViewedFile('test') }}>{test.fileName}</div>
                         ))}
                     </div>
                 </div>

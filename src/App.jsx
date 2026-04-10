@@ -278,7 +278,7 @@ export default function App() {
 
     xmlDoc.querySelectorAll("Entity").forEach((e) => {
       const id = e.getAttribute("id");
-      const name = e.getAttribute("name");
+      const name = e.getAttribute("name").charAt(0).toUpperCase() + e.getAttribute("name").slice(1);
       const x = parseInt(e.getAttribute("x")) || 200;
       const y = parseInt(e.getAttribute("y")) || 200;
       const fields = Array.from(e.querySelectorAll("Field")).map((f) => {
@@ -320,16 +320,20 @@ export default function App() {
 
     // xmlDoc.querySelectorAll("Repository").forEach((e) => {}); // Example
     setApplicationName(xmlDoc.querySelector("Application").getAttribute("name"));
-    setNodes(loadedNodes);
-    setEdges(loadedEdges);
+    setNodes(() => []);
+    setEdges(() => []);
+    setTimeout(() => {
+      setNodes(loadedNodes);
+      setEdges(loadedEdges);
+    }, 0);
   };
 
-  useHotkeys('ctrl+e', () => createNode("entity"), { preventDefault: true })
-  useHotkeys('ctrl+s', () => quickSave(), { preventDefault: true })
-  useHotkeys('ctrl+l', () => quickLoad(), { preventDefault: true })
-  useHotkeys('ctrl+c', () => CodeViewerHandler(), { preventDefault: true })
-  useHotkeys('ctrl+x', () => setXmlVisibility(true), { preventDefault: true })
-  useHotkeys('esc', () => { setCodeVisibility(false); setXmlVisibility(false); setExportWindowVisibility(false); setInfoVisibility(false); })
+  useHotkeys('ctrl+e', () => createNode("entity"), { preventDefault: true });
+  useHotkeys('ctrl+s', () => quickSave(), { preventDefault: true });
+  useHotkeys('ctrl+l', () => quickLoad(), { preventDefault: true });
+  useHotkeys('ctrl+c', () => CodeViewerHandler(), { preventDefault: true });
+  useHotkeys('ctrl+x', () => setXmlVisibility(true), { preventDefault: true });
+  useHotkeys('esc', () => { setCodeVisibility(false); setXmlVisibility(false); setExportWindowVisibility(false); setInfoVisibility(false); });
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
