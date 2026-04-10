@@ -69,7 +69,7 @@ const initialNodes = [
 ];
 
 const initialEdges = [
-  { id: "e1-2", source: "1", target: "2", type: "crowsFoot" }
+  { id: "e1-2", source: "1", target: "2", type: "crowsFoot", data: { relationship: "1-m" } }
 ];
 
 export default function App() {
