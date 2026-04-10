@@ -6,6 +6,7 @@ import nord from '../Themes/Nord.json';
 export default function CodeViewer({ onExport, onClose, generatedCode }) {
     const [ViewedCode, setViewedCode] = useState(generatedCode.Application[0].code);
     const [ViewedFile, setViewedFile] = useState('application');
+    const [monacoLanguage,setMonacoLanguage] = useState('java')
     const capArtifactName = generatedCode.Application[0].fileName.slice(0, -16);
     const smlArtifactName = capArtifactName.toLowerCase();
     const closedFolderImg = '/src/assets/img/closed-folder.svg';
@@ -20,6 +21,12 @@ export default function CodeViewer({ onExport, onClose, generatedCode }) {
     useEffect(() => {
         defineNordTheme();
     }, [])
+    useEffect(() => {
+        if (ViewedFile === 'view'){
+            setMonacoLanguage('html')
+        }
+        else setMonacoLanguage('java')
+    },[ViewedFile])
 
     return (
         <div className="code-viewer">
@@ -68,18 +75,26 @@ export default function CodeViewer({ onExport, onClose, generatedCode }) {
                                 onClick={() => { setViewedCode(test.code); setViewedFile('test') }}>{test.fileName}</div>
                         ))}
                     </div>
+                    <div className="folder">
+                        <span className={`folder-name  ${ViewedFile === 'view' ? 'selected' : ''}`}><img className="folder-img" src={closedFolderImg}></img>main/resources/templates</span>
+                        {generatedCode.Views.map((view, index) => (
+                            <div key={index} className={`file ${ViewedCode === view.code ? 'selected' : ''}`}
+                                onClick={() => { setViewedCode(view.code); setViewedFile('view') }}>{view.fileName}</div>
+                        ))}
+                    </div>
                 </div>
             </div>
             <div className="code">
                 <Editor
                     height="100%"
-                    language="java"
+                    language={monacoLanguage}
                     value={ViewedCode}
                     theme="nord"
                     options={{
                         readOnly: true, // Set to false if you want editing
                         minimap: { enabled: false },
                         fontSize: 14,
+                        tabSize: 4,
                         lineNumbers: 'on',
                         scrollBeyondLastLine: false,
                     }}
