@@ -34,6 +34,7 @@ import Info from "./assets/Popups/Info";
 import History from "./assets/Popups/History";
 import ThymeleafCodeGenerator from "./assets/CodeGenerator/ThymeleafCodeGenerator";
 import Validation from "./assets/Helpers/Validation";
+import PropertiesCodeGenerator from "./assets/CodeGenerator/PropertiesCodeGenerator";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -163,6 +164,7 @@ export default function App() {
       Test: TestCodeGenerator(exportedXML),
       Pom: PomCodeGenerator(exportedXML),
       Views: ThymeleafCodeGenerator(exportedXML),
+      Properties: PropertiesCodeGenerator(exportedXML),
     };
 
     setCodeVisibility(flag);

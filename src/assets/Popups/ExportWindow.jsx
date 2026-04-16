@@ -76,7 +76,7 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
 
         // Creating Resources
         const resources = main.folder('resources');
-        resources.file('application.properties', `spring.application.name=${smlAppName}`);
+        resources.file(generatedCode.Properties[0].fileName, generatedCode.Properties[0].code);
 
         // Creating View
         const templates = resources.folder('templates');
@@ -126,7 +126,7 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         <div>
             <div className="export-window">
                 <div className="export-project-config">
-                    <span>Project Settings: Maven Java 17 <br></br>Spring Boot 4.0.4 <br></br>Packaging: Jar <br></br>Configuration: Properties</span>
+                    <span>Project Settings: Maven Java 17 <br />Spring Boot 4.0.4 <br />Packaging: Jar <br />Configuration: Properties<br />user: admin<br />password: admin</span>
                 </div>
                 <div className="export-project-download">
                     <div className="downloadable" onClick={getZipFile}>

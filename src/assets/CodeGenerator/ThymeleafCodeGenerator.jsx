@@ -157,7 +157,7 @@ function indexGenerator(capAppName, entitiesList) {
         <div class="flex h-screen w-full bg-cyan-950">
             <div id="entities" class="w-60 bg-cyan-700 text-white *:w-full *:block space-y-2 p-4">
                 <!-- Index page navigation -->
-                ${entitiesList.map(e => (`<a class="border-2 text-center h-fit hover:bg-cyan-600 cursor-pointer focus:bg-cyan-500 transition-colors duration-300 rounded border-cyan-900" th:href="@{/${e}}" >${e}</a>`)).join('\n\t\t\t\t\t\t\t\t')}
+                ${entitiesList.map(e => (`<a class="border-2 text-center h-fit hover:bg-cyan-600 cursor-pointer focus:bg-cyan-500 transition-colors duration-300 rounded border-cyan-900" th:href="@{/${e}}" >${e}</a>`)).join('\n\t\t\t\t')}
             </div>
         </div>
 
