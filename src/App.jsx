@@ -87,12 +87,12 @@ export default function App() {
   const createNode = (nodeType) => {
     let newNode;
 
-    if (nodeType === "entity") {
+    if (nodeType === "Entity") {
       newNode = EntityGenerator(entityId.toString());
       setEntityId(entityId + 1);
 
     } else { // fallback
-      alert(`the node ${nodeType} does not exist`);
+      confirmationHelper(`error`, `the node ${nodeType} does not exist`);
       return
     };
 
