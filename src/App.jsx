@@ -116,11 +116,14 @@ export default function App() {
     );
   };
 
-  const quickSave = () => {
+  const save = () => {
     let history = JSON.parse(localStorage.getItem('history')) || [];
+    const exportedXML = exportXML();
+    if (!exportedXML) return;
+
     history.unshift({
       appName: ApplicationName.charAt(0).toUpperCase() + ApplicationName.slice(1),
-      xml: exportXML(),
+      xml: exportedXML,
       date: new Intl.DateTimeFormat('en-ZA', {
         year: 'numeric',
         month: '2-digit',
@@ -134,17 +137,6 @@ export default function App() {
 
     localStorage.setItem("history", JSON.stringify(history));
     confirmationHelper('confirmation', 'The diagram has been saved to your browser!');
-  };
-
-  const quickLoad = () => {
-    const loadedXml = localStorage.getItem("quick-saved-diagram");
-    if (loadedXml === "" || loadedXml === null) {
-      confirmationHelper('error', 'No Diagram has been saved on this browser.');
-      return;
-    }
-
-    handleLoadedXml(loadedXml);
-    confirmationHelper('confirmation', 'The diagram has been loaded from your browser!');
   };
 
   const CodeViewerHandler = (flag = true) => {
@@ -274,8 +266,7 @@ export default function App() {
   }
 
   useHotkeys('ctrl+e', () => createNode("entity"), { preventDefault: true });
-  useHotkeys('ctrl+s', () => quickSave(), { preventDefault: true });
-  useHotkeys('ctrl+l', () => quickLoad(), { preventDefault: true });
+  useHotkeys('ctrl+s', () => save(), { preventDefault: true });
   useHotkeys('ctrl+c', () => CodeViewerHandler(), { preventDefault: true });
   useHotkeys('ctrl+x', () => setXmlVisibility(true), { preventDefault: true });
   useHotkeys('esc', () => closeAllPopups());
@@ -292,7 +283,7 @@ export default function App() {
         nodeTypes={nodeTypes}
         fitView
       >
-        <Panel position="top-left"><ActionButtons onQuickSave={quickSave} onHistory={() => setHistoryVisibility(true)} onCodeView={CodeViewerHandler} onXmlView={() => setXmlVisibility(true)} onInfo={() => setInfoVisibility(true)} /></Panel>
+        <Panel position="top-left"><ActionButtons onSave={save} onHistory={() => setHistoryVisibility(true)} onCodeView={CodeViewerHandler} onXmlView={() => setXmlVisibility(true)} onInfo={() => setInfoVisibility(true)} /></Panel>
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
         <Panel position="top-center">{ConfirmationVisibility && <Confirmation type={confirmationData.type} message={confirmationData.message} />}</Panel>
         <Panel position="bottom-center"><Application name={ApplicationName} setName={setApplicationName} /></Panel>

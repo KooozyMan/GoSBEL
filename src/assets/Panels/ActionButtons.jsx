@@ -5,12 +5,12 @@ import codeViewerSvg from '../img/code-viewer.svg';
 import xmlViewerSvg from '../img/xml-viewer.svg';
 import inforSvg from '../img/info.svg';
 
-export default function ActionButtons({ onQuickSave, onHistory, onCodeView, onXmlView, onInfo }) {
+export default function ActionButtons({ onSave, onHistory, onCodeView, onXmlView, onInfo }) {
     const [Hovered, setHovered] = useState('');
     return (
         <div className="action-buttons">
             <div className="action-div">
-                <button className="action-button" onClick={onQuickSave} onMouseEnter={() => setHovered('save')} onMouseLeave={() => setHovered()}><img className="action-button-img" src={saveSvg} /></button>
+                <button className="action-button" onClick={onSave} onMouseEnter={() => setHovered('save')} onMouseLeave={() => setHovered()}><img className="action-button-img" src={saveSvg} /></button>
                 <div className={`info-div  ${Hovered === 'save' ? 'hovered' : ''}`}>Save</div>
             </div>
             <div className="action-div">
