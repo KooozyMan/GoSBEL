@@ -70,7 +70,7 @@ export default function CodeViewer({ onExport, onClose, generatedCode }) {
                     </div>
                     <div className="folder">
                         <span className={`folder-name  ${ViewedFile === 'view' ? 'selected' : ''}`}><img className="folder-img" src={closedFolderImg}></img>main/resources/templates</span>
-                        {generatedCode.Views.map((view, index) => (
+                        {generatedCode.Views.filter(view => view.fileName.endsWith('.html')).map((view, index) => (
                             <div key={index} className={`file ${ViewedCode === view.code ? 'selected' : ''}`}
                                 onClick={() => { setViewedCode(view.code); setViewedFile('view') }}>{view.fileName}</div>
                         ))}
