@@ -95,13 +95,43 @@ public class ${entityName}Controller {
 function indexController(basePackage, smallBaseArtifact) {
     return `package ${basePackage}.${smallBaseArtifact}.controller;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.bind.annotation.GetMapping;
 
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
 public class RedirectToIndexHTML {
     // Home page
     @GetMapping("/")
     public String home() {
         return "index";
+    }
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                // 1. Specific Rule: Lock the update path for ANY dynamic name
+                // The * matches the dynamic name, the {id} is covered by the second * or **
+                .requestMatchers("/*/update/*").hasRole("ADMIN")
+
+                // 2. Broad Rule: Allow guests to access everything else
+                // This covers '/' and '/consumer' and '/any-other-name'
+                .requestMatchers("/", "/*", "/*/*").permitAll()
+
+                // 3. Fallback
+                .anyRequest().authenticated()
+            )
+            .formLogin(Customizer.withDefaults());
+
+        return http.build();
     }
 }`
 }

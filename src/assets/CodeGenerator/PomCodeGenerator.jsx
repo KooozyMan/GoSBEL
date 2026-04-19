@@ -1,9 +1,9 @@
 export default function PomCodeGenerator(xml) {
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xml, "text/xml");
-    const smallBaseArtifact = xmlDoc.querySelector("Application").getAttribute("name").toLowerCase();
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xml, "text/xml");
+  const smallBaseArtifact = xmlDoc.querySelector("Application").getAttribute("name").toLowerCase();
 
-    const code = `<?xml version="1.0" encoding="UTF-8"?>
+  const code = `<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -45,7 +45,15 @@ export default function PomCodeGenerator(xml) {
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.thymeleaf.extras</groupId>
+      <artifactId>thymeleaf-extras-springsecurity6</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -78,6 +86,11 @@ export default function PomCodeGenerator(xml) {
       <artifactId>spring-boot-starter-webmvc-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -91,5 +104,5 @@ export default function PomCodeGenerator(xml) {
 
 </project>`;
 
-    return [{ fileName: 'pom.xml', code: code }];
+  return [{ fileName: 'pom.xml', code: code }];
 }

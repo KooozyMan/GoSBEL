@@ -32,10 +32,10 @@ import PomCodeGenerator from "./assets/CodeGenerator/PomCodeGenerator";
 import ActionButtons from "./assets/Panels/ActionButtons";
 import Info from "./assets/Popups/Info";
 import History from "./assets/Popups/History";
-import { javaReservedKeywords } from './assets/Lists/JavaReservedKeywords';
-import { h2ReservedKeywords } from './assets/Lists/H2ReservedKeywords';
-import { allowedDataTypes } from "./assets/Lists/AllowedDataTypes";
 import ThymeleafCodeGenerator from "./assets/CodeGenerator/ThymeleafCodeGenerator";
+import Validation from "./assets/Helpers/Validation";
+import PropertiesCodeGenerator from "./assets/CodeGenerator/PropertiesCodeGenerator";
+import Tours from "./assets/Helpers/Tours";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -69,7 +69,7 @@ const initialNodes = [
 ];
 
 const initialEdges = [
-  { id: "e1-2", source: "1", target: "2", type: "crowsFoot" }
+  { id: "e1-2", source: "1", target: "2", type: "crowsFoot", data: { relationship: "1-m" } }
 ];
 
 export default function App() {
@@ -88,12 +88,12 @@ export default function App() {
   const createNode = (nodeType) => {
     let newNode;
 
-    if (nodeType === "entity") {
+    if (nodeType === "Entity") {
       newNode = EntityGenerator(entityId.toString());
       setEntityId(entityId + 1);
 
     } else { // fallback
-      alert(`the node ${nodeType} does not exist`);
+      confirmationHelper(`error`, `the node ${nodeType} does not exist`);
       return
     };
 
@@ -117,11 +117,14 @@ export default function App() {
     );
   };
 
-  const quickSave = () => {
+  const save = () => {
     let history = JSON.parse(localStorage.getItem('history')) || [];
+    const exportedXML = exportXML();
+    if (!exportedXML) return;
+
     history.unshift({
       appName: ApplicationName.charAt(0).toUpperCase() + ApplicationName.slice(1),
-      xml: exportXML(),
+      xml: exportedXML,
       date: new Intl.DateTimeFormat('en-ZA', {
         year: 'numeric',
         month: '2-digit',
@@ -135,17 +138,6 @@ export default function App() {
 
     localStorage.setItem("history", JSON.stringify(history));
     confirmationHelper('confirmation', 'The diagram has been saved to your browser!');
-  };
-
-  const quickLoad = () => {
-    const loadedXml = localStorage.getItem("quick-saved-diagram");
-    if (loadedXml === "" || loadedXml === null) {
-      confirmationHelper('error', 'No Diagram has been saved on this browser.');
-      return;
-    }
-
-    handleLoadedXml(loadedXml);
-    confirmationHelper('confirmation', 'The diagram has been loaded from your browser!');
   };
 
   const CodeViewerHandler = (flag = true) => {
@@ -165,6 +157,7 @@ export default function App() {
       Test: TestCodeGenerator(exportedXML),
       Pom: PomCodeGenerator(exportedXML),
       Views: ThymeleafCodeGenerator(exportedXML),
+      Properties: PropertiesCodeGenerator(exportedXML),
     };
 
     setCodeVisibility(flag);
@@ -172,84 +165,11 @@ export default function App() {
   };
 
   const exportXML = () => {
-    // User Input Validation
-    let nodeNames = [];
-    const regex = /^[a-zA-Z][a-zA-Z0-9]*$/;
-    if (!regex.test(ApplicationName)) {
-      confirmationHelper('error', `Application name "${ApplicationName}" must be english characters, no spaces, and cannot start with a number.`, 5000);
-      setXmlVisibility(false);
-      setCodeVisibility(false);
+    const validate = Validation(ApplicationName, nodes);
+    if (validate) {
+      confirmationHelper(validate[0], validate[1], validate[2]);
+      closeAllPopups();
       return;
-    }
-    if (javaReservedKeywords.includes(ApplicationName)) {
-      confirmationHelper('error', `Application name "${ApplicationName}" is a java reserved keyword.`, 5000);
-      setXmlVisibility(false);
-      setCodeVisibility(false);
-      return;
-    }
-    if (h2ReservedKeywords.includes(ApplicationName.toUpperCase())) {
-      confirmationHelper('error', `Application name "${ApplicationName}" is an h2 reserved keyword.`, 5000);
-      setXmlVisibility(false);
-      setCodeVisibility(false);
-      return;
-    }
-
-    for (const node of nodes) {
-      if (!regex.test(node.data.label)) {
-        confirmationHelper('error', `Node name "${node.data.label}" must be english characters, no spaces, and cannot start with a number.`, 5000);
-        setXmlVisibility(false);
-        setCodeVisibility(false);
-        return;
-      }
-      if (javaReservedKeywords.includes(node.data.label)) {
-        confirmationHelper('error', `Node name "${node.data.label}" is a java reserved keyword.`, 5000);
-        setXmlVisibility(false);
-        setCodeVisibility(false);
-        return;
-      }
-      if (h2ReservedKeywords.includes(node.data.label.toUpperCase())) {
-        confirmationHelper('error', `Node name "${node.data.label}" is an h2 reserved keyword.`, 5000);
-        setXmlVisibility(false);
-        setCodeVisibility(false);
-        return;
-      }
-      if (nodeNames.includes(node.data.label)) {
-        confirmationHelper('error', `Node name "${node.data.label}" is duplicated.`, 5000);
-        setXmlVisibility(false);
-        setCodeVisibility(false);
-        return;
-      } else {
-        nodeNames.push(node.data.label);
-      }
-
-      for (const field of node.data.fields) {
-        if (!regex.test(field.name)) {
-          confirmationHelper('error', `Field name "${field.name}" must be english characters, no spaces, and cannot start with a number.`, 5000);
-          setXmlVisibility(false);
-          setCodeVisibility(false);
-          return;
-        }
-        if (javaReservedKeywords.includes(field.name)) {
-          confirmationHelper('error', `Field name "${field.name}" is a java reserved keyword.`, 5000);
-          setXmlVisibility(false);
-          setCodeVisibility(false);
-          return;
-        }
-
-        if (h2ReservedKeywords.includes(field.name.toUpperCase())) {
-          confirmationHelper('error', `Field name "${field.name}" is an h2 reserved keyword.`, 5000);
-          setXmlVisibility(false);
-          setCodeVisibility(false);
-          return;
-        }
-
-        if (!allowedDataTypes.includes(field.type)) {
-          confirmationHelper('error', `Field type "${field.type}" is not supported.`, 5000);
-          setXmlVisibility(false);
-          setCodeVisibility(false);
-          return;
-        }
-      }
     }
 
     let xml = `<Application name="${ApplicationName.charAt(0).toUpperCase() + ApplicationName.slice(1)}">\n`;
@@ -270,7 +190,6 @@ export default function App() {
       xml += `  <Edge id="${edgeId}" source="${e.source}" target="${e.target}" relationship="${relationship}">\n`
     })
 
-    // TODO: apply validation to naming and missing inputs
     xml += `</Application>`;
     return xml;
   };
@@ -339,12 +258,19 @@ export default function App() {
     }, 0);
   };
 
-  useHotkeys('ctrl+e', () => createNode("entity"), { preventDefault: true });
-  useHotkeys('ctrl+s', () => quickSave(), { preventDefault: true });
-  useHotkeys('ctrl+l', () => quickLoad(), { preventDefault: true });
+  const closeAllPopups = () => {
+    setExportWindowVisibility(false);
+    setHistoryVisibility(false);
+    setCodeVisibility(false);
+    setInfoVisibility(false);
+    setXmlVisibility(false);
+  }
+
+  useHotkeys('ctrl+e', () => createNode("Entity"), { preventDefault: true });
+  useHotkeys('ctrl+s', () => save(), { preventDefault: true });
   useHotkeys('ctrl+c', () => CodeViewerHandler(), { preventDefault: true });
   useHotkeys('ctrl+x', () => setXmlVisibility(true), { preventDefault: true });
-  useHotkeys('esc', () => { setCodeVisibility(false); setXmlVisibility(false); setExportWindowVisibility(false); setInfoVisibility(false); });
+  useHotkeys('esc', () => closeAllPopups());
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
@@ -357,8 +283,10 @@ export default function App() {
         onConnect={onConnect}
         nodeTypes={nodeTypes}
         fitView
+        fitViewOptions={{ padding: 0.5 }}
+        proOptions={{ hideAttribution: true }}
       >
-        <Panel position="top-left"><ActionButtons onQuickSave={quickSave} onHistory={() => setHistoryVisibility(true)} onCodeView={CodeViewerHandler} onXmlView={() => setXmlVisibility(true)} onInfo={() => setInfoVisibility(true)} /></Panel>
+        <Panel position="top-left"><ActionButtons onSave={save} onHistory={() => setHistoryVisibility(true)} onCodeView={CodeViewerHandler} onXmlView={() => setXmlVisibility(true)} onInfo={() => setInfoVisibility(true)} /></Panel>
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
         <Panel position="top-center">{ConfirmationVisibility && <Confirmation type={confirmationData.type} message={confirmationData.message} />}</Panel>
         <Panel position="bottom-center"><Application name={ApplicationName} setName={setApplicationName} /></Panel>
@@ -366,6 +294,7 @@ export default function App() {
         <Controls />
         <Background />
       </ReactFlow>
+      <Tours />
 
       {InfoVisibility && <Info onClose={() => setInfoVisibility(false)} />}
       {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
