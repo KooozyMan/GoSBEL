@@ -35,7 +35,7 @@ import History from "./assets/Popups/History";
 import ThymeleafCodeGenerator from "./assets/CodeGenerator/ThymeleafCodeGenerator";
 import Validation from "./assets/Helpers/Validation";
 import PropertiesCodeGenerator from "./assets/CodeGenerator/PropertiesCodeGenerator";
-import OnboardingTour from "./OnboardingTour";
+import Tours from "./assets/Helpers/Tours";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -266,7 +266,7 @@ export default function App() {
     setXmlVisibility(false);
   }
 
-  useHotkeys('ctrl+e', () => createNode("entity"), { preventDefault: true });
+  useHotkeys('ctrl+e', () => createNode("Entity"), { preventDefault: true });
   useHotkeys('ctrl+s', () => save(), { preventDefault: true });
   useHotkeys('ctrl+c', () => CodeViewerHandler(), { preventDefault: true });
   useHotkeys('ctrl+x', () => setXmlVisibility(true), { preventDefault: true });
@@ -283,6 +283,8 @@ export default function App() {
         onConnect={onConnect}
         nodeTypes={nodeTypes}
         fitView
+        fitViewOptions={{ padding: 0.5 }}
+        proOptions={{ hideAttribution: true }}
       >
         <Panel position="top-left"><ActionButtons onSave={save} onHistory={() => setHistoryVisibility(true)} onCodeView={CodeViewerHandler} onXmlView={() => setXmlVisibility(true)} onInfo={() => setInfoVisibility(true)} /></Panel>
         <Panel position="top-right"><NodeSelector onCreate={createNode} /></Panel>
@@ -292,13 +294,13 @@ export default function App() {
         <Controls />
         <Background />
       </ReactFlow>
+      <Tours />
 
       {InfoVisibility && <Info onClose={() => setInfoVisibility(false)} />}
       {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}
       {CodeVisibility && <CodeViewer generatedCode={CodeViewerHandler()} onExport={() => exportCode()} onClose={() => setCodeVisibility(false)} />}
       {ExportWindowVisibility && <ExportWindow onClose={() => setExportWindowVisibility(false)} generatedCode={CodeViewerHandler(false)} onConfirmation={confirmationHelper} />}
       {HistoryVisibility && <History onClose={() => setHistoryVisibility(false)} onLoad={handleLoadedXml} />}
-        <OnboardingTour />
     </div>
   );
 }
