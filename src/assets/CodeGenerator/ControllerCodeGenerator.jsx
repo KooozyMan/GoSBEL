@@ -121,6 +121,7 @@ public class RedirectToIndexHTML {
                 // 1. Specific Rule: Lock the update path for ANY dynamic name
                 // The * matches the dynamic name, the {id} is covered by the second * or **
                 .requestMatchers("/*/update/*").hasRole("ADMIN")
+                .requestMatchers("/*/delete/*").hasRole("ADMIN")
 
                 // 2. Broad Rule: Allow guests to access everything else
                 // This covers '/' and '/consumer' and '/any-other-name'

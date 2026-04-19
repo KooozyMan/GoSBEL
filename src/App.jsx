@@ -36,6 +36,7 @@ import ThymeleafCodeGenerator from "./assets/CodeGenerator/ThymeleafCodeGenerato
 import Validation from "./assets/Helpers/Validation";
 import PropertiesCodeGenerator from "./assets/CodeGenerator/PropertiesCodeGenerator";
 import Tours from "./assets/Helpers/Tours";
+import InputValidation from "./assets/Popups/InputValidation";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -295,6 +296,7 @@ export default function App() {
         <Background />
       </ReactFlow>
       <Tours />
+      <InputValidation/ >
 
       {InfoVisibility && <Info onClose={() => setInfoVisibility(false)} />}
       {XmlVisibility && <XMLView xmlContent={exportXML()} onClose={() => setXmlVisibility(false)} onLoad={handleLoadedXml} />}

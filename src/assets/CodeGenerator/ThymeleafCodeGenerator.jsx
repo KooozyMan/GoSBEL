@@ -75,7 +75,8 @@ function listGenerator(entityName, entityFields, capAppName, entitiesList) {
         <h1 class="bg-cyan-500 p-4 h-1/12 font-bold text-4xl text-white font-mono flex items-center">
             ${entityName}s
             <div class="ml-auto mr-0">
-                <a 
+                <a
+
                 th:href="@{/logout}"
                 class="hover:bg-cyan-700 transition-colors duration-300 border-cyan-800 border-2 -translate-y-1.5 rounded-xl p-1">
                     log out
@@ -103,8 +104,8 @@ ${entitiesList.map(e => (`\t\t\t\t<a${e === entityName ? '\n\t\t\t\tdisabled' : 
                             <!-- fields row -->
                             <tr>
 ${entityFields.map(field =>
-        `\t\t\t\t\t\t\t\t<th class="px-6 py-3 text-center hover:bg-cyan-500 transition-colors duration-300 font-bold tracking-wider">${field.name}</th>`).join("\n")}
-                                <th class="px-6 py-3 text-center hover:bg-cyan-500 transition-colors duration-300 font-bold tracking-wider">Actions</th>
+        `\t\t\t\t\t\t\t\t<th class="px-6 py-3 text-center font-bold tracking-wider">${field.name}</th>`).join("\n")}
+                                <th class="px-6 py-3 text-center font-bold tracking-wider" sec:authorize="hasRole('ADMIN')">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -117,8 +118,8 @@ ${entityFields.map(field =>
                             <!-- Loop through ${entityName}s -->
                             <tr th:each="${entityName} : \${${entityName}}" class="hover:bg-cyan-50 text-black">
 ${entityFields.map(field =>
-            `\t\t\t\t\t\t\t\t<td class="px-6 hover:bg-cyan-200 hover:font-semibold transition-colors duration-300 py-4 whitespace-nowrap text-center" th:text="\${${entityName}.${field.name}}"></td>`).join("\n")}
-                                <td class="px-6 hover:bg-cyan-200 transition-colors duration-300 text-center py-4 whitespace-nowrap space-x-2">
+            `\t\t\t\t\t\t\t\t<td class="px-6 hover:font-semibold py-4 whitespace-nowrap text-center" th:text="\${${entityName}.${field.name}}"></td>`).join("\n")}
+                                <td class="px-6 text-center py-4 whitespace-nowrap space-x-2" sec:authorize="hasRole('ADMIN')">
                                     <!-- Redirect to edit form -->
                                     <a th:href="@{/${entityName}/edit/{id}(id=\${${entityName}.id})}" class="text-cyan-600 text-center hover:underline hover:text-cyan-900">
                                     Edit

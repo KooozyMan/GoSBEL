@@ -13,8 +13,22 @@
 .entity-title {
     background: #374151;
     border-radius: 6px;
-    padding: 6px 8px;
+    display: flex;
     margin-bottom: 10px;
+}
+
+.open-input-validation {
+    margin: 0%;
+    height: 34.8px;
+    width: 32.8px;
+    border-radius: 0 6px 6px 0;
+    position: relative;
+}
+
+.gear-img {
+    height: 75%;
+    position: absolute;
+    transform: translate(-50%,-47.5%);
 }
 
 .entity-title-input {

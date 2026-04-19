@@ -23,6 +23,7 @@
     "codemirror": "^6.0.2",
     "file-saver": "^2.0.5",
     "highlight.js": "^11.11.1",
+    "jotai": "^2.19.1",
     "jszip": "^3.10.1",
     "monaco-themes": "^0.4.8",
     "react": "^19.2.0",

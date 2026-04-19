@@ -2,12 +2,25 @@ import { Handle, Position, useReactFlow } from "reactflow";
 import { useState } from "react";
 import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
 import { allowedDataTypes } from "../Lists/AllowedDataTypes";
+import { useSetAtom } from "jotai";
+import { targetFields } from "../Helpers/Atoms";
+import { targetName } from "../Helpers/Atoms";
+import gear from '../img/gear.svg'
 
 export default function Entity({ id, data }) {
     const { setNodes } = useReactFlow();
 
     const [entityName, setEntityName] = useState(data.label);
     const [fields, setFields] = useState(data.fields || []);
+
+    const setTargetName = useSetAtom(targetName)
+    const setTargetFields = useSetAtom(targetFields)
+
+    const setTargetEntity = () => {
+        console.log(fields)
+        setTargetName(entityName)
+        setTargetFields(fields)
+    }
 
     const updateNodeData = (newLabel, newFields) =>
         setNodes((nodes) =>
@@ -73,6 +86,9 @@ export default function Entity({ id, data }) {
                     placeholder="Entity Name"
                     className="entity-title-input nodrag"
                 />
+                <button className="open-input-validation" onClick={() => setTargetEntity()}>
+                    <img className="gear-img" src={gear}/>
+                </button>
             </div>
 
             {fields.map((field, index) => (
