@@ -8,7 +8,7 @@ export default function NodeSelector({ onCreate }) {
     ];
 
     const nodes = list.map((element, index) => (
-        <div key={index} className="node" onClick={() => onCreate(element.name)}>
+        <div key={index} id={`$(element.name)-node`} className="node" onClick={() => onCreate(element.name)}>
             <div></div>
             <span className="node-text">{element.name} Node</span>
             <img className="node-img" src={element.img} />

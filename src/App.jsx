@@ -35,6 +35,7 @@ import History from "./assets/Popups/History";
 import ThymeleafCodeGenerator from "./assets/CodeGenerator/ThymeleafCodeGenerator";
 import Validation from "./assets/Helpers/Validation";
 import PropertiesCodeGenerator from "./assets/CodeGenerator/PropertiesCodeGenerator";
+import OnboardingTour from "./OnboardingTour";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -297,6 +298,7 @@ export default function App() {
       {CodeVisibility && <CodeViewer generatedCode={CodeViewerHandler()} onExport={() => exportCode()} onClose={() => setCodeVisibility(false)} />}
       {ExportWindowVisibility && <ExportWindow onClose={() => setExportWindowVisibility(false)} generatedCode={CodeViewerHandler(false)} onConfirmation={confirmationHelper} />}
       {HistoryVisibility && <History onClose={() => setHistoryVisibility(false)} onLoad={handleLoadedXml} />}
+        <OnboardingTour />
     </div>
   );
 }
