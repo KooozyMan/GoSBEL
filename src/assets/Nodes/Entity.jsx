@@ -1,26 +1,69 @@
 import { Handle, Position, useReactFlow } from "reactflow";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
 import { allowedDataTypes } from "../Lists/AllowedDataTypes";
-import { useSetAtom } from "jotai";
-import { targetFields } from "../Helpers/Atoms";
-import { targetName } from "../Helpers/Atoms";
 import gear from '../img/gear.svg'
+
+const Str = ({advanced}) => (
+<div className={`validation-input nodrag ${advanced ? 'fade-in' : 'fade-out'}`}>
+    <div className="block">
+        <div className="flex">
+            <input title="Regex" className="entity-type-select nodrag" type="text" placeholder="Regex" />
+            <input title="Max Characters" className="entity-type-select nodrag" type="text" placeholder="Max Characters" />
+        </div>
+        <label>NotNull: <input type="checkbox"/></label>
+    </div>
+</div>)
+
+const Num = ({advanced}) => (
+<div className={`validation-input nodrag ${advanced ? 'fade-in' : 'fade-out'}`}>
+    <div className="block">
+        <div className="flex">
+            <input title="Min" className="entity-type-select nodrag" type="text" placeholder="Min" />
+            <input title="Max" className="entity-type-select nodrag" type="text" placeholder="Max" />
+        </div>
+        <div className="flex">
+            <label>NotNull: <input type="checkbox"/></label>
+            <label>Positive: <input type="checkbox"/></label>
+        </div>
+    </div>
+</div>)
+
+const Dbl = ({advanced}) => (
+<div className={`validation-input nodrag ${advanced ? 'fade-in' : 'fade-out'}`}>
+    <div className="block">
+        <div className="flex">
+            <input title="DecimanMin" className="entity-type-select nodrag" type="text" placeholder="DecimanMin" />
+            <input title="DecimanMax" className="entity-type-select nodrag" type="text" placeholder="DecimanMax" />
+        </div>
+        <div className="flex">
+            <label>NotNull:     <input type="checkbox"/></label>
+            <label>Positive:    <input type="checkbox"/></label>
+        </div>
+    </div>
+</div>)
+
+const Bool = ({advanced}) => (
+<div className={`validation-input nodrag ${advanced ? 'fade-in' : 'fade-out'}`}>
+    <label>NotNull: <input type="checkbox"/></label>
+</div>)
+
+const fieldLookup = (type,validationState) => {
+    switch (type) {
+        case 'Integer':return(<Num advanced={validationState}/>);
+        case 'String': return(<Str advanced={validationState}/>);
+        case 'Long':   return(<Num advanced={validationState}/>);
+        case 'Double': return(<Dbl advanced={validationState}/>);
+        case 'Boolean':return(<Bool advanced={validationState}/>);
+    }
+}
 
 export default function Entity({ id, data }) {
     const { setNodes } = useReactFlow();
 
     const [entityName, setEntityName] = useState(data.label);
     const [fields, setFields] = useState(data.fields || []);
-
-    const setTargetName = useSetAtom(targetName)
-    const setTargetFields = useSetAtom(targetFields)
-
-    const setTargetEntity = () => {
-        console.log(fields)
-        setTargetName(entityName)
-        setTargetFields(fields)
-    }
+    const [advanced,setAdvanced] = useState(null)
 
     const updateNodeData = (newLabel, newFields) =>
         setNodes((nodes) =>
@@ -78,7 +121,7 @@ export default function Entity({ id, data }) {
     };
 
     return (
-        <div className="entity-node">
+        <div className={`entity-node ${advanced ? 'advanced' : advanced === false && ''}`}>
             <div className="entity-title">
                 <input
                     value={entityName}
@@ -86,44 +129,49 @@ export default function Entity({ id, data }) {
                     placeholder="Entity Name"
                     className="entity-title-input nodrag"
                 />
-                <button className="open-input-validation" onClick={() => setTargetEntity()}>
-                    <img className="gear-img" src={gear}/>
+                <button className="gear" onClick={() => setAdvanced(!advanced)}>
+                    <img src={gear} className="gear-img" alt="" />
                 </button>
             </div>
 
             {fields.map((field, index) => (
-                <div key={index} className="entity-field-container">
-                    <input
-                        value={field.name}
-                        onChange={(e) => changeFieldName(index, e.target.value)}
-                        placeholder="field name"
-                        className="entity-name-input nodrag"
-                    />
+                <div key={index} className={`entity-field-container ${advanced ? 'expand' : 'shrink'}`}>
+                    <div className="fixed-width">
+                        <input
+                            value={field.name}
+                            onChange={(e) => changeFieldName(index, e.target.value)}
+                            placeholder="field name"
+                            className="entity-name-input nodrag"
+                            />
+                        <select
+                            value={field.type}
+                            onChange={(e) => changeFieldType(index, e.target.value)}
+                            placeholder="type"
+                            className="entity-type-select nodrag"
+                            >
+                            {allowedDataTypes.map((dataType, index) => (
+                                <option key={index} value={dataType}>{dataType}</option>
+                            ))}
+                        </select>
+                        <input
+                            id={`entity-pk-checkbox-${id}-${index}`}
+                            type="checkbox"
+                            checked={field.pk || false}
+                            onChange={(e) => changePrimaryKey(index, e.target.checked)}
+                            className="entity-pk-checkbox nodrag"
+                            />
+                        <label htmlFor={`entity-pk-checkbox-${id}-${index}`} className="nodrag" />
+                    </div>
 
-                    <select
-                        value={field.type}
-                        onChange={(e) => changeFieldType(index, e.target.value)}
-                        placeholder="type"
-                        className="entity-type-select nodrag"
-                    >
-                        {allowedDataTypes.map((dataType, index) => (
-                            <option key={index} value={dataType}>{dataType}</option>
-                        ))}
-                    </select>
+                        {fieldLookup(field.type,advanced)}
+                    <div className="right-side">
+                        <AiOutlineClose
+                            onClick={() => deleteField(index)}
+                            className="entity-field-delete"
+                            />
+                    </div>
 
-                    <input
-                        id={`entity-pk-checkbox-${id}-${index}`}
-                        type="checkbox"
-                        checked={field.pk || false}
-                        onChange={(e) => changePrimaryKey(index, e.target.checked)}
-                        className="entity-pk-checkbox nodrag"
-                    />
-                    <label htmlFor={`entity-pk-checkbox-${id}-${index}`} className="nodrag" />
 
-                    <AiOutlineClose
-                        onClick={() => deleteField(index)}
-                        className="entity-field-delete"
-                    />
                 </div>
             ))}
 

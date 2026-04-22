@@ -4,11 +4,65 @@
     border-radius: 8px;
     background: #1f2937;
     color: #e5e7eb;
+    flex-wrap: nowrap;
     width: 230px;
+    transition: all 1s;
     font-size: 13px;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.25);
     padding: 10px;
 }
+
+.entity-node.advanced {
+    width: 475px;
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.flex {
+    display: flex;
+    gap: 8px;
+}
+
+.block {
+    display: block;
+}
+
+@keyframes fade-out {
+  0% { opacity: 1; }
+  100% { opacity: 0;visibility: hidden;  }
+}
+
+.validation-input {
+    animation: fade-in 1s ease-in forwards;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    display: flex;
+    overflow: hidden;
+    width: fit-content; /* Or max-width, or flex-basis */
+}
+
+.fade-out {
+    animation: fade-out 0.75s ease-in-out;
+}
+
+.fade-in {
+    animation: fade-in 1s ease-in-out;
+}
+.validation-input.fade-out {
+    height: 25px;
+}
+
+.shrink {
+    animation: shrink 1s ease-out forwards;
+    animation-iteration-count: 1;
+}
+
 
 .entity-title {
     background: #374151;
@@ -17,18 +71,38 @@
     margin-bottom: 10px;
 }
 
-.open-input-validation {
-    margin: 0%;
-    height: 34.8px;
-    width: 32.8px;
+.gear {
     border-radius: 0 6px 6px 0;
-    position: relative;
+    height: 30px;
+    background-color: black;
+    padding: 0;
+}
+
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spinAndReturn {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .gear-img {
-    height: 75%;
-    position: absolute;
-    transform: translate(-50%,-47.5%);
+    height: 100%;
+}
+
+
+.gear:hover .gear-img {
+  animation: spin 2s linear infinite;
+}
+.gear:not(:hover) .gear-img {
+    animation: spinAndReturn 1s ease-out forwards;
+    animation-iteration-count: 1;
+}
+.gear:focus {
+    outline: transparent 1px;
 }
 
 .entity-title-input {
@@ -42,12 +116,78 @@
     outline: none;
 }
 
+.validation-input {
+    margin: 0;
+}
+
+.fixed-width {
+    min-width: 210px;
+    max-width: 210px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 .entity-field-container {
     display: flex;
     gap: 4px;
+    transition: all 1s ease-in;
     align-items: center;
     margin-bottom: 4px;
+    height: 25px;
 }
+
+.entity-field-container.expand {
+    border-bottom: 2px solid #374151;
+    display: flex;
+    height: 60px;
+    align-items: center;
+}
+
+.entity-field-container.shrink {
+    animation: left-shrink 1s ease-in;
+}
+
+.right-side {
+    margin: 0 0 0 auto;
+    display: flex;
+    width: fit-content;
+}
+
+.floating-group {
+  position: relative;
+  width: 120px;
+}
+
+/* Position label inside the input initially */
+.floating-group label {
+  position: absolute;
+  left: 0;
+  top: 40%;
+  transform: translate(5%,-45%);
+  background: transparent;
+  padding: 0 5px;
+  color: #999;
+  transition: 0.2s ease all;
+  pointer-events: none; /* Allows clicking through to the input */
+}
+
+/* Move label up on focus or if input is not empty */
+.floating-group input:focus + label,
+.floating-group input:not(:placeholder-shown) + label {
+  top: 0;
+  font-size: 8px;
+  background-color: white;
+  color: #007bff;
+}
+
+/* Basic Input Styling */
+.floating-group input {
+  border-radius: 4px;
+  outline: none;
+  width: 100px;
+}
+
 
 .entity-field-delete {
     color: #ef4444;

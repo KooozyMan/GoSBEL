@@ -131,7 +131,6 @@
 
 /* Info Page */
 .info-popup-container,
-.input-validation-popup-container,
 .history-popup-container {
     position: fixed;
     top: 50%;
@@ -144,11 +143,6 @@
     transform: translate(-50%, -50%);
 }
 
-.no-padding {
-    padding: 0;
-    width: 950px;
-}
-
 .info-container,
 .history-container {
     overflow-y: auto;
@@ -159,95 +153,6 @@
     color: #2D527C;
     margin-bottom: 20px;
 }
-
-.input-validation-container {
-    display: flex;
-}
-
-.fields-container {
-    width: 100%;
-    padding-bottom: 12px;
-}
-
-.overflow {
-    max-height: 70vh;
-    overflow-y: auto;
-}
-
-.fields-container > header {
-    position: sticky;
-    top: 0;
-    font-size: 32px;
-    font-weight: bold;
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
-    padding: 4px;
-    background-color: #2D527C;
-}
-
-.field-card {
-    width: 95%;
-    color: black;
-    height: 75px;
-    display: flex;
-    margin: 10px 0 10px 2% ;
-}
-
-.field-card > p {
-    width: 20%;
-    display: flex;
-    height: 100%;
-    margin: 0;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-    font-weight: bold;
-    justify-content: center;
-    align-items: center;
-    background-color: black;
-    color: white;
-}
-
-.input-group {
-    width: 100%;
-}
-
-.input-group > input::placeholder {
-    color: white;
-}
-
-.input-group > input:focus::placeholder {
-  color: transparent;
-}
-
-/* For transition support (Optional) */
-input::placeholder {
-  transition: color 0.3s ease;
-}
-
-.string-card {
-    display: block;
-    width: 80%;
-}
-
-.upper {
-    border: 1px solid black;
-    display: flex;
-    height: 50%;
-}
-
-.lower {
-    border: 1px solid black;
-    border-top: 0px;
-    display: flex;
-    height: 47%;
-}
-
-.lower > label {
-    border-right: 1px solid black;
-    flex-grow: 1;
-}
-
-
 
 .content-title {
     font-size: 24px;
@@ -265,23 +170,9 @@ input::placeholder {
     margin: 0 auto;
 }
 
-.close-validation {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 35px;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: red;
-    border-radius: 0 8px 0 0;
-}
-
 .history-content-container {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
     flex-wrap: wrap;
     color: #2D527C;
     background-color: #f3f3f3;
