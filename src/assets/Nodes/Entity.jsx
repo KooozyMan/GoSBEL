@@ -19,7 +19,6 @@ const Str = ({advanced,validationFunction,fieldName,defaultValues}) => {
 
 const Num = ({advanced,validationFunction,fieldName,defaultValues}) => {
     const {Min = '',Max = '',NotNull = false,Positive = false} = defaultValues || {};
-    console.log(defaultValues) 
     return (
     <div className={`validation-input nodrag ${advanced ? 'fade-in' : 'fade-out'}`}>
         <div className="block">
@@ -60,7 +59,6 @@ const Bool = ({advanced,validationFunction,fieldName, defaultValues}) => {
 
 const fieldLookup = (field,validationState,validationFunction) => {
     const {type,name,validation,pk} = field
-    console.log(field)
     switch (type) {
         case 'Integer':return(<Num defaultValues={validation} fieldName={name} advanced={validationState} validationFunction={validationFunction}/>);
         case 'String': return(<Str defaultValues={validation} fieldName={name} advanced={validationState} validationFunction={validationFunction}/>);
@@ -145,10 +143,6 @@ export default function Entity({ id, data }) {
         setFields(newFields);
         updateNodeData(entityName, newFields);
     };
-
-    useEffect(() => {
-        console.log(fields)
-    },[])
 
     return (
         <div className={`entity-node ${advanced ? 'advanced' : advanced === false && ''}`}>
