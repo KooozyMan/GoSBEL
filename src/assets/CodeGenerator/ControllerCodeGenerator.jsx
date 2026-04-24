@@ -1,5 +1,10 @@
-function getController(entityName, type, basePackage, smallBaseArtifact) {
+function capitalizeFirst(value) {
+    return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function getController(entityName, idType, pkFieldName, basePackage, smallBaseArtifact) {
     const entityLower = entityName.toLowerCase();
+    const pkSetterName = `set${capitalizeFirst(pkFieldName)}`;
 
     return `package ${basePackage}.${smallBaseArtifact}.controller;
 
@@ -24,7 +29,7 @@ public class ${entityName}Controller {
     @GetMapping("/${entityLower}")
     public String list${entityName}(Model m){
         List<${entityName}> ${entityLower} = ${entityLower}Service.findAll();
-        m.addAttribute("${entityLower}",${entityLower});
+        m.addAttribute("${entityLower}", ${entityLower});
         return "${entityLower}-list";
     }
 
@@ -42,16 +47,15 @@ public class ${entityName}Controller {
             ${entityLower}Service.save(${entityLower});
             redirectAttributes.addFlashAttribute("message", "${entityName} saved successfully.");
         } catch (Exception e){
-            redirectAttributes.addFlashAttribute("error","Error saving ${entityLower}" + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error saving ${entityLower}: " + e.getMessage());
         }
         return "redirect:/${entityLower}";
     }
 
-
     // Show form to edit a ${entityLower}
-    @GetMapping("/${entityLower}/edit/{id}")
-    public String showEditForm(@PathVariable ${type} id, Model model, RedirectAttributes redirectAttributes) {
-        Optional<${entityName}> ${entityLower} = ${entityLower}Service.findById(id);
+    @GetMapping("/${entityLower}/edit/{${pkFieldName}}")
+    public String showEditForm(@PathVariable("${pkFieldName}") ${idType} ${pkFieldName}, Model model, RedirectAttributes redirectAttributes) {
+        Optional<${entityName}> ${entityLower} = ${entityLower}Service.findById(${pkFieldName});
         if (${entityLower}.isPresent()) {
             model.addAttribute("${entityLower}", ${entityLower}.get());
             return "${entityLower}-form";
@@ -62,10 +66,10 @@ public class ${entityName}Controller {
     }
 
     // Update an existing ${entityLower}
-    @PostMapping("/${entityLower}/update/{id}")
-    public String update${entityName}(@PathVariable ${type} id, @ModelAttribute ${entityName} ${entityLower}, RedirectAttributes redirectAttributes) {
+    @PostMapping("/${entityLower}/update/{${pkFieldName}}")
+    public String update${entityName}(@PathVariable("${pkFieldName}") ${idType} ${pkFieldName}, @ModelAttribute ${entityName} ${entityLower}, RedirectAttributes redirectAttributes) {
         try {
-            ${entityLower}.setId(id);
+            ${entityLower}.${pkSetterName}(${pkFieldName});
             ${entityLower}Service.save(${entityLower});
             redirectAttributes.addFlashAttribute("message", "${entityName} updated successfully!");
         } catch (Exception e) {
@@ -75,11 +79,11 @@ public class ${entityName}Controller {
     }
 
     // Delete a ${entityLower}
-    @GetMapping("/${entityLower}/delete/{id}")
-    public String delete${entityName}(@PathVariable ${type} id, RedirectAttributes redirectAttributes) {
+    @GetMapping("/${entityLower}/delete/{${pkFieldName}}")
+    public String delete${entityName}(@PathVariable("${pkFieldName}") ${idType} ${pkFieldName}, RedirectAttributes redirectAttributes) {
         try {
-            if (${entityLower}Service.existsById(id)) {
-                ${entityLower}Service.deleteById(id);
+            if (${entityLower}Service.existsById(${pkFieldName})) {
+                ${entityLower}Service.deleteById(${pkFieldName});
                 redirectAttributes.addFlashAttribute("message", "${entityName} deleted successfully!");
             } else {
                 redirectAttributes.addFlashAttribute("error", "${entityName} not found!");
@@ -89,7 +93,7 @@ public class ${entityName}Controller {
         }
         return "redirect:/${entityLower}";
     }
-}`
+}`;
 }
 
 function indexController(basePackage, smallBaseArtifact) {
@@ -118,23 +122,16 @@ public class RedirectToIndexHTML {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // 1. Specific Rule: Lock the update path for ANY dynamic name
-                // The * matches the dynamic name, the {id} is covered by the second * or **
                 .requestMatchers("/*/update/*").hasRole("ADMIN")
                 .requestMatchers("/*/delete/*").hasRole("ADMIN")
-
-                // 2. Broad Rule: Allow guests to access everything else
-                // This covers '/' and '/consumer' and '/any-other-name'
                 .requestMatchers("/", "/*", "/*/*").permitAll()
-
-                // 3. Fallback
                 .anyRequest().authenticated()
             )
             .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
-}`
+}`;
 }
 
 export default function ControllerCodeGenerator(xml, basePackage = `com.example`) {
@@ -144,11 +141,22 @@ export default function ControllerCodeGenerator(xml, basePackage = `com.example`
     let controllers = [];
 
     xmlDoc.querySelectorAll("Entity").forEach(e => {
-        const name = e.getAttribute('name').charAt(0).toUpperCase() + e.getAttribute('name').slice(1);
-        const type = e.querySelector('Field[pk="true"]').getAttribute('type');
-        controllers.push({ 'fileName': `${name}Controller.java`, 'code': getController(name, type, basePackage, smallBaseArtifact) })
-    })
-    controllers.push({ fileName: 'RedirectToIndexHTML.java', code: indexController(basePackage, smallBaseArtifact) })
+        const name = capitalizeFirst(e.getAttribute('name'));
+        const pkField = e.querySelector('Field[pk="true"]');
+
+        const idType = pkField.getAttribute('type');
+        const pkFieldName = pkField.getAttribute('name');
+
+        controllers.push({
+            fileName: `${name}Controller.java`,
+            code: getController(name, idType, pkFieldName, basePackage, smallBaseArtifact)
+        });
+    });
+
+    controllers.push({
+        fileName: 'RedirectToIndexHTML.java',
+        code: indexController(basePackage, smallBaseArtifact)
+    });
 
     return controllers;
 }
