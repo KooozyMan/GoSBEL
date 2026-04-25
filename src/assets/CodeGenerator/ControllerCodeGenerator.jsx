@@ -1,15 +1,61 @@
-function capitalizeFirst(value) {
-    return value.charAt(0).toUpperCase() + value.slice(1);
+import { capitalizeFirst, getSelectableRelations, getPrimaryKey } from "./RelationshipUtils";
+
+function uniqueRelations(relations) {
+    return relations.filter((relation, index, self) =>
+        index === self.findIndex(r => r.fieldName === relation.fieldName)
+    );
 }
 
-function getController(entityName, idType, pkFieldName, basePackage, smallBaseArtifact) {
+function relationServiceImports(relations, basePackage, smallBaseArtifact) {
+    return uniqueRelations(relations)
+        .map(relation => `import ${basePackage}.${smallBaseArtifact}.service.${relation.relatedName}Service;`)
+        .join("\n");
+}
+
+function relationServiceFields(relations) {
+    return uniqueRelations(relations)
+        .map(relation => `    @Autowired
+    private ${relation.relatedName}Service ${relation.fieldName}Service;`)
+        .join("\n\n");
+}
+
+function relationModelAttributes(relations) {
+    return uniqueRelations(relations)
+        .map(relation => `        model.addAttribute("${relation.listName}", ${relation.fieldName}Service.findAll());`)
+        .join("\n");
+}
+
+function relationRequestParams(relations) {
+    return uniqueRelations(relations)
+        .map(relation => `, @RequestParam(value = "${relation.paramName}", required = false) ${relation.relatedPkType} ${relation.paramName}`)
+        .join("");
+}
+
+function relationAssignments(entityLower, relations) {
+    return uniqueRelations(relations)
+        .map(relation => `            if (${relation.paramName} != null && !${relation.paramName}.toString().isBlank()) {
+                ${relation.fieldName}Service.findById(${relation.paramName}).ifPresent(${entityLower}::${relation.setterName});
+            } else {
+                ${entityLower}.${relation.setterName}(null);
+            }`)
+        .join("\n");
+}
+
+function getController(entityName, idType, pkFieldName, relations, basePackage, smallBaseArtifact) {
     const entityLower = entityName.toLowerCase();
     const pkSetterName = `set${capitalizeFirst(pkFieldName)}`;
+
+    const relatedImports = relationServiceImports(relations, basePackage, smallBaseArtifact);
+    const relatedFields = relationServiceFields(relations);
+    const addRelationModelAttributes = relationModelAttributes(relations);
+    const addRelationRequestParams = relationRequestParams(relations);
+    const addRelationAssignments = relationAssignments(entityLower, relations);
 
     return `package ${basePackage}.${smallBaseArtifact}.controller;
 
 import ${basePackage}.${smallBaseArtifact}.entity.${entityName};
 import ${basePackage}.${smallBaseArtifact}.service.${entityName}Service;
+${relatedImports}
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +71,7 @@ public class ${entityName}Controller {
     @Autowired
     private ${entityName}Service ${entityLower}Service;
 
+${relatedFields ? relatedFields + "\n" : ""}
     // Show all ${entityLower}
     @GetMapping("/${entityLower}")
     public String list${entityName}(Model m){
@@ -37,13 +84,15 @@ public class ${entityName}Controller {
     @GetMapping("/${entityLower}/add")
     public String showAddForm(Model model) {
         model.addAttribute("${entityLower}", new ${entityName}());
+${addRelationModelAttributes}
         return "${entityLower}-form";
     }
 
     // Save a new ${entityLower}
     @PostMapping("/${entityLower}/save")
-    public String save${entityName}(@ModelAttribute ${entityName} ${entityLower}, RedirectAttributes redirectAttributes) {
+    public String save${entityName}(@ModelAttribute ${entityName} ${entityLower}${addRelationRequestParams}, RedirectAttributes redirectAttributes) {
         try {
+${addRelationAssignments}
             ${entityLower}Service.save(${entityLower});
             redirectAttributes.addFlashAttribute("message", "${entityName} saved successfully.");
         } catch (Exception e){
@@ -58,6 +107,7 @@ public class ${entityName}Controller {
         Optional<${entityName}> ${entityLower} = ${entityLower}Service.findById(${pkFieldName});
         if (${entityLower}.isPresent()) {
             model.addAttribute("${entityLower}", ${entityLower}.get());
+${addRelationModelAttributes}
             return "${entityLower}-form";
         } else {
             redirectAttributes.addFlashAttribute("error", "${entityName} not found!");
@@ -67,9 +117,10 @@ public class ${entityName}Controller {
 
     // Update an existing ${entityLower}
     @PostMapping("/${entityLower}/update/{${pkFieldName}}")
-    public String update${entityName}(@PathVariable("${pkFieldName}") ${idType} ${pkFieldName}, @ModelAttribute ${entityName} ${entityLower}, RedirectAttributes redirectAttributes) {
+    public String update${entityName}(@PathVariable("${pkFieldName}") ${idType} ${pkFieldName}, @ModelAttribute ${entityName} ${entityLower}${addRelationRequestParams}, RedirectAttributes redirectAttributes) {
         try {
             ${entityLower}.${pkSetterName}(${pkFieldName});
+${addRelationAssignments}
             ${entityLower}Service.save(${entityLower});
             redirectAttributes.addFlashAttribute("message", "${entityName} updated successfully!");
         } catch (Exception e) {
@@ -141,20 +192,18 @@ export default function ControllerCodeGenerator(xml, basePackage = `com.example`
     let controllers = [];
 
     xmlDoc.querySelectorAll("Entity").forEach(e => {
-        const name = capitalizeFirst(e.getAttribute('name'));
-        const pkField = e.querySelector('Field[pk="true"]');
-
-        const idType = pkField.getAttribute('type');
-        const pkFieldName = pkField.getAttribute('name');
+        const name = capitalizeFirst(e.getAttribute("name"));
+        const pkField = getPrimaryKey(e);
+        const relations = getSelectableRelations(xmlDoc, e.getAttribute("id"));
 
         controllers.push({
             fileName: `${name}Controller.java`,
-            code: getController(name, idType, pkFieldName, basePackage, smallBaseArtifact)
+            code: getController(name, pkField.type, pkField.name, relations, basePackage, smallBaseArtifact)
         });
     });
 
     controllers.push({
-        fileName: 'RedirectToIndexHTML.java',
+        fileName: "RedirectToIndexHTML.java",
         code: indexController(basePackage, smallBaseArtifact)
     });
 

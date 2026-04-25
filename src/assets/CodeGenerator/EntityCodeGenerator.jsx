@@ -1,54 +1,30 @@
+import { capitalizeFirst, getSelectableRelations } from "./RelationshipUtils";
+
 export default function EntityGenerator(xml, basePackage = `com.example`) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
     const smallBaseArtifact = xmlDoc.querySelector("Application").getAttribute("name").toLowerCase();
 
     let EntityCode = [];
-    let entityFields = ``;
-    let entityGetters = ``;
-    let entitySetters = ``;
-    let cardinality = ``;
-    let relations = [];
-
-    xmlDoc.querySelectorAll("Edge").forEach(edge => {
-        const srcId = edge.getAttribute("source");
-        const targetId = edge.getAttribute("target");
-        const relationship = edge.getAttribute("relationship");
-
-        if (relationship === '1-m') {
-            relations.push({ OwnerId: targetId, inverseId: srcId, relation: "@ManyToOne" });
-
-        } else if (relationship === 'm-1') {
-            relations.push({ OwnerId: srcId, inverseId: targetId, relation: "@ManyToOne" });
-
-        } else if (relationship === '1-1') {
-            relations.push({ OwnerId: srcId, inverseId: targetId, relation: "@OneToOne" });
-
-        } else if (relationship === 'm-m') {
-            relation = '@ManyToMany';
-            // bridge table TODO
-        }
-    });
 
     xmlDoc.querySelectorAll("Entity").forEach(node => {
-        entityFields = ``;
-        entityGetters = ``;
-        entitySetters = ``;
-        cardinality = ``;
+        let entityFields = ``;
+        let entityGetters = ``;
+        let entitySetters = ``;
+        let cardinality = ``;
 
         const entityName = node.getAttribute("name");
-        const capitalizedName = entityName.charAt(0).toUpperCase() + entityName.slice(1);
+        const capitalizedName = capitalizeFirst(entityName);
 
         node.querySelectorAll("Field").forEach(field => {
             const fieldName = field.getAttribute("name");
-            const capitalizedFieldName = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+            const capitalizedFieldName = capitalizeFirst(fieldName);
             const fieldType = field.getAttribute("type");
 
-            if (field.getAttribute('pk') === "true") {
+            if (field.getAttribute("pk") === "true") {
                 entityFields = `    private ${fieldType} ${fieldName};\n` + entityFields;
                 entityGetters = `    public ${fieldType} get${capitalizedFieldName}() { return ${fieldName}; }\n` + entityGetters;
                 entitySetters = `    public void set${capitalizedFieldName}(${fieldType} ${fieldName}) { this.${fieldName} = ${fieldName}; }\n` + entitySetters;
-
             } else {
                 entityFields += `    private ${fieldType} ${fieldName};\n`;
                 entityGetters += `    public ${fieldType} get${capitalizedFieldName}() { return ${fieldName}; }\n`;
@@ -56,15 +32,20 @@ export default function EntityGenerator(xml, basePackage = `com.example`) {
             }
         });
 
-        const ownedRelations = relations.filter(r => r.OwnerId === node.getAttribute("id"));
+        const ownedRelations = getSelectableRelations(xmlDoc, node.getAttribute("id"));
 
-        if (ownedRelations.length != 0) {
-            cardinality = ownedRelations.map(r => {
-                const inverseName = xmlDoc.querySelector(`Entity[id="${r.inverseId}"]`).getAttribute("name").toLowerCase();
-                const inverseNameCapitalized = inverseName.charAt(0).toUpperCase() + inverseName.slice(1);
-                return `\n\t${r.relation}\n\t@JoinColumn(name = "${inverseName}_id")\n\tprivate ${inverseNameCapitalized} ${inverseName};\n`;
-            }).join("");
-        }
+        ownedRelations.forEach(relation => {
+            const relationFieldCapitalized = capitalizeFirst(relation.fieldName);
+
+            cardinality += `
+    ${relation.annotation}
+    @JoinColumn(name = "${relation.joinColumnName}")
+    private ${relation.relatedName} ${relation.fieldName};
+`;
+
+            entityGetters += `    public ${relation.relatedName} get${relationFieldCapitalized}() { return ${relation.fieldName}; }\n`;
+            entitySetters += `    public void set${relationFieldCapitalized}(${relation.relatedName} ${relation.fieldName}) { this.${relation.fieldName} = ${relation.fieldName}; }\n`;
+        });
 
         const code = `package ${basePackage}.${smallBaseArtifact}.entity;
     
@@ -81,6 +62,7 @@ ${entityGetters}
     // Setters
 ${entitySetters}
 }`;
+
         EntityCode.push({ fileName: `${capitalizedName}.java`, code: code });
     });
 
