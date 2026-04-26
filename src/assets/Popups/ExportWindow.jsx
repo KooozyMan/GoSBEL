@@ -4,8 +4,10 @@ import zipSvg from '../img/zip.svg';
 import jarSvg from '../img/jar.svg';
 
 export default function ExportWindow({ onClose, generatedCode, onConfirmation }) {
+    const baseUrl = import.meta.env.BASE_URL;
+
     async function fetchFile(path) {
-        const res = await fetch(path);
+        const res = await fetch(baseUrl + path);
         return await res.blob();
     }
 
@@ -21,15 +23,14 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         // --------------- Copying static files ---------------
         // -----------------------------------------------------
         // installing local maven
-        application.file('mvnw', await fetchFile('/templates/mvnw'));
-        application.file('mvnw.cmd', await fetchFile('/templates/mvnw.cmd'));
+        application.file('mvnw', await fetchFile('templates/mvnw'));
+        application.file('mvnw.cmd', await fetchFile('templates/mvnw.cmd'));
         const mvn = application.folder('.mvn');
         const wrapper = mvn.folder('wrapper');
-        wrapper.file('maven-wrapper.properties', await fetchFile('/templates/maven-wrapper.properties'));
 
         // installing git files
-        application.file('.gitignore', await fetchFile('/templates/.gitignore'));
-        application.file('.gitattributes', await fetchFile('/templates/.gitattributes'));
+        application.file('.gitignore', await fetchFile('templates/.gitignore'));
+        application.file('.gitattributes', await fetchFile('templates/.gitattributes'));
 
         // ------------------------------------------------------
         // --------------- Creating File Strcture ---------------
