@@ -27,6 +27,7 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         application.file('mvnw.cmd', await fetchFile('templates/mvnw.cmd'));
         const mvn = application.folder('.mvn');
         const wrapper = mvn.folder('wrapper');
+        wrapper.file('maven-wrapper.properties', await fetchFile('templates/maven-wrapper.properties'));
 
         // installing git files
         application.file('.gitignore', await fetchFile('templates/.gitignore'));
