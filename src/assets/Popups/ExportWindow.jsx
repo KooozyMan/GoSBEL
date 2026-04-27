@@ -134,9 +134,9 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
                     <div className="downloadable" onClick={getZipFile}>
                         <img className="export-img" src={zipSvg}></img><span>Download code as a zip file.</span>
                     </div>
-                    <div className="downloadable" onClick={getJarFile}>
+                    {/* <div className="downloadable" onClick={getJarFile}>
                         <img className="export-img" src={jarSvg}></img><span>Download code as a jar file.</span>
-                    </div>
+                    </div> */}
                     <button className="close-export-project-window" onClick={onClose}>Close</button>
                 </div>
             </div>

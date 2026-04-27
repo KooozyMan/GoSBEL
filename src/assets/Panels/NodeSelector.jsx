@@ -3,8 +3,8 @@ import entityImg from '../img/entity.png';
 export default function NodeSelector({ onCreate }) {
     const list = [
         { name: 'Entity', img: entityImg },
-        { name: 'Repository', img: entityImg },
-        { name: 'Controller', img: entityImg },
+        // { name: 'Repository', img: entityImg },
+        // { name: 'Controller', img: entityImg },
     ];
 
     const nodes = list.map((element, index) => (
