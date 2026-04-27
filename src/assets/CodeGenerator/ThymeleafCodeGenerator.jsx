@@ -16,32 +16,43 @@ function toInputType(fieldType) {
 }
 
 function relationInputs(entityName, relations) {
-    return relations.map(relation => {
-        const optionVar = `${relation.fieldName}Option`;
+    return relations
+        .map(relation => {
+            const optionVar = `${relation.fieldName}Option`;
 
-        return `                <label class="w-full flex group" for="${relation.paramName}-select">${relation.relatedName}:
-                <select id="${relation.paramName}-select" name="${relation.paramName}" class="border-2 transition-colors duration-300 group-hover:border-cyan-500 rounded-lg ml-auto mr-0">
-                    <option value="">-- Select ${relation.relatedName} --</option>
-                    <option th:each="${optionVar} : \${${relation.listName}}"
-                            th:value="\${${optionVar}.${relation.relatedPkName}}"
-                            th:text="\${${optionVar}.${relation.displayField}}"
-                            th:selected="\${${entityName}.${relation.fieldName} != null and ${entityName}.${relation.fieldName}.${relation.relatedPkName} == ${optionVar}.${relation.relatedPkName}}">
-                    </option>
-                </select>
-                </label>`;
-    }).join("\n");
+            return `                        <div class="form-control w-full">
+                            <label class="label" for="${relation.paramName}-select">
+                                <span class="label-text font-medium">${relation.relatedName}</span>
+                            </label>
+                            <select id="${relation.paramName}-select" name="${relation.paramName}" class="select select-bordered w-full">
+                                <option value="">-- Select ${relation.relatedName} --</option>
+                                <option th:each="${optionVar} : \${${relation.listName}}"
+                                        th:value="\${${optionVar}.${relation.relatedPkName}}"
+                                        th:text="\${${optionVar}.${relation.displayField}}"
+                                        th:selected="\${${entityName}.${relation.fieldName} != null and ${entityName}.${relation.fieldName}.${relation.relatedPkName} == ${optionVar}.${relation.relatedPkName}}">
+                                </option>
+                            </select>
+                        </div>`;
+        })
+        .join("\n");
 }
 
 function relationTableHeaders(relations) {
-    return relations.map(relation =>
-        `                                <th class="px-6 py-3 text-center font-bold tracking-wider">${relation.relatedName}</th>`
-    ).join("\n");
+    return relations
+        .map(
+            relation =>
+                `                                    <th class="text-sm font-bold">${relation.relatedName}</th>`
+        )
+        .join("\n");
 }
 
 function relationTableCells(entityName, relations) {
-    return relations.map(relation =>
-        `                                <td class="px-6 hover:font-semibold py-4 whitespace-nowrap text-center" th:text="\${${entityName}.${relation.fieldName} != null ? ${entityName}.${relation.fieldName}.${relation.displayField} : ''}"></td>`
-    ).join("\n");
+    return relations
+        .map(
+            relation =>
+                `                                    <td th:text="\${${entityName}.${relation.fieldName} != null ? ${entityName}.${relation.fieldName}.${relation.displayField} : ''}"></td>`
+        )
+        .join("\n");
 }
 
 function formGenerator(entityName, capAppName, entityFields, pkField, relations) {
@@ -52,46 +63,60 @@ function formGenerator(entityName, capAppName, entityFields, pkField, relations)
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title th:text="\${${entityName}.${pkName} != null} ? '${capAppName} - Edit ${entityName} ' + \${${entityName}.${pkName}} : '${capAppName} - Add New ${entityName}'">${capAppName} - ${entityName} form</title>
+        <title th:text="\${${entityName}.${pkName} != null ? '${capAppName} - Edit ${entityName} ' + ${entityName}.${pkName} : '${capAppName} - Add New ${entityName}'}">${capAppName} - ${entityName} form</title>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
     </head>
-    <body class="bg-cyan-950">
-        <h1 class="bg-cyan-500 text-3xl text-white p-4 font-bold font-mono">
-            <span th:if="\${${entityName}.${pkName} != null}">Edit ${entityName} <span th:text="\${${entityName}.${pkName}}"></span></span>
-            <span th:unless="\${${entityName}.${pkName} != null}">Add New ${entityName}</span>
-        </h1>
+    <body class="bg-base-200 min-h-screen flex items-center justify-center p-4">
+        <div class="card bg-base-100 shadow-xl w-full max-w-2xl">
+            <div class="card-body">
+                <h2 class="card-title text-2xl font-bold bg-primary text-primary-content p-4 rounded-xl mb-6 shadow-sm">
+                    <span th:if="\${${entityName}.${pkName} != null}">
+                        Edit ${entityName} #<span th:text="\${${entityName}.${pkName}}"></span>
+                    </span>
+                    <span th:unless="\${${entityName}.${pkName} != null}">
+                        Add New ${entityName}
+                    </span>
+                </h2>
 
-        <form
-        class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl"
-        th:object="\${${entityName}}" method="post" 
-        th:action="\${${entityName}.${pkName} != null} ? @{/${entityName}/update/{${pkName}}(${pkName}=\${${entityName}.${pkName}})} : @{/${entityName}/save}">
-            <header class="h-fit bg-cyan-500 pl-2 text-2xl sticky top-0 rounded-tr-2xl font-mono font-bold rounded-tl-2xl">
-                <span th:if="\${${entityName}.${pkName} != null}">Edit ${entityName} <span th:text="\${${entityName}.${pkName}}"></span></span>
-                <span th:unless="\${${entityName}.${pkName} != null}">New ${entityName} Form</span>
-            </header>
-
-            <div class="grid grid-cols-2 gap-1 p-2 my-8">
-${entityFields.map(field => {
+                <form th:object="\${${entityName}}" method="post" th:action="@{\${${entityName}.${pkName} != null ? '/${entityName}/update/' + ${entityName}.${pkName} : '/${entityName}/save'}}">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+${entityFields
+    .map(field => {
         if (field.name === pkName) return "";
+
         const inputType = toInputType(field.type);
 
-        return `                <label class="w-full flex group" for="${field.name}-input">${field.name}:
-                <input type="${inputType}" id="${field.name}-input" class="border-2 transition-colors duration-300 group-hover:border-cyan-500 rounded-lg ml-auto mr-0" th:field="*{${field.name}}">
-                </label>`;
-    }).join("\n")}
+        if (inputType === "checkbox") {
+            return `                        <div class="form-control w-full flex-row items-center justify-start gap-4 p-2">
+                            <label class="cursor-pointer flex items-center gap-3" for="${field.name}-input">
+                                <input type="${inputType}" id="${field.name}-input" class="checkbox checkbox-primary" th:field="*{${field.name}}">
+                                <span class="label-text font-medium">${field.name}</span>
+                            </label>
+                        </div>`;
+        }
+
+        return `                        <div class="form-control w-full">
+                            <label class="label" for="${field.name}-input">
+                                <span class="label-text font-medium">${field.name}</span>
+                            </label>
+                            <input type="${inputType}" id="${field.name}-input" class="input input-bordered w-full" th:field="*{${field.name}}" placeholder="Enter ${field.name}">
+                        </div>`;
+    })
+    .join("\n")}
 ${relationInputs(entityName, relations)}
+                    </div>
+                    
+                    <div class="card-actions justify-end mt-8 border-t pt-6 border-base-200">
+                        <a th:href="@{/${entityName}}" class="btn btn-ghost">Cancel</a>
+                        <button class="btn btn-primary" type="submit">
+                            <span th:if="\${${entityName}.${pkName} != null}">Update ${entityName}</span>
+                            <span th:unless="\${${entityName}.${pkName} != null}">Save ${entityName}</span>
+                        </button>
+                    </div>
+                </form>
             </div>
-        
-            <footer class="h-8 bg-cyan-700 sticky flex bottom-0 rounded-br-2xl pt-1 pr-2 rounded-bl-2xl">
-                <div class="flex ml-auto mr-0 space-x-2">
-                    <a th:href="@{/${entityName}}" class="bg-black text-white hover:bg-cyan-950 transition-colors duration-300 cursor-pointer rounded h-fit px-2">Cancel</a>
-                    <button class="bg-black text-white hover:bg-cyan-950 transition-colors duration-300 cursor-pointer rounded h-fit px-2" type="submit">
-                        <span th:if="\${${entityName}.${pkName} != null}">Update ${entityName}</span>
-                        <span th:unless="\${${entityName}.${pkName} != null}">Add ${entityName}</span>
-                    </button>
-                </div>
-            </footer>
-        </form>
+        </div>
     </body>
 </html>`;
 }
@@ -106,68 +131,76 @@ function listGenerator(entityName, entityFields, pkField, relations, capAppName,
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${capAppName} - ${entityName}s</title>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
     </head>
-    <body class="h-screen">
-        <h1 class="bg-cyan-500 p-4 h-1/12 font-bold text-4xl text-white font-mono flex items-center">
-            ${entityName}s
-            <div class="ml-auto mr-0">
-                <a
-                th:href="@{/logout}"
-                class="hover:bg-cyan-700 transition-colors duration-300 border-cyan-800 border-2 -translate-y-1.5 rounded-xl p-1">
-                    log out
-                </a>
+    <body class="bg-base-200 h-screen flex overflow-hidden">
+        
+        <div class="w-64 bg-base-100 shadow-xl hidden md:flex flex-col z-10">
+            <div class="p-6 text-center border-b border-base-200">
+                <h1 class="text-2xl font-bold w-full text-primary truncate" title="${capAppName}">${capAppName}</h1>
             </div>
-        </h1>
-        <div class="flex w-full h-11/12 bg-cyan-950">
-            <div id="entities" class="w-1/5 bg-cyan-700 text-white *:w-full *:block space-y-2 p-4">
-${entitiesList.map(e => (`                <a${e === entityName ? "\n                disabled" : `\n                th:href="@{/${e}}"`}
-                class="w-full text-lg border-2 ${e === entityName ? "bg-cyan-500" : "focus:bg-cyan-500 hover:underline"} text-center h-fit hover:bg-cyan-600 cursor-pointer transition-colors duration-300 rounded border-cyan-900">
-                ${e}
-                </a>\n`)).join("\n")}
+            <ul class="menu p-4 w-full text-base-content flex-grow gap-1">
+${entitiesList
+    .map(
+        e =>
+            `                <li><a${e === entityName ? ' class="active"' : ` th:href="@{/${e}}"`}>${e}</a></li>`
+    )
+    .join("\n")}
+            </ul>
+        </div>
+
+        <div class="flex-1 flex flex-col h-full overflow-hidden">
+            <div class="navbar bg-base-100 shadow-md z-0 px-6">
+                <div class="flex-1">
+                    <h1 class="text-xl font-semibold">${entityName} Management</h1>
+                </div>
+                <div class="flex-none">
+                    <a th:href="@{/logout}" class="btn btn-ghost btn-sm">Log out</a>
+                </div>
             </div>
 
-            <div class="p4 w-full text-white px-4">
-                <p class="pl-1 text-center w-full text-3xl my-4 font-mono">
-                    ${entityName}s list.
-                </p>
-                <div class="bg-white rounded-lg overflow-hidden shadow-lg">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-cyan-600 text-white">
-                            <tr>
-${entityFields.map(field =>
-        `                                <th class="px-6 py-3 text-center font-bold tracking-wider">${field.name}</th>`).join("\n")}
-${relationTableHeaders(relations)}
-                                <th class="px-6 py-3 text-center font-bold tracking-wider" sec:authorize="hasRole('ADMIN')">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr th:if="\${${entityName}.isEmpty()}">
-                                <td colspan="7" class="px-6 py-4 text-center text-gray-500">
-                                    No ${entityName}s found. Click "Add New ${entityName}" to create one.
-                                </td>
-                            </tr>
-
-                            <tr th:each="${entityName} : \${${entityName}}" class="hover:bg-cyan-50 text-black">
-${entityFields.map(field =>
-            `                                <td class="px-6 hover:font-semibold py-4 whitespace-nowrap text-center" th:text="\${${entityName}.${field.name}}"></td>`).join("\n")}
-${relationTableCells(entityName, relations)}
-                                <td class="px-6 text-center py-4 whitespace-nowrap space-x-2" sec:authorize="hasRole('ADMIN')">
-                                    <a th:href="@{/${entityName}/edit/{${pkName}}(${pkName}=\${${entityName}.${pkName}})}" class="text-cyan-600 text-center hover:underline hover:text-cyan-900">
-                                    Edit
-                                    </a>
-                                    <a th:href="@{/${entityName}/delete/{${pkName}}(${pkName}=\${${entityName}.${pkName}})}" class="text-red-600 text-center hover:underline hover:text-red-900" onclick="return confirm('Are you sure you want to delete this item?')">
-                                    Delete
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <a
-                    th:href="@{/${entityName}/add}"
-                    class="bg-cyan-600 text-3xl fixed bottom-4 right-2 cursor-pointer hover:bg-cyan-800 transition-colors duration-300 p-2 rounded-xl">
-                    Add ${entityName} +
+            <div class="flex-1 overflow-auto p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold text-base-content">${entityName} List</h2>
+                    <a th:href="@{/${entityName}/add}" class="btn btn-primary shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-1">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Add ${entityName}
                     </a>
+                </div>
+
+                <div class="card bg-base-100 shadow-xl">
+                    <div class="card-body p-0 overflow-x-auto">
+                        <table class="table table-zebra w-full">
+                            <thead class="bg-base-200">
+                                <tr>
+${entityFields
+    .map(field => `                                    <th class="text-sm font-bold">${field.name}</th>`)
+    .join("\n")}
+${relationTableHeaders(relations)}
+                                    <th sec:authorize="hasRole('ADMIN')" class="text-center text-sm font-bold">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="\${${entityName}.isEmpty()}">
+                                    <td colspan="100%" class="text-center py-12 text-base-content/50">
+                                        No ${entityName}s found. Click "Add ${entityName}" to create one.
+                                    </td>
+                                </tr>
+                                <tr th:each="${entityName} : \${${entityName}}" class="hover">
+${entityFields
+    .map(field => `                                    <td th:text="\${${entityName}.${field.name}}"></td>`)
+    .join("\n")}
+${relationTableCells(entityName, relations)}
+                                    <td sec:authorize="hasRole('ADMIN')" class="text-center space-x-2">
+                                        <a th:href="@{/${entityName}/edit/{${pkName}}(${pkName}=\${${entityName}.${pkName}})}" class="btn btn-sm btn-info btn-outline">Edit</a>
+                                        <a th:href="@{/${entityName}/delete/{${pkName}}(${pkName}=\${${entityName}.${pkName}})}" class="btn btn-sm btn-error btn-outline" onclick="return confirm('Are you sure you want to delete this item?')">Delete</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -183,13 +216,40 @@ function indexGenerator(capAppName, entitiesList) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${capAppName} - Home</title>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
     </head>
-    <body>
-        <h1 class="bg-cyan-500 p-4 font-bold text-2xl text-white font-mono">${capAppName}</h1>
-
-        <div class="flex h-screen w-full bg-cyan-950">
-            <div id="entities" class="w-60 bg-cyan-700 text-white *:w-full *:block space-y-2 p-4">
-                ${entitiesList.map(e => (`<a class="border-2 text-center h-fit hover:bg-cyan-600 cursor-pointer focus:bg-cyan-500 transition-colors duration-300 rounded border-cyan-900" th:href="@{/${e}}" >${e}</a>`)).join("\n                ")}
+    <body class="bg-base-200">
+        <div class="flex h-screen overflow-hidden">
+            <div class="w-64 bg-base-100 shadow-xl hidden md:flex flex-col z-10">
+                <div class="p-6 border-b border-base-200">
+                    <h1 class="text-2xl font-bold text-primary truncate" title="${capAppName}">${capAppName}</h1>
+                </div>
+                <ul class="menu p-4 w-full text-base-content flex-grow gap-1">
+                    ${entitiesList
+                        .map(e => `<li><a th:href="@{/${e}}">${e}</a></li>`)
+                        .join("\n                    ")}
+                </ul>
+            </div>
+            
+            <div class="flex-1 flex flex-col items-center justify-center p-8 overflow-y-auto">
+                <div class="card bg-base-100 shadow-xl max-w-lg w-full">
+                    <div class="card-body items-center text-center">
+                        <h2 class="card-title text-4xl font-bold mb-4">Welcome to ${capAppName}</h2>
+                        <p class="text-base-content/70">Select an entity from the sidebar to manage your data.</p>
+                        
+                        <div class="md:hidden mt-8 w-full">
+                            <h3 class="font-semibold mb-4 text-left">Available Entities:</h3>
+                            <div class="flex flex-col gap-3">
+                                ${entitiesList
+                                    .map(
+                                        e =>
+                                            `<a th:href="@{/${e}}" class="btn btn-outline btn-primary w-full">${e}</a>`
+                                    )
+                                    .join("\n                                ")}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
@@ -217,25 +277,31 @@ export default function ThymeleafCodeGenerator(xml) {
 
         const pkField = getPrimaryKey(entity);
         const relations = getSelectableRelations(xmlDoc, entity.getAttribute("id"));
+
         Views.push({
             fileName: `${entityName}-form.html`,
-            code: formGenerator(entityName, capAppName, entityFields, pkField, relations)
+            code: formGenerator(entityName, capAppName, entityFields, pkField, relations),
         });
 
         Views.push({
             fileName: `${entityName}-list.html`,
-            code: listGenerator(entityName, entityFields, pkField, relations, capAppName, entitiesList)
+            code: listGenerator(entityName, entityFields, pkField, relations, capAppName, entitiesList),
         });
     });
 
     Views.push({
         fileName: "index.html",
-        code: indexGenerator(capAppName, entitiesList)
+        code: indexGenerator(capAppName, entitiesList),
     });
 
     Views.push({
         fileName: "tailwind.config.js",
-        code: `//This is a configuration file that helps you auto-complete tailwind utilities/classes if you have 'Tailwind CSS IntelliSense' extension installed in vs-code\n/** @type {import('tailwindcss').Config} */module.exports = {content: ["./**/*.html","./*.html","!./node_modules/**","!./dist/**"],corePlugins: {preflight: true,},}`
+        code: `//This is a configuration file that helps you auto-complete tailwind utilities/classes if you have 'Tailwind CSS IntelliSense' extension installed in vs-code
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+content: ["./**/*.html","./*.html","!./node_modules/**","!./dist/**"],
+corePlugins: {preflight: true,},
+}`,
     });
 
     return Views;
