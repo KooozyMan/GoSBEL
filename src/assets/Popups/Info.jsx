@@ -1,26 +1,19 @@
 export default function Info({ onClose }) {
     const infoContent = [
         {
-            title: 'FAQ',
-            text: [
-                'What is the color of the sky?',
-                'no color',
-            ],
-        },
-        {
             title: 'Shortcuts',
             text: [
                 'Esc to close down popups',
                 'Ctrl + E to Generate an Entity',
-                'Ctrl + C to open the Code Viewer',
+                'Ctrl + C to generate the code',
             ],
         },
         {
-            title: 'Something',
+            title: 'Convert zip to jar',
             text: [
-                'number 1',
-                'number 2',
-                'number 3',
+                'open a terminal on the project\'s root directory.',
+                'run .\\mvnw clean package',
+                'You will find the jar file in the target/ folder.',
             ],
         },
         {
