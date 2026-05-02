@@ -57,11 +57,12 @@
     gap: 20px;
     width: 500px;
     height: 60px;
-    color: #f3f3f3;
+    color: #d8dee9;
     font-size: 20px;
     font-weight: bold;
+    border: #4b5563 2px solid;
     border-radius: 10px;
-    background-color: #2d527c;
+    background-color: #374151;
     align-items: center;
     justify-content: center;
 }
