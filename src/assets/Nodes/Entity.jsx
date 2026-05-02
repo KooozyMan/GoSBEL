@@ -4,67 +4,70 @@ import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
 import { allowedDataTypes } from "../Lists/AllowedDataTypes";
 import gear from '../img/gear.svg'
 
-const Str = ({advanced,validationFunction,fieldName,defaultValues}) => {
-    const {Regex = '',MaxCharacters='',NotNull=false} = defaultValues || {};
-    return (
-    <div className={`validation-input nodrag ${advanced ? 'fade-in' : 'fade-out'}`}>
-        <div className="block">
-            <div className="flex">
-                <input defaultValue={Regex} onChange={(e) => validationFunction(fieldName,'Regex',e.target.value)} title="Regex" className="entity-type-select nodrag" type="text" placeholder="Regex" />
-                <input defaultValue={MaxCharacters} onChange={(e) => validationFunction(fieldName,'MaxCharacters',(e.target.value))} title="Max Characters" className="entity-type-select nodrag" type="number" placeholder="Max Characters" />
-            </div>
-            <label>NotNull:  <input defaultChecked={JSON.parse(NotNull)} onChange={(e) => validationFunction(fieldName,'NotNull',e.target.checked)} type="checkbox"/></label>
-        </div>
-    </div>)}
-
-const Num = ({advanced,validationFunction,fieldName,defaultValues}) => {
-    const {Min = '',Max = '',NotNull = false,Positive = false} = defaultValues || {};
-    return (
-    <div className={`validation-input nodrag ${advanced ? 'fade-in' : 'fade-out'}`}>
-        <div className="block">
-            <div className="flex">
-                <input defaultValue={Min} type="number" onChange={(e) => validationFunction(fieldName,'Min',(e.target.value))} title="Min" className="entity-type-select nodrag" placeholder="Min" />
-                <input defaultValue={Max} type="number" onChange={(e) => validationFunction(fieldName,'Max',(e.target.value))} title="Max" className="entity-type-select nodrag" placeholder="Max" />
-            </div>
-            <div className="flex">
-                <label>NotNull:  <input defaultChecked={JSON.parse(NotNull)} onChange={(e) => validationFunction(fieldName,'NotNull',e.target.checked)} type="checkbox"/></label>
-                <label>Positive: <input defaultChecked={JSON.parse(Positive)} onChange={(e) => validationFunction(fieldName,'Positive',e.target.checked)} type="checkbox"/></label>
-            </div>
-        </div>
-    </div>)}
-
-const Dbl = ({advanced,validationFunction,fieldName,defaultValues}) => {
-    const {DecimalMin = '',DecimalMax = '',NotNull = false,positive = false} = defaultValues || {};
-    return ( 
-    <div className={`validation-input nodrag ${advanced ? 'fade-in' : 'fade-out'}`}>
-        <div className="block">
-            <div className="flex">
-                <input defaultValue={DecimalMin} onChange={(e) => validationFunction(fieldName,'DecimalMin',(e.target.value))} title="DecimalMin" className="entity-type-select nodrag" type="number" placeholder="DecimalMin" />
-                <input defaultValue={DecimalMax} onChange={(e) => validationFunction(fieldName,'DecimalMax',(e.target.value))} title="DecimalMax" className="entity-type-select nodrag" type="number" placeholder="DecimalMax" />
-            </div>
-            <div className="flex">
-                <label>NotNull:     <input defaultChecked={JSON.parse(NotNull)} onChange={(e) => validationFunction(fieldName,'NotNull',e.target.checked)} type="checkbox"/></label>
-                <label>Positive:    <input defaultChecked={JSON.parse(positive)} onChange={(e) => validationFunction(fieldName,'Positive',e.target.checked)} type="checkbox"/></label>
-            </div>
-        </div>
-    </div>)}
-
-const Bool = ({advanced,validationFunction,fieldName, defaultValues}) => {
-    const {NotNull = false} = defaultValues || {};
+const Str = ({ advanced, validationFunction, fieldName, defaultValues }) => {
+    const { Regex = '', MaxCharacters = '', NotNull = false } = defaultValues || {};
     return (
         <div className={`validation-input nodrag ${advanced ? 'fade-in' : 'fade-out'}`}>
-            <label>NotNull: <input defaultChecked={JSON.parse(NotNull)} onChange={(e) => validationFunction(fieldName,'NotNull',e.target.checked)} type="checkbox"/></label>
+            <div className="block">
+                <div className="flex">
+                    <input defaultValue={Regex} onChange={(e) => validationFunction(fieldName, 'Regex', e.target.value)} title="Regex" className="entity-type-select nodrag" type="text" placeholder="Regex" />
+                    <input defaultValue={MaxCharacters} onChange={(e) => validationFunction(fieldName, 'MaxCharacters', (e.target.value))} title="Max Characters" className="entity-type-select nodrag" type="number" placeholder="Max Characters" />
+                </div>
+                <label>NotNull:  <input defaultChecked={JSON.parse(NotNull)} onChange={(e) => validationFunction(fieldName, 'NotNull', e.target.checked)} type="checkbox" /></label>
+            </div>
         </div>)
-    }
+}
 
-const fieldLookup = (field,validationState,validationFunction) => {
-    const {type,name,validation,pk} = field
+const Num = ({ advanced, validationFunction, fieldName, defaultValues }) => {
+    const { Min = '', Max = '', NotNull = false, Positive = false } = defaultValues || {};
+    return (
+        <div className={`validation-input nodrag ${advanced ? 'fade-in' : 'fade-out'}`}>
+            <div className="block">
+                <div className="flex">
+                    <input defaultValue={Min} type="number" onChange={(e) => validationFunction(fieldName, 'Min', (e.target.value))} title="Min" className="entity-type-select nodrag" placeholder="Min" />
+                    <input defaultValue={Max} type="number" onChange={(e) => validationFunction(fieldName, 'Max', (e.target.value))} title="Max" className="entity-type-select nodrag" placeholder="Max" />
+                </div>
+                <div className="flex">
+                    <label>NotNull:  <input defaultChecked={JSON.parse(NotNull)} onChange={(e) => validationFunction(fieldName, 'NotNull', e.target.checked)} type="checkbox" /></label>
+                    <label>Positive: <input defaultChecked={JSON.parse(Positive)} onChange={(e) => validationFunction(fieldName, 'Positive', e.target.checked)} type="checkbox" /></label>
+                </div>
+            </div>
+        </div>)
+}
+
+const Dbl = ({ advanced, validationFunction, fieldName, defaultValues }) => {
+    const { DecimalMin = '', DecimalMax = '', NotNull = false, positive = false } = defaultValues || {};
+    return (
+        <div className={`validation-input nodrag ${advanced ? 'fade-in' : 'fade-out'}`}>
+            <div className="block">
+                <div className="flex">
+                    <input defaultValue={DecimalMin} onChange={(e) => validationFunction(fieldName, 'DecimalMin', (e.target.value))} title="DecimalMin" className="entity-type-select nodrag" type="number" placeholder="DecimalMin" />
+                    <input defaultValue={DecimalMax} onChange={(e) => validationFunction(fieldName, 'DecimalMax', (e.target.value))} title="DecimalMax" className="entity-type-select nodrag" type="number" placeholder="DecimalMax" />
+                </div>
+                <div className="flex">
+                    <label>NotNull:     <input defaultChecked={JSON.parse(NotNull)} onChange={(e) => validationFunction(fieldName, 'NotNull', e.target.checked)} type="checkbox" /></label>
+                    <label>Positive:    <input defaultChecked={JSON.parse(positive)} onChange={(e) => validationFunction(fieldName, 'Positive', e.target.checked)} type="checkbox" /></label>
+                </div>
+            </div>
+        </div>)
+}
+
+const Bool = ({ advanced, validationFunction, fieldName, defaultValues }) => {
+    const { NotNull = false } = defaultValues || {};
+    return (
+        <div className={`validation-input nodrag ${advanced ? 'fade-in' : 'fade-out'}`}>
+            <label>NotNull: <input defaultChecked={JSON.parse(NotNull)} onChange={(e) => validationFunction(fieldName, 'NotNull', e.target.checked)} type="checkbox" /></label>
+        </div>)
+}
+
+const fieldLookup = (field, validationState, validationFunction) => {
+    const { type, name, validation, pk } = field
     switch (type) {
-        case 'Integer':return(<Num defaultValues={validation} fieldName={name} advanced={validationState} validationFunction={validationFunction}/>);
-        case 'String': return(<Str defaultValues={validation} fieldName={name} advanced={validationState} validationFunction={validationFunction}/>);
-        case 'Long':   return(<Num defaultValues={validation} fieldName={name} advanced={validationState} validationFunction={validationFunction}/>);
-        case 'Double': return(<Dbl defaultValues={validation} fieldName={name} advanced={validationState} validationFunction={validationFunction}/>);
-        case 'Boolean':return(<Bool defaultValues={validation} fieldName={name} advanced={validationState} validationFunction={validationFunction}/>);
+        case 'Integer': return (<Num defaultValues={validation} fieldName={name} advanced={validationState} validationFunction={validationFunction} />);
+        case 'String': return (<Str defaultValues={validation} fieldName={name} advanced={validationState} validationFunction={validationFunction} />);
+        case 'Long': return (<Num defaultValues={validation} fieldName={name} advanced={validationState} validationFunction={validationFunction} />);
+        case 'Double': return (<Dbl defaultValues={validation} fieldName={name} advanced={validationState} validationFunction={validationFunction} />);
+        case 'Boolean': return (<Bool defaultValues={validation} fieldName={name} advanced={validationState} validationFunction={validationFunction} />);
     }
 }
 
@@ -73,7 +76,7 @@ export default function Entity({ id, data }) {
 
     const [entityName, setEntityName] = useState(data.label);
     const [fields, setFields] = useState(data.fields || []);
-    const [advanced,setAdvanced] = useState(null)
+    const [advanced, setAdvanced] = useState(null)
 
     const updateNodeData = (newLabel, newFields) =>
         setNodes((nodes) =>
@@ -90,7 +93,7 @@ export default function Entity({ id, data }) {
     };
 
     const addField = () => {
-        const newFields = [...fields, { name: "newField", type: "String", pk: false, validation:{} }];
+        const newFields = [...fields, { name: "newField", type: "String", pk: false, validation: {} }];
         setFields(newFields);
         updateNodeData(entityName, newFields);
     };
@@ -115,7 +118,7 @@ export default function Entity({ id, data }) {
         updateNodeData(entityName, newFields);
     };
 
-    const handleValidationChange = (fieldName,validation,value) => {
+    const handleValidationChange = (fieldName, validation, value) => {
         let newFields = [...fields];
         const index = newFields.findIndex(field => field.name === fieldName);
         // If value is empty/falsy, delete the key
@@ -166,13 +169,13 @@ export default function Entity({ id, data }) {
                             onChange={(e) => changeFieldName(index, e.target.value)}
                             placeholder="field name"
                             className="entity-name-input nodrag"
-                            />
+                        />
                         <select
                             value={field.type}
                             onChange={(e) => changeFieldType(index, e.target.value)}
                             placeholder="type"
                             className="entity-type-select nodrag"
-                            >
+                        >
                             {allowedDataTypes.map((dataType, index) => (
                                 <option key={index} value={dataType}>{dataType}</option>
                             ))}
@@ -183,16 +186,16 @@ export default function Entity({ id, data }) {
                             checked={field.pk || false}
                             onChange={(e) => changePrimaryKey(index, e.target.checked)}
                             className="entity-pk-checkbox nodrag"
-                            />
+                        />
                         <label htmlFor={`entity-pk-checkbox-${id}-${index}`} className="nodrag" />
                     </div>
 
-                        {fieldLookup(field,advanced,handleValidationChange)}
+                    {fieldLookup(field, advanced, handleValidationChange)}
                     <div className="right-side">
                         <AiOutlineClose
                             onClick={() => deleteField(index)}
                             className="entity-field-delete"
-                            />
+                        />
                     </div>
 
 

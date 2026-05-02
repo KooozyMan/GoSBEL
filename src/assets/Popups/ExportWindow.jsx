@@ -33,6 +33,11 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         application.file('.gitignore', await fetchFile('templates/.gitignore'));
         application.file('.gitattributes', await fetchFile('templates/.gitattributes'));
 
+        // installing Jar Builder for each OS
+        application.file('_Linux_build_Jar.sh', await fetchFile('templates/_Linux_build_Jar.sh'));
+        application.file('_MacOS_build_Jar.command', await fetchFile('templates/_MacOS_build_Jar.command'));
+        application.file('_Windows_build_Jar.bat', await fetchFile('templates/_Windows_build_Jar.bat'));
+
         // ------------------------------------------------------
         // --------------- Creating File Strcture ---------------
         // ------------------------------------------------------

@@ -82,28 +82,28 @@ function formGenerator(entityName, capAppName, entityFields, pkField, relations)
                 <form th:object="\${${entityName}}" method="post" th:action="@{\${${entityName}.${pkName} != null ? '/${entityName}/update/' + ${entityName}.${pkName} : '/${entityName}/save'}}">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 ${entityFields
-    .map(field => {
-        if (field.name === pkName) return "";
+            .map(field => {
+                if (field.name === pkName) return "";
 
-        const inputType = toInputType(field.type);
+                const inputType = toInputType(field.type);
 
-        if (inputType === "checkbox") {
-            return `                        <div class="form-control w-full flex-row items-center justify-start gap-4 p-2">
+                if (inputType === "checkbox") {
+                    return `                        <div class="form-control w-full flex-row items-center justify-start gap-4 p-2">
                             <label class="cursor-pointer flex items-center gap-3" for="${field.name}-input">
                                 <input type="${inputType}" id="${field.name}-input" class="checkbox checkbox-primary" th:field="*{${field.name}}">
                                 <span class="label-text font-medium">${field.name}</span>
                             </label>
                         </div>`;
-        }
+                }
 
-        return `                        <div class="form-control w-full">
+                return `                        <div class="form-control w-full">
                             <label class="label" for="${field.name}-input">
                                 <span class="label-text font-medium">${field.name}</span>
                             </label>
                             <input type="${inputType}" id="${field.name}-input" class="input input-bordered w-full" th:field="*{${field.name}}" placeholder="Enter ${field.name}">
                         </div>`;
-    })
-    .join("\n")}
+            })
+            .join("\n")}
 ${relationInputs(entityName, relations)}
                     </div>
                     
@@ -141,11 +141,11 @@ function listGenerator(entityName, entityFields, pkField, relations, capAppName,
             </div>
             <ul class="menu p-4 w-full text-base-content flex-grow gap-1">
 ${entitiesList
-    .map(
-        e =>
-            `                <li><a${e === entityName ? ' class="active"' : ` th:href="@{/${e}}"`}>${e}</a></li>`
-    )
-    .join("\n")}
+            .map(
+                e =>
+                    `                <li><a${e === entityName ? ' class="active"' : ` th:href="@{/${e}}"`}>${e}</a></li>`
+            )
+            .join("\n")}
             </ul>
         </div>
 
@@ -176,8 +176,8 @@ ${entitiesList
                             <thead class="bg-base-200">
                                 <tr>
 ${entityFields
-    .map(field => `                                    <th class="text-sm font-bold">${field.name}</th>`)
-    .join("\n")}
+            .map(field => `                                    <th class="text-sm font-bold">${field.name}</th>`)
+            .join("\n")}
 ${relationTableHeaders(relations)}
                                     <th sec:authorize="hasRole('ADMIN')" class="text-center text-sm font-bold">Actions</th>
                                 </tr>
@@ -190,8 +190,8 @@ ${relationTableHeaders(relations)}
                                 </tr>
                                 <tr th:each="${entityName} : \${${entityName}}" class="hover">
 ${entityFields
-    .map(field => `                                    <td th:text="\${${entityName}.${field.name}}"></td>`)
-    .join("\n")}
+            .map(field => `                                    <td th:text="\${${entityName}.${field.name}}"></td>`)
+            .join("\n")}
 ${relationTableCells(entityName, relations)}
                                     <td sec:authorize="hasRole('ADMIN')" class="text-center space-x-2">
                                         <a th:href="@{/${entityName}/edit/{${pkName}}(${pkName}=\${${entityName}.${pkName}})}" class="btn btn-sm btn-info btn-outline">Edit</a>
@@ -226,8 +226,8 @@ function indexGenerator(capAppName, entitiesList) {
                 </div>
                 <ul class="menu p-4 w-full text-base-content flex-grow gap-1">
                     ${entitiesList
-                        .map(e => `<li><a th:href="@{/${e}}">${e}</a></li>`)
-                        .join("\n                    ")}
+            .map(e => `<li><a th:href="@{/${e}}">${e}</a></li>`)
+            .join("\n                    ")}
                 </ul>
             </div>
             
@@ -241,11 +241,11 @@ function indexGenerator(capAppName, entitiesList) {
                             <h3 class="font-semibold mb-4 text-left">Available Entities:</h3>
                             <div class="flex flex-col gap-3">
                                 ${entitiesList
-                                    .map(
-                                        e =>
-                                            `<a th:href="@{/${e}}" class="btn btn-outline btn-primary w-full">${e}</a>`
-                                    )
-                                    .join("\n                                ")}
+            .map(
+                e =>
+                    `<a th:href="@{/${e}}" class="btn btn-outline btn-primary w-full">${e}</a>`
+            )
+            .join("\n                                ")}
                             </div>
                         </div>
                     </div>

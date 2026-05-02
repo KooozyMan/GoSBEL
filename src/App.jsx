@@ -48,8 +48,8 @@ const initialNodes = [
     data: {
       label: "Consumer",
       fields: [
-        { name: "id", type: "Integer", pk: true, validation:{} },
-        { name: "name", type: "String", pk: false, validation:{} },
+        { name: "id", type: "Integer", pk: true, validation: {} },
+        { name: "name", type: "String", pk: false, validation: {} },
       ]
     }
   },
@@ -60,9 +60,8 @@ const initialNodes = [
     data: {
       label: "Item",
       fields: [
-        // setOrderId caused a bug in the output's controller.
-        { name: "id", type: "Integer", pk: true, validation:{} },
-        { name: "price", type: "Double", pk: false, validation:{} },
+        { name: "id", type: "Integer", pk: true, validation: {} },
+        { name: "price", type: "Double", pk: false, validation: {} },
       ],
     }
   }
@@ -178,7 +177,7 @@ export default function App() {
         xml += `  <Entity id="${n.id}" name="${n.data.label.charAt(0).toUpperCase() + n.data.label.slice(1)}" x="${n.position.x}" y="${n.position.y}">\n`;
 
         (n.data.fields).forEach((f) => {
-          if (f.validation){
+          if (f.validation) {
             xml += `    <Field name="${f.name}" type="${f.type}" pk="${f.pk}">\n`
             xml += Object.keys(f.validation).map(key => `      <${key} value="${f.validation[key]}"/>\n`).join('')
             xml += `    </Field>\n`
@@ -220,9 +219,9 @@ export default function App() {
         let validation = {}
         const fieldChildren = f.children
         for (let child of fieldChildren) {
-            const childTag = child.tagName;
-            const childValue = child.getAttribute('value');
-            validation[childTag] = childValue
+          const childTag = child.tagName;
+          const childValue = child.getAttribute('value');
+          validation[childTag] = childValue
         }
         return {
           name: f.getAttribute("name"),
