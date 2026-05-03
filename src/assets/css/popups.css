@@ -220,4 +220,7 @@
 
 .history-del:hover {
     cursor: pointer;
+    transition: all;
+    transition: all 0.2s ease;
+    background-color: #920000;
 }

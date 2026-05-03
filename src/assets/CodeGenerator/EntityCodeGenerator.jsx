@@ -20,13 +20,59 @@ export default function EntityGenerator(xml, basePackage = `com.example`) {
             const fieldName = field.getAttribute("name");
             const capitalizedFieldName = capitalizeFirst(fieldName);
             const fieldType = field.getAttribute("type");
-
+            const fieldValidations = field.children;
+            
+            // Build validation annotations string
+            let validationAnnotations = "";
+            
+            if (fieldValidations.length > 0) {
+                Array.from(fieldValidations).forEach(validation => {
+                    const validationName = validation.nodeName;
+                    const value = validation.getAttribute("value");
+                    
+                    switch (validationName) {
+                        case "Min":
+                            validationAnnotations += `    @Min(${value})\n`;
+                            break;
+                        case "Max":
+                            validationAnnotations += `    @Max(${value})\n`;
+                            break;
+                        case "NotNull":
+                            if (value === "true") {
+                                validationAnnotations += `    @NotNull\n`;
+                            }
+                            break;
+                        case "Positive":
+                            if (value === "true") {
+                                validationAnnotations += `    @Positive\n`;
+                            }
+                            break;
+                        case "DecimalMin":
+                            validationAnnotations += `    @DecimalMin("${value}")\n`;
+                            break;
+                        case "DecimalMax":
+                            validationAnnotations += `    @DecimalMax("${value}")\n`;
+                            break;
+                        case "Regex":
+                            validationAnnotations += `    @Pattern(regexp = "${value}")\n`;
+                            break;
+                        case "MaxCharacters":
+                            validationAnnotations += `    @Size(max = ${value})\n`;
+                            break;
+                        default:
+                            validationAnnotations += `    // Unknown validation: ${validationName}\n`;
+                    }
+                });
+            }
+            
+            const fieldDeclaration = `${validationAnnotations}    private ${fieldType} ${fieldName};\n`;
+            
             if (field.getAttribute("pk") === "true") {
-                entityFields = `    private ${fieldType} ${fieldName};\n` + entityFields;
+                entityFields = fieldDeclaration + entityFields;
                 entityGetters = `    public ${fieldType} get${capitalizedFieldName}() { return ${fieldName}; }\n` + entityGetters;
                 entitySetters = `    public void set${capitalizedFieldName}(${fieldType} ${fieldName}) { this.${fieldName} = ${fieldName}; }\n` + entitySetters;
             } else {
-                entityFields += `    private ${fieldType} ${fieldName};\n`;
+                entityFields += fieldDeclaration;
                 entityGetters += `    public ${fieldType} get${capitalizedFieldName}() { return ${fieldName}; }\n`;
                 entitySetters += `    public void set${capitalizedFieldName}(${fieldType} ${fieldName}) { this.${fieldName} = ${fieldName}; }\n`;
             }

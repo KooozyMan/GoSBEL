@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
 import { allowedDataTypes } from "../Lists/AllowedDataTypes";
 import gear from '../img/gear.svg'
+import binSvg from '../img/bin.svg';
 
 const Str = ({ advanced, validationFunction, fieldName, defaultValues }) => {
     const { Regex = '', MaxCharacters = '', NotNull = false } = defaultValues || {};
@@ -87,6 +88,8 @@ export default function Entity({ id, data }) {
             )
         );
 
+    const deleteNode = (id) => setNodes((nodes) => nodes.filter(n => n.id !== id))
+
     const handleNameChange = (e) => {
         setEntityName(e.target.value);
         updateNodeData(e.target.value, fields);
@@ -113,6 +116,7 @@ export default function Entity({ id, data }) {
 
     const changeFieldType = (index, value) => {
         const newFields = [...fields];
+        newFields[index].validation = {}
         newFields[index].type = value;
         setFields(newFields);
         updateNodeData(entityName, newFields);
@@ -122,7 +126,7 @@ export default function Entity({ id, data }) {
         let newFields = [...fields];
         const index = newFields.findIndex(field => field.name === fieldName);
         // If value is empty/falsy, delete the key
-        if (value === '' || value === null || value === undefined) {
+        if (value === '' || value === null || value === undefined || value === false) {
             delete newFields[index].validation[validation];
         } else {
             // Otherwise set the value
@@ -156,6 +160,9 @@ export default function Entity({ id, data }) {
                     placeholder="Entity Name"
                     className="entity-title-input nodrag"
                 />
+                <button className="history-del" style={{height:'30px',width:'40px'}} onClick={() => deleteNode(id)}>
+                    <img src={binSvg}  style={{height:'30px'}}/>
+                </button>
                 <button className="gear" onClick={() => setAdvanced(!advanced)}>
                     <img src={gear} className="gear-img" alt="" />
                 </button>
