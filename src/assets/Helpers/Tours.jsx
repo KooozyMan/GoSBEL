@@ -1,50 +1,52 @@
 import { Joyride, STATUS } from 'react-joyride';
 import React, { useState, useEffect } from 'react';
-
-const mainRoute = [
-    {
-        target: 'body',
-        content: 'أهلاً بك! دعنا نأخذك في جولة سريعة لتعرف كيف تستخدم أداة قوسبل لتوليد سبرينق بووت.',
-        placement: 'center',
-    },
-    {
-        target: '.node-selector',
-        content: 'من هنا يمكنك إضافة عناصر جديدة إلى الرسم مثل Entity.',
-        title: 'لوحة إضافة العناصر'
-    },
-    {
-        target: '#save-btn',
-        content: 'هنا يمكنك حفظ الرسم البياني (Diagram) الخاص بك في ذاكرة المتصفح للعودة إليه لاحقاً.',
-        title: 'حفظ العمل',
-    },
-    {
-        target: '#History-btn',
-        content: 'من هنا يمكنك الوصول إلى قائمة الأعمال التي قمت بحفظها سابقاً واستعادتها.',
-        title: 'سجل المحفوظات',
-    },
-    {
-        target: '#GenerateCode-btn',
-        content: 'هذا هو المحرك الرئيسي! اضغط هنا لتوليد كود Java (Spring Boot) بناءً على رسمك.',
-        title: 'توليد الكود',
-    },
-    {
-        target: '#GenerateXml-btn',
-        content: 'إذا كنت ترغب في رؤية البيانات بصيغة XML الخام أو تصديرها، استخدم هذا الزر.',
-        title: 'توليد XML',
-    },
-    {
-        target: '#info-btn',
-        content: 'هل تحتاج لمساعدة أو تريد معرفة المزيد عن المشروع؟ اضغط هنا.',
-        title: 'معلومات',
-    },
-    {
-        target: '.application-container',
-        content: 'هنا يمكنك تعديل اسم التطبيق الخاص بك',
-        title: 'Application Name',
-    },
-];
+import { useTranslation } from 'react-i18next';
 
 export default function Tours() {
+    const { t } = useTranslation();
+    const mainRoute = [
+        {
+            target: 'body',
+            content: t('tours_main_tour_step_0'),
+            placement: 'center',
+        },
+        {
+            target: '.node-selector',
+            title: t('tours_main_tour_step_1_title'),
+            content: t('tours_main_tour_step_1'),
+        },
+        {
+            target: '#save-btn',
+            title: t('tours_main_tour_step_2_title'),
+            content: t('tours_main_tour_step_2'),
+        },
+        {
+            target: '#History-btn',
+            title: t('tours_main_tour_step_3_title'),
+            content: t('tours_main_tour_step_3'),
+        },
+        {
+            target: '#GenerateCode-btn',
+            title: t('tours_main_tour_step_4_title'),
+            content: t('tours_main_tour_step_4'),
+        },
+        {
+            target: '#GenerateXml-btn',
+            title: t('tours_main_tour_step_5_title'),
+            content: t('tours_main_tour_step_5'),
+        },
+        {
+            target: '#info-btn',
+            title: t('tours_main_tour_step_6_title'),
+            content: t('tours_main_tour_step_6'),
+        },
+        {
+            target: '.application-container',
+            title: t('tours_main_tour_step_7_title'),
+            content: t('tours_main_tour_step_7'),
+        },
+    ];
+
     const [run, setRun] = useState(false);
     const [steps, setSteps] = useState(mainRoute);
 
@@ -78,11 +80,11 @@ export default function Tours() {
 
             onEvent={handleJoyrideEvent}
             locale={{
-                back: 'السابق',
-                close: 'إغلاق',
-                last: 'إنهاء الجولة',
-                next: 'التالي',
-                skip: 'تخطي'
+                back: t('tours_back'),
+                close: t('close'),
+                last: t('tours_last'),
+                next: t('tours_next'),
+                skip: t('tours_skip')
             }}
             options={{ primaryColor: '#007bff', }}
         />

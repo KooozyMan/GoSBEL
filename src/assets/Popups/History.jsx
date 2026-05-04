@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import binSvg from '../img/bin.svg';
+import { useTranslation } from "react-i18next";
 
 export default function History({ onClose, onLoad }) {
+    const { t } = useTranslation();
     const [History, setHistory] = useState(JSON.parse(localStorage.getItem('history')) || []);
 
     useEffect(() => {
@@ -25,9 +27,9 @@ export default function History({ onClose, onLoad }) {
                             <div className="history-date">{save.date}</div>
                             <button className="history-del" onClick={(e) => updateStorage(index, e)}><img src={binSvg} /></button>
                         </div>
-                    )) : <div className="history-empty-container">History is empty ¯\_(ツ)_/¯</div>}
+                    )) : <div className="history-empty-container">{t('popup_history_on_empty', { emoji: "¯\\_(ツ)_/¯" })}</div>}
                 </div>
-                <button className="close-button" onClick={onClose}>Close</button>
+                <button className="close-button" onClick={onClose}>{t('close')}</button>
             </div>
             <div className="overlay" />
         </div>

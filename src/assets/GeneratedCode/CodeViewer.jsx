@@ -4,8 +4,10 @@ import { loader } from "@monaco-editor/react";
 import nord from '../Themes/Nord.json';
 import closedFolderImg from '../img/closed-folder.svg';
 import openedFolderImg from '/src/assets/img/opened-folder.svg'; // TODO
+import { useTranslation } from "react-i18next";
 
 export default function CodeViewer({ onExport, onClose, generatedCode }) {
+    const { t } = useTranslation();
     const [ViewedCode, setViewedCode] = useState(generatedCode.Application[0].code);
     const [ViewedFile, setViewedFile] = useState('application');
     const [monacoLanguage, setMonacoLanguage] = useState('java')
@@ -103,7 +105,7 @@ export default function CodeViewer({ onExport, onClose, generatedCode }) {
                 />
             </div>
             <button onClick={onClose} className="close-code-viewer-button">X</button>
-            <button onClick={onExport} className="export-code">Export Code</button>
+            <button onClick={onExport} className="export-code">{t('generated_code_export')}</button>
         </div >
     );
 }

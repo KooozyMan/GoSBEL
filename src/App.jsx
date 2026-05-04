@@ -36,6 +36,7 @@ import ThymeleafCodeGenerator from "./assets/CodeGenerator/ThymeleafCodeGenerato
 import Validation from "./assets/Helpers/Validation";
 import PropertiesCodeGenerator from "./assets/CodeGenerator/PropertiesCodeGenerator";
 import Tours from "./assets/Helpers/Tours";
+import { useTranslation } from "react-i18next";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -83,6 +84,7 @@ export default function App() {
   const [ExportWindowVisibility, setExportWindowVisibility] = useState(false);
   const [ApplicationName, setApplicationName] = useState('demo');
   const [HistoryVisibility, setHistoryVisibility] = useState(false);
+  const { t } = useTranslation();
 
   const createNode = (nodeType) => {
     let newNode;
@@ -92,7 +94,7 @@ export default function App() {
       setEntityId(entityId + 1);
 
     } else { // fallback
-      confirmationHelper(`error`, `the node ${nodeType} does not exist`);
+      confirmationHelper(`error`, t('confirmation_helper_node_does_not_exist', { nodeType: nodeType }));
       return
     };
 
@@ -136,15 +138,10 @@ export default function App() {
     });
 
     localStorage.setItem("history", JSON.stringify(history));
-    confirmationHelper('confirmation', 'The diagram has been saved to your browser!');
+    confirmationHelper('confirmation', t('confirmation_helper_saved'));
   };
 
   const CodeViewerHandler = (flag = true) => {
-    if (nodes.length === 0) {
-      confirmationHelper('error', 'No Nodes to generate Code from.');
-      return;
-    }
-
     const exportedXML = exportXML();
     if (exportedXML === undefined) return;
     const generatedCode = {
@@ -164,6 +161,10 @@ export default function App() {
   };
 
   const exportXML = () => {
+    if (nodes.length === 0) {
+      confirmationHelper('error', t('confirmation_helper_no_nodes'));
+      return;
+    }
     const validate = Validation(ApplicationName, nodes);
     if (validate) {
       confirmationHelper(validate[0], validate[1], validate[2]);

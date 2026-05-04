@@ -4,6 +4,7 @@ import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
 import { allowedDataTypes } from "../Lists/AllowedDataTypes";
 import gear from '../img/gear.svg'
 import binSvg from '../img/bin.svg';
+import { useTranslation } from "react-i18next";
 
 const Str = ({ advanced, validationFunction, fieldName, defaultValues }) => {
     const { Regex = '', MaxCharacters = '', NotNull = false } = defaultValues || {};
@@ -74,6 +75,7 @@ const fieldLookup = (field, validationState, validationFunction) => {
 
 export default function Entity({ id, data }) {
     const { setNodes } = useReactFlow();
+    const { t } = useTranslation();
 
     const [entityName, setEntityName] = useState(data.label);
     const [fields, setFields] = useState(data.fields || []);
@@ -160,8 +162,8 @@ export default function Entity({ id, data }) {
                     placeholder="Entity Name"
                     className="entity-title-input nodrag"
                 />
-                <button className="history-del" style={{height:'30px',width:'40px'}} onClick={() => deleteNode(id)}>
-                    <img src={binSvg}  style={{height:'30px'}}/>
+                <button className="history-del" style={{ height: '30px', width: '40px' }} onClick={() => deleteNode(id)}>
+                    <img src={binSvg} style={{ height: '30px' }} />
                 </button>
                 <button className="gear" onClick={() => setAdvanced(!advanced)}>
                     <img src={gear} className="gear-img" alt="" />
@@ -214,7 +216,7 @@ export default function Entity({ id, data }) {
                 className="entity-field-add"
             >
                 <AiOutlinePlus />
-                Add Field
+                {t('node_entity_add_field')}
             </button>
 
             <Handle type="target" position={Position.Top} />

@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
+import './assets/Helpers/language.js'
 import App from './App.jsx'
 
 // css files
@@ -9,7 +10,6 @@ import './assets/css/popups.css'
 import './assets/css/panels.css'
 import './assets/css/nodes.css'
 import './assets/css/generated-code.css'
-import './assets/css/root.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

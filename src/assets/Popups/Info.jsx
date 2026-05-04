@@ -1,27 +1,21 @@
+import { useTranslation } from "react-i18next";
+
 export default function Info({ onClose }) {
+    const { t } = useTranslation();
     const infoContent = [
         {
-            title: 'Shortcuts',
+            title: t('info_1_title'),
             text: [
-                'Esc to close down popups',
-                'Ctrl + E to Generate an Entity',
-                'Ctrl + C to generate the code',
+                t('info_1_1'),
+                t('info_1_2'),
+                t('info_1_3'),
             ],
         },
         {
-            title: 'Convert zip to jar',
+            title: t('info_2_title'),
             text: [
-                'open a terminal on the project\'s root directory.',
-                'run .\\mvnw clean package',
-                'You will find the jar file in the target/ folder.',
-            ],
-        },
-        {
-            title: 'Something else different',
-            text: [
-                'number 1',
-                'number 2',
-                'number 3',
+                t('info_2_1'),
+                t('info_2_2'),
             ],
         },
     ];
@@ -39,7 +33,7 @@ export default function Info({ onClose }) {
                         </div>
                     ))}
                 </div>
-                <button className="close-button" onClick={onClose}>Close</button>
+                <button className="close-button" onClick={onClose}>{t('close')}</button>
             </div>
             <div className="overlay" />
         </div>
