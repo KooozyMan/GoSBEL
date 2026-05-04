@@ -56,9 +56,11 @@ function getController(entityName, idType, pkFieldName, relations, basePackage, 
 import ${basePackage}.${smallBaseArtifact}.entity.${entityName};
 import ${basePackage}.${smallBaseArtifact}.service.${entityName}Service;
 ${relatedImports}
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -90,7 +92,10 @@ ${addRelationModelAttributes}
 
     // Save a new ${entityLower}
     @PostMapping("/${entityLower}/save")
-    public String save${entityName}(@ModelAttribute ${entityName} ${entityLower}${addRelationRequestParams}, RedirectAttributes redirectAttributes) {
+    public String save${entityName}(@Valid @ModelAttribute ${entityName} ${entityLower}${addRelationRequestParams}, BindingResult result, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+    		return "${entityLower}-form";
+    	}
         try {
 ${addRelationAssignments}
             ${entityLower}Service.save(${entityLower});
@@ -117,7 +122,11 @@ ${addRelationModelAttributes}
 
     // Update an existing ${entityLower}
     @PostMapping("/${entityLower}/update/{${pkFieldName}}")
-    public String update${entityName}(@PathVariable("${pkFieldName}") ${idType} ${pkFieldName}, @ModelAttribute ${entityName} ${entityLower}${addRelationRequestParams}, RedirectAttributes redirectAttributes) {
+    public String update${entityName}(@PathVariable("${pkFieldName}") ${idType} ${pkFieldName}, @Valid @ModelAttribute ${entityName} ${entityLower}${addRelationRequestParams}, BindingResult result, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+    		${entityLower}.setId(id);
+    		return "${entityLower}-form";
+    	}
         try {
             ${entityLower}.${pkSetterName}(${pkFieldName});
 ${addRelationAssignments}

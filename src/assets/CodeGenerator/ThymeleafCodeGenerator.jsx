@@ -88,10 +88,11 @@ ${entityFields
                 const inputType = toInputType(field.type);
 
                 if (inputType === "checkbox") {
-                    return `                        <div class="form-control w-full flex-row items-center justify-start gap-4 p-2">
+                    return `                        <div class="form-control w-full flex-row items-center justify-end gap-4 p-2">
                             <label class="cursor-pointer flex items-center gap-3" for="${field.name}-input">
                                 <input type="${inputType}" id="${field.name}-input" class="checkbox checkbox-primary" th:field="*{${field.name}}">
                                 <span class="label-text font-medium">${field.name}</span>
+                                <span th:if="\${#fields.hasErrors('${field.name}')}" th:errors="*{${field.name}}" class="mt-2 py-1 px-2 text-xs font-semibold bg-red-600 text-white rounded shadow-sm"></span>
                             </label>
                         </div>`;
                 }
@@ -101,6 +102,7 @@ ${entityFields
                                 <span class="label-text font-medium">${field.name}</span>
                             </label>
                             <input type="${inputType}" id="${field.name}-input" class="input input-bordered w-full" th:field="*{${field.name}}" placeholder="Enter ${field.name}">
+                            <span th:if="\${#fields.hasErrors('${field.name}')}" th:errors="*{${field.name}}" class="mt-2 py-1 px-2 text-xs font-semibold bg-red-600 text-white rounded shadow-sm"></span>
                         </div>`;
             })
             .join("\n")}
@@ -173,7 +175,7 @@ ${entitiesList
                 <div class="card bg-base-100 shadow-xl">
                     <div class="card-body p-0 overflow-x-auto">
                         <table class="table table-zebra w-full">
-                            <thead class="bg-base-200">
+                            <thead class="bg-base-200 text-center">
                                 <tr>
 ${entityFields
             .map(field => `                                    <th class="text-sm font-bold">${field.name}</th>`)
@@ -182,7 +184,7 @@ ${relationTableHeaders(relations)}
                                     <th sec:authorize="hasRole('ADMIN')" class="text-center text-sm font-bold">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="text-center">
                                 <tr th:if="\${${entityName}.isEmpty()}">
                                     <td colspan="100%" class="text-center py-12 text-base-content/50">
                                         No ${entityName}s found. Click "Add ${entityName}" to create one.
