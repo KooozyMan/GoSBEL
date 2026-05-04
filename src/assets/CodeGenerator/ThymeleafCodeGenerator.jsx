@@ -1,4 +1,4 @@
-import { getSelectableRelations, getPrimaryKey } from "./RelationshipUtils";
+import { getSelectableRelations, getPrimaryKey, expandManyToMany } from "./RelationshipUtils";
 
 function toInputType(fieldType) {
     switch (fieldType.toLowerCase()) {
@@ -260,6 +260,7 @@ export default function ThymeleafCodeGenerator(xml) {
     let Views = [];
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
+    expandManyToMany(xmlDoc);
     const capAppName = xmlDoc.querySelector("Application").getAttribute("name");
 
     const entitiesList = Array.from(xmlDoc.querySelectorAll("Entity")).map(entity =>

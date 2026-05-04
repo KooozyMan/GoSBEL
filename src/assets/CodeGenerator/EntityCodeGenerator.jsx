@@ -1,8 +1,9 @@
-import { capitalizeFirst, getSelectableRelations } from "./RelationshipUtils";
+import { capitalizeFirst, getSelectableRelations, expandManyToMany } from "./RelationshipUtils";
 
 export default function EntityGenerator(xml, basePackage = `com.example`) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
+    expandManyToMany(xmlDoc);
     const smallBaseArtifact = xmlDoc.querySelector("Application").getAttribute("name").toLowerCase();
 
     let EntityCode = [];

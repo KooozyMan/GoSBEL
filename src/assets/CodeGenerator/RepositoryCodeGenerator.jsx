@@ -1,3 +1,5 @@
+import { expandManyToMany } from "./RelationshipUtils";
+
 function getRepository(entityName, idType = "Long", basePackage, smallBaseArtifact) {
     return `package ${basePackage}.${smallBaseArtifact}.repository;
 
@@ -14,6 +16,7 @@ public interface ${entityName}Repository extends JpaRepository<${entityName}, ${
 export default function RepositoryCodeGenerator(xml, basePackage = `com.example`) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
+    expandManyToMany(xmlDoc);
     const smallBaseArtifact = xmlDoc.querySelector("Application").getAttribute("name").toLowerCase();
     let repositories = [];
 

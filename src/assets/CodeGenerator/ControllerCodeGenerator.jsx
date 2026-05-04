@@ -1,4 +1,4 @@
-import { capitalizeFirst, getSelectableRelations, getPrimaryKey } from "./RelationshipUtils";
+import { capitalizeFirst, getSelectableRelations, getPrimaryKey, expandManyToMany } from "./RelationshipUtils";
 
 function uniqueRelations(relations) {
     return relations.filter((relation, index, self) =>
@@ -188,6 +188,7 @@ public class RedirectToIndexHTML {
 export default function ControllerCodeGenerator(xml, basePackage = `com.example`) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
+    expandManyToMany(xmlDoc);
     const smallBaseArtifact = xmlDoc.querySelector("Application").getAttribute("name").toLowerCase();
     let controllers = [];
 

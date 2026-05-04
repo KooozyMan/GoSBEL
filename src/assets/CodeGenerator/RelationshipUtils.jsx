@@ -149,3 +149,75 @@ export function getSelectableRelations(xmlDoc, ownerEntityId = null) {
         ...getOneToOneRelations(xmlDoc, ownerEntityId),
     ];
 }
+
+export function expandManyToMany(xmlDoc) {
+    const application = xmlDoc.querySelector("Application");
+    if (!application) return xmlDoc;
+
+    const allEdges = Array.from(xmlDoc.querySelectorAll("Edge"));
+    const mmEdges = allEdges.filter(edge => edge.getAttribute("relationship") === "m-m");
+
+    if (mmEdges.length === 0) return xmlDoc;
+
+    let nextEntityId = 0;
+    xmlDoc.querySelectorAll("Entity").forEach(e => {
+        const id = parseInt(e.getAttribute("id"), 10);
+        if (!isNaN(id) && id > nextEntityId) nextEntityId = id;
+    });
+
+    mmEdges.forEach(mmEdge => {
+        const sourceId = mmEdge.getAttribute("source");
+        const targetId = mmEdge.getAttribute("target");
+
+        const sourceEntity = xmlDoc.querySelector(`Entity[id="${sourceId}"]`);
+        const targetEntity = xmlDoc.querySelector(`Entity[id="${targetId}"]`);
+        if (!sourceEntity || !targetEntity) return;
+
+        const sourceName = capitalizeFirst(sourceEntity.getAttribute("name"));
+        const targetName = capitalizeFirst(targetEntity.getAttribute("name"));
+        const bridgeName = `${sourceName}${targetName}Bridge`;
+
+        const existingBridge = Array.from(xmlDoc.querySelectorAll("Entity"))
+            .find(e => e.getAttribute("name") === bridgeName);
+        if (existingBridge) {
+            mmEdge.parentNode.removeChild(mmEdge);
+            return;
+        }
+
+        nextEntityId += 1;
+        const bridgeId = String(nextEntityId);
+
+        const bridgeEntity = xmlDoc.createElement("Entity");
+        bridgeEntity.setAttribute("id", bridgeId);
+        bridgeEntity.setAttribute("name", bridgeName);
+        bridgeEntity.setAttribute("x", "0");
+        bridgeEntity.setAttribute("y", "0");
+
+        const idField = xmlDoc.createElement("Field");
+        idField.setAttribute("name", "id");
+        idField.setAttribute("type", "Integer");
+        idField.setAttribute("pk", "true");
+        bridgeEntity.appendChild(idField);
+
+        application.appendChild(bridgeEntity);
+
+        const edge1 = xmlDoc.createElement("Edge");
+        edge1.setAttribute("id", `synth-${sourceId}-${bridgeId}`);
+        edge1.setAttribute("source", sourceId);
+        edge1.setAttribute("target", bridgeId);
+        edge1.setAttribute("relationship", "1-m");
+
+        const edge2 = xmlDoc.createElement("Edge");
+        edge2.setAttribute("id", `synth-${targetId}-${bridgeId}`);
+        edge2.setAttribute("source", targetId);
+        edge2.setAttribute("target", bridgeId);
+        edge2.setAttribute("relationship", "1-m");
+
+        application.appendChild(edge1);
+        application.appendChild(edge2);
+
+        mmEdge.parentNode.removeChild(mmEdge);
+    });
+
+    return xmlDoc;
+}

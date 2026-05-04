@@ -1,3 +1,5 @@
+import { expandManyToMany } from "./RelationshipUtils";
+
 function normalizeJavaType(rawType = "Long") {
     const type = rawType.trim();
     const lower = type.toLowerCase();
@@ -144,6 +146,7 @@ public class ${entityName}Service {
 export default function ServiceCodeGenerator(xml, basePackage = `com.example`) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
+    expandManyToMany(xmlDoc);
     const smallBaseArtifact = xmlDoc.querySelector("Application").getAttribute("name").toLowerCase();
     let services = [];
 
