@@ -178,12 +178,13 @@ export default function App() {
         xml += `  <Entity id="${n.id}" name="${n.data.label.charAt(0).toUpperCase() + n.data.label.slice(1)}" x="${n.position.x}" y="${n.position.y}">\n`;
 
         (n.data.fields).forEach((f) => {
-          if (f.validation) {
-            xml += `    <Field name="${f.name}" type="${f.type}" pk="${f.pk}">\n`
-            xml += Object.keys(f.validation).map(key => `      <${key} value="${f.validation[key]}"/>\n`).join('')
-            xml += `    </Field>\n`
-          }
-          else xml += `    <Field name="${f.name}" type="${f.type}" pk="${f.pk}" />\n`
+			if (f.validation?.NotNull && f.pk) delete f.validation['NotNull'];
+			if (Object.keys(f.validation)?.length > 0) {
+				xml += `    <Field name="${f.name}" type="${f.type}" pk="${f.pk}">\n`
+				xml += Object.keys(f.validation).map(key => `      <${key} value="${f.validation[key]}"/>\n`).join('')
+				xml += `    </Field>\n`
+			}
+			else xml += `    <Field name="${f.name}" type="${f.type}" pk="${f.pk}" />\n`
         });
         xml += `  </Entity>\n`;
       }

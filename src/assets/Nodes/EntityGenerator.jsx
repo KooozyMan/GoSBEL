@@ -6,7 +6,7 @@ export default function generateEntity(id) {
         data: {
             label: "defaultNode",
             fields: [
-                { name: "id", type: "Integer", pk: true }
+                { name: "id", type: "Integer", pk: true,validation:{} }
             ]
         }
     };
