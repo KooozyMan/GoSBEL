@@ -233,6 +233,9 @@ export default function App() {
         };
       });
 
+      const numberOfEntities = xmlDoc.querySelectorAll("Entity").length
+      setEntityId(numberOfEntities + 1)
+
       loadedNodes.push({
         id: id,
         type: "entity",
