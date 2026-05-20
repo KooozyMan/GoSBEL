@@ -79,6 +79,7 @@ export default function Entity({ id, data }) {
 
     const [entityName, setEntityName] = useState(data.label);
     const [fields, setFields] = useState(data.fields || []);
+    const { deleteElements } = useReactFlow();
     const [advanced, setAdvanced] = useState(null)
 
     const updateNodeData = (newLabel, newFields) =>
@@ -90,8 +91,8 @@ export default function Entity({ id, data }) {
             )
         );
 
-    const deleteNode = (id) => setNodes((nodes) => nodes.filter(n => n.id !== id))
-
+    const deleteNode = (id) => deleteElements({ nodes: [{ id: id }] });
+    
     const handleNameChange = (e) => {
         setEntityName(e.target.value);
         updateNodeData(e.target.value, fields);
