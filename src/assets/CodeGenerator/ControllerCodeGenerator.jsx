@@ -1,13 +1,66 @@
-function getController(entityName, type, basePackage, smallBaseArtifact) {
+import { capitalizeFirst, getSelectableRelations, getPrimaryKey, expandManyToMany } from "./RelationshipUtils";
+
+function uniqueRelations(relations) {
+    return relations.filter((relation, index, self) =>
+        index === self.findIndex(r => r.fieldName === relation.fieldName)
+    );
+}
+
+function relationServiceImports(relations, basePackage, smallBaseArtifact) {
+    return uniqueRelations(relations)
+        .map(relation => `import ${basePackage}.${smallBaseArtifact}.service.${relation.relatedName}Service;`)
+        .join("\n");
+}
+
+function relationServiceFields(relations) {
+    return uniqueRelations(relations)
+        .map(relation => `    @Autowired
+    private ${relation.relatedName}Service ${relation.fieldName}Service;`)
+        .join("\n\n");
+}
+
+function relationModelAttributes(relations) {
+    return uniqueRelations(relations)
+        .map(relation => `        model.addAttribute("${relation.listName}", ${relation.fieldName}Service.findAll());`)
+        .join("\n");
+}
+
+function relationRequestParams(relations) {
+    return uniqueRelations(relations)
+        .map(relation => `, @RequestParam(value = "${relation.paramName}", required = false) ${relation.relatedPkType} ${relation.paramName}`)
+        .join("");
+}
+
+function relationAssignments(entityLower, relations) {
+    return uniqueRelations(relations)
+        .map(relation => `            if (${relation.paramName} != null && !${relation.paramName}.toString().isBlank()) {
+                ${relation.fieldName}Service.findById(${relation.paramName}).ifPresent(${entityLower}::${relation.setterName});
+            } else {
+                ${entityLower}.${relation.setterName}(null);
+            }`)
+        .join("\n");
+}
+
+function getController(entityName, idType, pkFieldName, relations, basePackage, smallBaseArtifact) {
     const entityLower = entityName.toLowerCase();
+    const pkSetterName = `set${capitalizeFirst(pkFieldName)}`;
+
+    const relatedImports = relationServiceImports(relations, basePackage, smallBaseArtifact);
+    const relatedFields = relationServiceFields(relations);
+    const addRelationModelAttributes = relationModelAttributes(relations);
+    const addRelationRequestParams = relationRequestParams(relations);
+    const addRelationAssignments = relationAssignments(entityLower, relations);
 
     return `package ${basePackage}.${smallBaseArtifact}.controller;
 
 import ${basePackage}.${smallBaseArtifact}.entity.${entityName};
 import ${basePackage}.${smallBaseArtifact}.service.${entityName}Service;
+${relatedImports}
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -20,11 +73,12 @@ public class ${entityName}Controller {
     @Autowired
     private ${entityName}Service ${entityLower}Service;
 
+${relatedFields ? relatedFields + "\n" : ""}
     // Show all ${entityLower}
     @GetMapping("/${entityLower}")
     public String list${entityName}(Model m){
         List<${entityName}> ${entityLower} = ${entityLower}Service.findAll();
-        m.addAttribute("${entityLower}",${entityLower});
+        m.addAttribute("${entityLower}", ${entityLower});
         return "${entityLower}-list";
     }
 
@@ -32,28 +86,33 @@ public class ${entityName}Controller {
     @GetMapping("/${entityLower}/add")
     public String showAddForm(Model model) {
         model.addAttribute("${entityLower}", new ${entityName}());
+${addRelationModelAttributes}
         return "${entityLower}-form";
     }
 
     // Save a new ${entityLower}
     @PostMapping("/${entityLower}/save")
-    public String save${entityName}(@ModelAttribute ${entityName} ${entityLower}, RedirectAttributes redirectAttributes) {
+    public String save${entityName}(@Valid @ModelAttribute ${entityName} ${entityLower}${addRelationRequestParams}, BindingResult result, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+    		return "${entityLower}-form";
+    	}
         try {
+${addRelationAssignments}
             ${entityLower}Service.save(${entityLower});
             redirectAttributes.addFlashAttribute("message", "${entityName} saved successfully.");
         } catch (Exception e){
-            redirectAttributes.addFlashAttribute("error","Error saving ${entityLower}" + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error saving ${entityLower}: " + e.getMessage());
         }
         return "redirect:/${entityLower}";
     }
 
-
     // Show form to edit a ${entityLower}
-    @GetMapping("/${entityLower}/edit/{id}")
-    public String showEditForm(@PathVariable ${type} id, Model model, RedirectAttributes redirectAttributes) {
-        Optional<${entityName}> ${entityLower} = ${entityLower}Service.findById(id);
+    @GetMapping("/${entityLower}/edit/{${pkFieldName}}")
+    public String showEditForm(@PathVariable("${pkFieldName}") ${idType} ${pkFieldName}, Model model, RedirectAttributes redirectAttributes) {
+        Optional<${entityName}> ${entityLower} = ${entityLower}Service.findById(${pkFieldName});
         if (${entityLower}.isPresent()) {
             model.addAttribute("${entityLower}", ${entityLower}.get());
+${addRelationModelAttributes}
             return "${entityLower}-form";
         } else {
             redirectAttributes.addFlashAttribute("error", "${entityName} not found!");
@@ -62,10 +121,15 @@ public class ${entityName}Controller {
     }
 
     // Update an existing ${entityLower}
-    @PostMapping("/${entityLower}/update/{id}")
-    public String update${entityName}(@PathVariable ${type} id, @ModelAttribute ${entityName} ${entityLower}, RedirectAttributes redirectAttributes) {
+    @PostMapping("/${entityLower}/update/{${pkFieldName}}")
+    public String update${entityName}(@PathVariable("${pkFieldName}") ${idType} ${pkFieldName}, @Valid @ModelAttribute ${entityName} ${entityLower}${addRelationRequestParams}, BindingResult result, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+    		${entityLower}.setId(id);
+    		return "${entityLower}-form";
+    	}
         try {
-            ${entityLower}.setId(id);
+            ${entityLower}.${pkSetterName}(${pkFieldName});
+${addRelationAssignments}
             ${entityLower}Service.save(${entityLower});
             redirectAttributes.addFlashAttribute("message", "${entityName} updated successfully!");
         } catch (Exception e) {
@@ -75,11 +139,11 @@ public class ${entityName}Controller {
     }
 
     // Delete a ${entityLower}
-    @GetMapping("/${entityLower}/delete/{id}")
-    public String delete${entityName}(@PathVariable ${type} id, RedirectAttributes redirectAttributes) {
+    @GetMapping("/${entityLower}/delete/{${pkFieldName}}")
+    public String delete${entityName}(@PathVariable("${pkFieldName}") ${idType} ${pkFieldName}, RedirectAttributes redirectAttributes) {
         try {
-            if (${entityLower}Service.existsById(id)) {
-                ${entityLower}Service.deleteById(id);
+            if (${entityLower}Service.existsById(${pkFieldName})) {
+                ${entityLower}Service.deleteById(${pkFieldName});
                 redirectAttributes.addFlashAttribute("message", "${entityName} deleted successfully!");
             } else {
                 redirectAttributes.addFlashAttribute("error", "${entityName} not found!");
@@ -89,7 +153,7 @@ public class ${entityName}Controller {
         }
         return "redirect:/${entityLower}";
     }
-}`
+}`;
 }
 
 function indexController(basePackage, smallBaseArtifact) {
@@ -118,36 +182,40 @@ public class RedirectToIndexHTML {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                // 1. Specific Rule: Lock the update path for ANY dynamic name
-                // The * matches the dynamic name, the {id} is covered by the second * or **
                 .requestMatchers("/*/update/*").hasRole("ADMIN")
-
-                // 2. Broad Rule: Allow guests to access everything else
-                // This covers '/' and '/consumer' and '/any-other-name'
+                .requestMatchers("/*/delete/*").hasRole("ADMIN")
                 .requestMatchers("/", "/*", "/*/*").permitAll()
-
-                // 3. Fallback
                 .anyRequest().authenticated()
             )
             .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
-}`
+}`;
 }
 
 export default function ControllerCodeGenerator(xml, basePackage = `com.example`) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
+    expandManyToMany(xmlDoc);
     const smallBaseArtifact = xmlDoc.querySelector("Application").getAttribute("name").toLowerCase();
     let controllers = [];
 
     xmlDoc.querySelectorAll("Entity").forEach(e => {
-        const name = e.getAttribute('name').charAt(0).toUpperCase() + e.getAttribute('name').slice(1);
-        const type = e.querySelector('Field[pk="true"]').getAttribute('type');
-        controllers.push({ 'fileName': `${name}Controller.java`, 'code': getController(name, type, basePackage, smallBaseArtifact) })
-    })
-    controllers.push({ fileName: 'RedirectToIndexHTML.java', code: indexController(basePackage, smallBaseArtifact) })
+        const name = capitalizeFirst(e.getAttribute("name"));
+        const pkField = getPrimaryKey(e);
+        const relations = getSelectableRelations(xmlDoc, e.getAttribute("id"));
+
+        controllers.push({
+            fileName: `${name}Controller.java`,
+            code: getController(name, pkField.type, pkField.name, relations, basePackage, smallBaseArtifact)
+        });
+    });
+
+    controllers.push({
+        fileName: "RedirectToIndexHTML.java",
+        code: indexController(basePackage, smallBaseArtifact)
+    });
 
     return controllers;
 }

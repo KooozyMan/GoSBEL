@@ -2,9 +2,12 @@ import { useEffect, useRef } from "react"
 import { Editor } from "@monaco-editor/react";
 import { loader } from "@monaco-editor/react";
 import nord from '../Themes/Nord.json';
+import { useTranslation } from "react-i18next";
 
 
 export default function XMLView({ onClose, onLoad, xmlContent }) {
+    if (!xmlContent) return;
+    const { t } = useTranslation();
     const editorRef = useRef(null);
 
     function handleEditorDidMount(editor, monaco) {
@@ -48,8 +51,8 @@ export default function XMLView({ onClose, onLoad, xmlContent }) {
                 </div>
                 <footer className="xml-footer">
                     <div className="xml-buttons">
-                        <button onClick={onClose}>Close</button>
-                        <button onClick={handleLoad}>Load</button>
+                        <button onClick={onClose}>{t('close')}</button>
+                        <button onClick={handleLoad}>{t('load')}</button>
                     </div>
                 </footer>
             </div>

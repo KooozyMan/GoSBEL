@@ -2,10 +2,14 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import zipSvg from '../img/zip.svg';
 import jarSvg from '../img/jar.svg';
+import { useTranslation } from "react-i18next";
 
 export default function ExportWindow({ onClose, generatedCode, onConfirmation }) {
+    const { t } = useTranslation();
+    const baseUrl = import.meta.env.BASE_URL;
+
     async function fetchFile(path) {
-        const res = await fetch(path);
+        const res = await fetch(baseUrl + path);
         return await res.blob();
     }
 
@@ -21,15 +25,20 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         // --------------- Copying static files ---------------
         // -----------------------------------------------------
         // installing local maven
-        application.file('mvnw', await fetchFile('/templates/mvnw'));
-        application.file('mvnw.cmd', await fetchFile('/templates/mvnw.cmd'));
+        application.file('mvnw', await fetchFile('templates/mvnw'));
+        application.file('mvnw.cmd', await fetchFile('templates/mvnw.cmd'));
         const mvn = application.folder('.mvn');
         const wrapper = mvn.folder('wrapper');
-        wrapper.file('maven-wrapper.properties', await fetchFile('/templates/maven-wrapper.properties'));
+        wrapper.file('maven-wrapper.properties', await fetchFile('templates/maven-wrapper.properties'));
 
         // installing git files
-        application.file('.gitignore', await fetchFile('/templates/.gitignore'));
-        application.file('.gitattributes', await fetchFile('/templates/.gitattributes'));
+        application.file('.gitignore', await fetchFile('templates/.gitignore'));
+        application.file('.gitattributes', await fetchFile('templates/.gitattributes'));
+
+        // installing Jar Builder for each OS
+        application.file('_Linux_build_Jar.sh', await fetchFile('templates/_Linux_build_Jar.sh'));
+        application.file('_MacOS_build_Jar.command', await fetchFile('templates/_MacOS_build_Jar.command'));
+        application.file('_Windows_build_Jar.bat', await fetchFile('templates/_Windows_build_Jar.bat'));
 
         // ------------------------------------------------------
         // --------------- Creating File Strcture ---------------
@@ -126,16 +135,16 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         <div>
             <div className="export-window">
                 <div className="export-project-config">
-                    <span>Project Settings: Maven Java 17 <br />Spring Boot 4.0.4 <br />Packaging: Jar <br />Configuration: Properties<br />user: admin<br />password: admin</span>
+                    <span>{t('popup_export_project_settings', { tool: 'Maven', javaVersion: "17" })}<br />{t('popup_export_spring_version', { springVersion: "4.0.4" })}<br />{t('popup_export_packaging', { packager: "Jar" })}<br />{t('popup_export_configuration', { extension: ".properties" })}<br />{t('popup_export_user', { user: "admin" })}<br />{t('popup_export_password', { password: "admin" })}</span>
                 </div>
                 <div className="export-project-download">
                     <div className="downloadable" onClick={getZipFile}>
-                        <img className="export-img" src={zipSvg}></img><span>Download code as a zip file.</span>
+                        <img className="export-img" src={zipSvg}></img><span>{t('popup_export_download_zip')}</span>
                     </div>
-                    <div className="downloadable" onClick={getJarFile}>
-                        <img className="export-img" src={jarSvg}></img><span>Download code as a jar file.</span>
-                    </div>
-                    <button className="close-export-project-window" onClick={onClose}>Close</button>
+                    {/* <div className="downloadable" onClick={getJarFile}>
+                        <img className="export-img" src={jarSvg}></img><span>{t('popup_export_download_jar')}</span>
+                    </div> */}
+                    <button className="close-export-project-window" onClick={onClose}>{t('close')}</button>
                 </div>
             </div>
             <div className="overlay" />

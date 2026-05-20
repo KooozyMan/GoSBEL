@@ -5,13 +5,12 @@
     left: 0px;
     height: 100%;
     width: 100%;
-    background-color: black;
     z-index: 11;
     display: flex;
 }
 
 .files-container {
-    background: #f3f3f3;
+    background: #d8dee9;
     flex-direction: column;
     width: 400px;
 }
@@ -46,7 +45,7 @@
 
 .folder-name {
     display: flex;
-    background-color: #f3f3f3;
+    background-color: #d8dee9;
     padding-left: 8px;
     align-items: center;
     border-radius: 6px;
@@ -54,7 +53,7 @@
 }
 
 .folder-name:hover {
-    color: #f3f3f3;
+    color: #d8dee9;
     background-color: #2d527c74;
 }
 
@@ -79,12 +78,12 @@
 
 .file:hover {
     cursor: pointer;
-    color: #f3f3f3;
+    color: #d8dee9;
     background-color: #2d527c74;
 }
 
 .file.selected {
-    color: #f3f3f3;
+    color: #d8dee9;
     background-color: #282c34;
 }
 

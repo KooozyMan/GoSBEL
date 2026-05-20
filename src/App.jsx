@@ -36,6 +36,7 @@ import ThymeleafCodeGenerator from "./assets/CodeGenerator/ThymeleafCodeGenerato
 import Validation from "./assets/Helpers/Validation";
 import PropertiesCodeGenerator from "./assets/CodeGenerator/PropertiesCodeGenerator";
 import Tours from "./assets/Helpers/Tours";
+import { useTranslation } from "react-i18next";
 
 const nodeTypes = { entity: Entity };
 const edgeTypes = { crowsFoot: CrowsFoot };
@@ -48,8 +49,8 @@ const initialNodes = [
     data: {
       label: "Consumer",
       fields: [
-        { name: "id", type: "Integer", pk: true },
-        { name: "name", type: "String", pk: false },
+        { name: "id", type: "Integer", pk: true, validation: {} },
+        { name: "name", type: "String", pk: false, validation: {} },
       ]
     }
   },
@@ -60,9 +61,8 @@ const initialNodes = [
     data: {
       label: "Item",
       fields: [
-        // setOrderId caused a bug in the output's controller.
-        { name: "id", type: "Integer", pk: true },
-        { name: "price", type: "Double", pk: false },
+        { name: "id", type: "Integer", pk: true, validation: {} },
+        { name: "price", type: "Double", pk: false, validation: {} },
       ],
     }
   }
@@ -84,6 +84,7 @@ export default function App() {
   const [ExportWindowVisibility, setExportWindowVisibility] = useState(false);
   const [ApplicationName, setApplicationName] = useState('demo');
   const [HistoryVisibility, setHistoryVisibility] = useState(false);
+  const { t } = useTranslation();
 
   const createNode = (nodeType) => {
     let newNode;
@@ -93,7 +94,7 @@ export default function App() {
       setEntityId(entityId + 1);
 
     } else { // fallback
-      confirmationHelper(`error`, `the node ${nodeType} does not exist`);
+      confirmationHelper(`error`, t('confirmation_helper_node_does_not_exist', { nodeType: nodeType }));
       return
     };
 
@@ -137,15 +138,10 @@ export default function App() {
     });
 
     localStorage.setItem("history", JSON.stringify(history));
-    confirmationHelper('confirmation', 'The diagram has been saved to your browser!');
+    confirmationHelper('confirmation', t('confirmation_helper_saved'));
   };
 
   const CodeViewerHandler = (flag = true) => {
-    if (nodes.length === 0) {
-      confirmationHelper('error', 'No Nodes to generate Code from.');
-      return;
-    }
-
     const exportedXML = exportXML();
     if (exportedXML === undefined) return;
     const generatedCode = {
@@ -165,6 +161,10 @@ export default function App() {
   };
 
   const exportXML = () => {
+    if (nodes.length === 0) {
+      confirmationHelper('error', t('confirmation_helper_no_nodes'));
+      return;
+    }
     const validate = Validation(ApplicationName, nodes);
     if (validate) {
       confirmationHelper(validate[0], validate[1], validate[2]);
@@ -178,7 +178,13 @@ export default function App() {
         xml += `  <Entity id="${n.id}" name="${n.data.label.charAt(0).toUpperCase() + n.data.label.slice(1)}" x="${n.position.x}" y="${n.position.y}">\n`;
 
         (n.data.fields).forEach((f) => {
-          xml += `    <Field name="${f.name}" type="${f.type}" pk="${f.pk}" />\n`
+			if (f.validation?.NotNull && f.pk) delete f.validation['NotNull'];
+			if (Object.keys(f.validation)?.length > 0) {
+				xml += `    <Field name="${f.name}" type="${f.type}" pk="${f.pk}">\n`
+				xml += Object.keys(f.validation).map(key => `      <${key} value="${f.validation[key]}"/>\n`).join('')
+				xml += `    </Field>\n`
+			}
+			else xml += `    <Field name="${f.name}" type="${f.type}" pk="${f.pk}" />\n`
         });
         xml += `  </Entity>\n`;
       }
@@ -212,10 +218,18 @@ export default function App() {
       const x = parseInt(e.getAttribute("x")) || 200;
       const y = parseInt(e.getAttribute("y")) || 200;
       const fields = Array.from(e.querySelectorAll("Field")).map((f) => {
+        let validation = {}
+        const fieldChildren = f.children
+        for (let child of fieldChildren) {
+          const childTag = child.tagName;
+          const childValue = child.getAttribute('value');
+          validation[childTag] = childValue
+        }
         return {
           name: f.getAttribute("name"),
           type: f.getAttribute("type"),
           pk: f.getAttribute("pk") === 'true' ? true : false,
+          validation: validation
         };
       });
 
