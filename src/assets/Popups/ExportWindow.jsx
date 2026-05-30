@@ -32,13 +32,13 @@ export default function ExportWindow({ onClose, generatedCode, onConfirmation })
         wrapper.file('maven-wrapper.properties', await fetchFile('templates/maven-wrapper.properties'));
 
         // installing git files
-        application.file('.gitignore', await fetchFile('templates/.gitignore'));
-        application.file('.gitattributes', await fetchFile('templates/.gitattributes'));
+        application.file('.gitignore', await fetchFile('templates/gitignore'));
+        application.file('.gitattributes', await fetchFile('templates/gitattributes'));
 
         // installing Jar Builder for each OS
-        application.file('_Linux_build_Jar.sh', await fetchFile('templates/_Linux_build_Jar.sh'));
-        application.file('_MacOS_build_Jar.command', await fetchFile('templates/_MacOS_build_Jar.command'));
-        application.file('_Windows_build_Jar.bat', await fetchFile('templates/_Windows_build_Jar.bat'));
+        application.file('_Linux_build_Jar.sh', await fetchFile('templates/Linux_build_Jar.txt'));
+        application.file('_MacOS_build_Jar.command', await fetchFile('templates/MacOS_build_Jar.txt'));
+        application.file('_Windows_build_Jar.bat', await fetchFile('templates/Windows_build_Jar.txt'));
 
         // ------------------------------------------------------
         // --------------- Creating File Strcture ---------------
