@@ -211,12 +211,14 @@ export default function App() {
     let loadedEdges = [];
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
+    let lastId = 1;
 
     xmlDoc.querySelectorAll("Entity").forEach((e) => {
       const id = e.getAttribute("id");
       const name = e.getAttribute("name");
       const x = parseInt(e.getAttribute("x")) || 200;
       const y = parseInt(e.getAttribute("y")) || 200;
+      lastId = id;
       const fields = Array.from(e.querySelectorAll("Field")).map((f) => {
         let validation = {}
         const fieldChildren = f.children
@@ -232,9 +234,9 @@ export default function App() {
           validation: validation
         };
       });
-
-      const numberOfEntities = xmlDoc.querySelectorAll("Entity").length
-      setEntityId(numberOfEntities + 1)
+      // the previous solution doesn't work upon deleting nodes with id 1,2
+      // while having nodes with ids 3,4 on the map
+      setEntityId(lastId + 1)
 
       loadedNodes.push({
         id: id,
