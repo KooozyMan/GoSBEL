@@ -1,23 +1,13 @@
-<div align="center">
-
-<br/>
-
-<!-- Replace with your actual logo/banner GIF -->
-![SpringFlow Banner](./gifs/banner.gif)
-
-<br/>
-
 # SpringFlow
 
-### Draw your database. Generate your backend. Ship faster.
+## Draw your database. Generate your backend. Ship faster.
 
 **SpringFlow** is a visual Spring Boot project generator built with React Flow.  
 Design your full database ERD on an interactive canvas — then export a complete, production-ready Spring Boot project as a ZIP file, instantly.
 
 <br/>
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-brightgreen?style=for-the-badge&logo=github)](https://your-github-pages-link)
-[![GitHub Repo](https://img.shields.io/badge/Source%20Code-GitHub-black?style=for-the-badge&logo=github)](https://github.com/your-username/springflow)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-brightgreen?style=for-the-badge&logo=github)]([https://your-github-pages-link](https://kooozyman.github.io/SpringFlow/))
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-Generated-6DB33F?style=for-the-badge&logo=springboot)](https://spring.io/projects/spring-boot)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](./LICENSE)
