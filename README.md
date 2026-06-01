@@ -7,7 +7,7 @@ Design your full database ERD on an interactive canvas — then export a complet
 
 <br/>
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-brightgreen?style=for-the-badge&logo=github)]([https://your-github-pages-link](https://kooozyman.github.io/SpringFlow/))
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-brightgreen?style=for-the-badge&logo=github)](https://kooozyman.github.io/SpringFlow/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-Generated-6DB33F?style=for-the-badge&logo=springboot)](https://spring.io/projects/spring-boot)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](./LICENSE)
