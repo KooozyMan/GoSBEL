@@ -6,7 +6,7 @@
     "tours_last": "Finish",
     "tours_next": "Next",
     "tours_skip": "Skip",
-    "tours_main_tour_step_0": "Welcome! Let us take you on a quick tour to show you how to use the GoSBEL tool to generate Spring Boot.",
+    "tours_main_tour_step_0": "Welcome! Let us take you on a quick tour to show you how to use the SpringFlow tool to generate Spring Boot.",
     "tours_main_tour_step_1_title": "Add Elements Panel",
     "tours_main_tour_step_1": "From here, you can add new elements to the diagram, such as an Entity.",
     "tours_main_tour_step_2_title": "Save Work",
