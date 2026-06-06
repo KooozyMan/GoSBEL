@@ -514,7 +514,7 @@ ${r.map(u=>{if(u.name===c)return"";const f=S9(u.type);return f==="checkbox"?`   
                             <label class="label" for="${u.name}-input">
                                 <span class="label-text font-medium">${u.name}</span>
                             </label>
-                            <input type="${f}" id="${u.name}-input" class="input input-bordered w-full" th:field="*{${u.name}}" placeholder="Enter ${u.name}">
+                            <input type="${f}" step="any" id="${u.name}-input" class="input input-bordered w-full" th:field="*{${u.name}}" placeholder="Enter ${u.name}">
                             <span th:if="\${#fields.hasErrors('${u.name}')}" th:errors="*{${u.name}}" class="mt-2 py-1 px-2 text-xs font-semibold bg-red-600 text-white rounded shadow-sm"></span>
                         </div>`}).join(`
 `)}
