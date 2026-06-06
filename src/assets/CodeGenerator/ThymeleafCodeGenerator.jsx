@@ -101,7 +101,7 @@ ${entityFields
                             <label class="label" for="${field.name}-input">
                                 <span class="label-text font-medium">${field.name}</span>
                             </label>
-                            <input type="${inputType}" id="${field.name}-input" class="input input-bordered w-full" th:field="*{${field.name}}" placeholder="Enter ${field.name}">
+                            <input type="${inputType}" step="any" id="${field.name}-input" class="input input-bordered w-full" th:field="*{${field.name}}" placeholder="Enter ${field.name}">
                             <span th:if="\${#fields.hasErrors('${field.name}')}" th:errors="*{${field.name}}" class="mt-2 py-1 px-2 text-xs font-semibold bg-red-600 text-white rounded shadow-sm"></span>
                         </div>`;
             })
