@@ -192,7 +192,7 @@ export default function App() {
 
     edges.forEach((e) => {
       const edgeId = e.id
-      const relationship = document.getElementById(`edge-${edgeId}`).value
+      const relationship = e.data?.relationship || '1-m'
       xml += `  <Edge id="${edgeId}" source="${e.source}" target="${e.target}" relationship="${relationship}">\n`
     })
 
@@ -211,14 +211,17 @@ export default function App() {
     let loadedEdges = [];
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
-    let lastId = 1;
+    let maxId = 0;
 
     xmlDoc.querySelectorAll("Entity").forEach((e) => {
       const id = e.getAttribute("id");
+      const idInt = parseInt(id);
+      if (idInt > maxId) maxId = idInt;
+
       const name = e.getAttribute("name");
       const x = parseInt(e.getAttribute("x")) || 200;
       const y = parseInt(e.getAttribute("y")) || 200;
-      lastId = id;
+      
       const fields = Array.from(e.querySelectorAll("Field")).map((f) => {
         let validation = {}
         const fieldChildren = f.children
@@ -234,9 +237,6 @@ export default function App() {
           validation: validation
         };
       });
-      // the previous solution doesn't work upon deleting nodes with id 1,2
-      // while having nodes with ids 3,4 on the map
-      setEntityId(lastId + 1)
 
       loadedNodes.push({
         id: id,
@@ -248,6 +248,8 @@ export default function App() {
         }
       });
     });
+    
+    setEntityId(maxId + 1);
 
     xmlDoc.querySelectorAll("Edge").forEach((e) => {
       const id = e.getAttribute("id");
